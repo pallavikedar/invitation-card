@@ -6,7 +6,10 @@ import './globals.css'
 const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 const _playfairDisplay = Playfair_Display({ subsets: ["latin"] });
-
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
 export const metadata: Metadata = {
   title: 'Sarah & James - Wedding Invitation',
   description: 'Join us in celebrating our love with elegant wedding invitation with beautiful parallax effects',
@@ -37,7 +40,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="font-sans antialiased">
+      <body className={playfair.className}>
         {children}
         <Analytics />
       </body>

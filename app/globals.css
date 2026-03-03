@@ -121,6 +121,7 @@
   }
   body {
     @apply bg-background text-foreground;
+       
   }
 }
 .fadeUp {
@@ -132,4 +133,16 @@
 .fadeUp.show {
   opacity: 1;
   transform: translateY(0);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.will-change-transform {
+  will-change: transform;
+  backface-visibility: hidden;
+}
+body{
+  
 }
