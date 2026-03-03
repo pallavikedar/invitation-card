@@ -926,36 +926,26 @@ function Open() {
 
   return (
     <div
-      className={`relative ${open ? "min-h-[700vh]" : "h-screen overflow-hidden"
-        }`}
+      className={`relative  ${open ? "min-h-[700vh]" : "h-screen overflow-hidden"
+        }` }
     >
       {/* ================= FIRST SECTION ================= */}
       <div
-        className="sticky top-0 h-screen w-full overflow-hidden bg-white"
+        className="sticky top-0 max-top-[-75px] h-screen w-full overflow-hidden bg-white"
         style={{ perspective: "1400px" }}
       >
         {/* Background */}
         <img
           src="/1st bg imjage.svg"
           className="absolute w-full h-full object-contain"
-          style={{
-            transform: open
-              ? `translateY(-${firstSectionScroll * 0.5}px)`
-              : "translateY(0px)",
-            transition: "transform 0.3s linear",
-          }}
+          style={{...getSection3Style(0), maxBlockSize:"fit-content",}}
         />
 
         {/* Front */}
         <img
           src="/1st front.svg"
           className="absolute w-full h-full object-contain"
-          style={{
-            transform: open
-              ? `translateY(-${firstSectionScroll * 0.7}px)`
-              : "translateY(0px)",
-            transition: "transform 0.3s linear",
-          }}
+           style={getSection3Style(0)}
         />
         <img
           src="/logo 1.svg"
@@ -966,18 +956,20 @@ function Open() {
         //     : "translateY(0px)",
         //   transition: "transform 0.3s linear",
         // }}
+         style={getSection3Style(0)}
         />
 
         {/* Bottom */}
         <img
           src="/1stbottom.svg"
-          className="absolute w-full h-full object-contain"
+          className="absolute w-full h-full object-contain top-[50px]"
           style={{
             transform: open
               ? `translateY(-${firstSectionScroll}px)`
               : "translateY(0px)",
-            transition: "transform 0.3s linear",
+            // transition: "transform 0.3s linear",
           }}
+          
         />
 
         {/* OPEN BOTTOM */}
@@ -994,11 +986,12 @@ function Open() {
           <img
             src="/openup.svg"
             onClick={() => setOpen(true)}
-            className="w-full h-full object-contain"
+            className="w-full h-full object-contain "
             style={{
               transform: open ? "rotateX(-170deg)" : "rotateX(0deg)",
               transformOrigin: "top",
               backfaceVisibility: "hidden",
+              maxBlockSize:"fit-content",
               transition:
                 "transform 1200ms cubic-bezier(0.22, 1, 0.36, 1)",
               boxShadow: open
@@ -1020,9 +1013,10 @@ function Open() {
               flexDirection: "column",
               justifyContent: "center",
               alignItems: "center",
+              width: "100%",
             }}
           >
-            <div className="h-screen w-[360px] bg-[#593838] relative overflow-hidden ">
+           <div className="h-screen w-full max-w-[360px] bg-[#593838] relative overflow-hidden">
               {!section2Loaded && (
                 <div className="absolute inset-0 flex items-center justify-center text-white">
                   Loading...
@@ -1142,6 +1136,7 @@ function Open() {
               <img
                 src="bg 4 section.svg"
                 loading="lazy"
+                style={{ maxBlockSize:"fit-content", }}
                 className="absolute w-full h-full object-contain"
               />
 
@@ -1254,6 +1249,8 @@ function Open() {
             <img
               src="section 5 final screen.svg"
               loading="lazy"
+              
+                style={{ maxBlockSize:"fit-content", }}
               className="w-full h-full object-contain"
             />
           </div>
@@ -1263,6 +1260,8 @@ function Open() {
             <img
               src="final.svg"
               loading="lazy"
+              
+                style={{ maxBlockSize:"fit-content", }}
               className="w-full h-full object-contain"
             />
           </div>
