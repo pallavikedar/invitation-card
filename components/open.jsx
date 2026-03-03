@@ -877,17 +877,22 @@ function Open() {
     const criticalImages = ["/openup.svg", "/openbottom.svg"];
 
     Promise.all(
-      criticalImages.map(
-        (src) =>
-          new Promise((resolve) => {
-            const img = new Image();
-            img.src = src;
-            img.onload = resolve;
-          })
-      )
-    ).then(() => {
-      setCriticalLoaded(true);
-    });
+  criticalImages.map(
+    (src) =>
+      new Promise((resolve) => {
+        const img = new Image();
+        img.src = src;
+
+        img.onload = () => resolve();
+        img.onerror = () => resolve(); // prevents infinite loading
+
+        // fallback timeout (extra safety)
+        setTimeout(() => resolve(), 3000);
+      })
+  )
+).then(() => {
+  setCriticalLoaded(true);
+});
   }, []);
 
   /* ================= SMOOTH SCROLL ================= */
@@ -918,8 +923,8 @@ function Open() {
 
   if (!criticalLoaded) {
     return (
-      <div className="h-screen flex items-center justify-center bg-black text-white">
-        Loading...
+      <div className="h-screen flex items-center justify-center bg-[#fff5f1] text-[#b68d33] font-bold">
+        Please Wait...
       </div>
     );
   }
