@@ -1483,7 +1483,7 @@ if (!assetsLoaded) {
       <div className="relative z-10 flex flex-col items-center top-[-67px">
 
         {/* Title */}
-        <h2 className="text-3xl font-bold text-[#f3c178] mb-8"  data-aos="fade-up"
+        <h2 className="text-4xl font-bold text-[#f3c178] mb-8"  data-aos="fade-up"
       data-aos-duration="1200">
           The Countdown Begins
         </h2>
