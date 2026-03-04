@@ -11,7 +11,7 @@ const playfair = Playfair_Display({
   weight: ["400", "500", "600", "700"],
 });
 export const metadata: Metadata = {
-  title: 'Sarah & James - Wedding Invitation',
+  title: 'Shreya & Naivedya - Wedding Invitation',
   description: 'Join us in celebrating our love with elegant wedding invitation with beautiful parallax effects',
   generator: 'v0.app',
   icons: {
