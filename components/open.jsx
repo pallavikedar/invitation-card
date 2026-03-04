@@ -730,568 +730,12 @@
 
 
 
-// "use client";
-// import { useEffect, useRef, useState } from "react";
-// import AOS from "aos";
-// import "aos/dist/aos.css";
-
-
-
-// function Open() {
-//   const sectionRef = useRef(null);
-//   const section3Ref = useRef(null);
-//   const [open, setOpen] = useState(false);
-//   const [section2Loaded, setSection2Loaded] = useState(false);
-//   const [scrollY, setScrollY] = useState(0);
-//   const [windowHeight, setWindowHeight] = useState(0);
-//   const [criticalLoaded, setCriticalLoaded] = useState(false);
-//   const [visible, setVisible] = useState(false);
-
-
-
-
-//   // Section start & end positions
-//   const section3Start = section3Ref.current?.offsetTop || 0;
-//   const section3Height = windowHeight * 2; // scrollable area for animation
-//   const section3End = section3Start + section3Height;
-
-//   // Only scroll relative to section3
-//   const section3Raw = scrollY - section3Start;
-//   const section3Scroll = Math.max(0, Math.min(section3Raw, section3Height));
-//   const section3Progress = section3Scroll / windowHeight;
-
-//   const getSection3Style = (index) => {
-//     // Before section scroll → show images normally
-//     if (scrollY < section3Start) return { transform: "translateY(0px)" };
-
-//     // First slide animation
-//     if (index === 0) {
-//       return { transform: `translateY(${-section3Progress * windowHeight}px)` };
-//     }
-
-//     // Second slide animation
-//     if (index === 1) {
-//       return { transform: `translateY(${windowHeight - section3Progress * windowHeight}px)` };
-//     }
-
-//     // Other slides: stay in place
-//     return { transform: "translateY(0px)" };
-//   };
-
-
-//   const sectionStart = windowHeight * 3;
-//   const raw = scrollY - sectionStart;
-
-//   const step = windowHeight;
-//   const max = step * 3;
-
-//   const scroll = Math.max(0, Math.min(raw, max));
-
-//   const activeIndex = Math.floor(scroll / step);
-//   const progress = (scroll % step) / step;
-
-//   const getStyle = (index) => {
-//     // Current active slide
-//     if (index === activeIndex) {
-//       return {
-//         transform: `translateY(${-progress * windowHeight}px)`
-//       };
-//     }
-
-//     // Next slide coming from bottom
-//     if (index === activeIndex + 1) {
-//       return {
-//         transform: `translateY(${windowHeight - progress * windowHeight}px)`
-//       };
-//     }
-
-//     // Slides above
-//     if (index < activeIndex) {
-//       return { transform: `translateY(${-windowHeight}px)` };
-//     }
-
-//     // Slides below
-//     return { transform: `translateY(${windowHeight}px)` };
-//   };
-
-
-
-
-
-
-
-//   let current = 0;
-//   let target = 0;
-//   let isVisible = false;
-
-//   useEffect(() => {
-//     const observer = new IntersectionObserver(
-//       ([entry]) => {
-//         isVisible = entry.isIntersecting;
-//       },
-//       { threshold: 0.3 }
-//     );
-
-//     if (sectionRef.current) {
-//       observer.observe(sectionRef.current);
-//     }
-
-//     const handleScroll = () => {
-//       if (!sectionRef.current || !isVisible) return;
-
-//       const rect = sectionRef.current.getBoundingClientRect();
-//       const windowHeight = window.innerHeight;
-
-//       const progress = (windowHeight - rect.top) / windowHeight;
-//       const clamped = Math.max(0, Math.min(progress, 1));
-
-//       target = clamped * 40; // max movement 40px
-//     };
-
-//     const animate = () => {
-//       if (isVisible) {
-//         current += (target - current) * 0.08;
-
-//         if (imageRef.current) {
-//           imageRef.current.style.transform = `translateY(${current}px)`;
-//         }
-//       }
-
-//       requestAnimationFrame(animate);
-//     };
-
-//     window.addEventListener("scroll", handleScroll);
-//     animate();
-
-//     return () => {
-//       window.removeEventListener("scroll", handleScroll);
-//       observer.disconnect();
-//     };
-//   }, []);
-
-//   /* ================= INIT ================= */
-//   useEffect(() => {
-//     AOS.init({ duration: 800, once: false });
-//     setWindowHeight(window.innerHeight);
-
-//     const criticalImages = ["/openup.svg", "/openbottom.svg"];
-
-//     Promise.all(
-//   criticalImages.map(
-//     (src) =>
-//       new Promise((resolve) => {
-//         const img = new Image();
-//         img.src = src;
-
-//         img.onload = () => resolve();
-//         img.onerror = () => resolve(); // prevents infinite loading
-
-//         // fallback timeout (extra safety)
-//         setTimeout(() => resolve(), 3000);
-//       })
-//   )
-// ).then(() => {
-//   setCriticalLoaded(true);
-// });
-//   }, []);
-
-//   /* ================= SMOOTH SCROLL ================= */
-//   useEffect(() => {
-//     let ticking = false;
-
-//     const handleScroll = () => {
-//       if (!ticking) {
-//         requestAnimationFrame(() => {
-//           setScrollY(window.scrollY);
-//           ticking = false;
-//         });
-//         ticking = true;
-//       }
-//     };
-
-//     window.addEventListener("scroll", handleScroll);
-//     window.addEventListener("resize", () =>
-//       setWindowHeight(window.innerHeight)
-//     );
-
-//     return () => {
-//       window.removeEventListener("scroll", handleScroll);
-//     };
-//   }, []);
-
-//   const firstSectionScroll = Math.min(scrollY, windowHeight);
-
-//   if (!criticalLoaded) {
-//     return (
-//       <div className="h-screen flex items-center justify-center bg-[#fff5f1] text-[#b68d33] font-bold">
-//         Please Wait...
-//       </div>
-//     );
-//   }
-
-//   return (
-//     <div
-//       className={`relative  ${open ? "min-h-[700vh]" : "h-screen overflow-hidden"
-//         }` }
-//     >
-//       {/* ================= FIRST SECTION ================= */}
-//       <div
-//         className="sticky top-0 max-top-[-75px] h-screen w-full overflow-hidden bg-white"
-//         style={{ perspective: "1400px" }}
-//       >
-//         {/* Background */}
-//         <img
-//           src="/1st bg imjage.svg"
-//           className="absolute w-full h-full object-contain"
-//           style={{...getSection3Style(0), maxBlockSize:"fit-content",}}
-//         />
-
-//         {/* Front */}
-//         <img
-//           src="/1st front.svg"
-//           className="absolute w-full h-full object-contain"
-//            style={getSection3Style(0)}
-//         />
-//         <img
-//           src="/logo 1.svg"
-//           className="absolute w-[122px] h-[100px] object-contain top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]"
-//         // style={{
-//         //   transform: open
-//         //     ? `translateY(-${firstSectionScroll * 0.7}px)`
-//         //     : "translateY(0px)",
-//         //   transition: "transform 0.3s linear",
-//         // }}
-//          style={getSection3Style(0)}
-//         />
-
-//         {/* Bottom */}
-//         <img
-//           src="/1stbottom.svg"
-//           className="absolute w-full h-full object-contain top-[50px]"
-//           style={{
-//             transform: open
-//               ? `translateY(-${firstSectionScroll}px)`
-//               : "translateY(0px)",
-//             // transition: "transform 0.3s linear",
-//           }}
-          
-//         />
-
-//         {/* OPEN BOTTOM */}
-//         <img
-//           src="/openbottom.svg"
-//           className="absolute w-full h-[100vh] [@media(min-width:320px)_and_(max-width:339px)]:h-[89vh] object-contain z-10 transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)]"
-//           style={{
-//             transform: open ? "translateY(700px)" : "translateY(0px)",
-//           }}
-//         />
-
-//         {/* OPEN UP (3D FLIP) */}
-//         <div className="absolute inset-0 z-20 cursor-pointer">
-//           <img
-//             src="/openup.svg"
-//             onClick={() => setOpen(true)}
-//             className="w-full h-[100vh] [@media(min-width:320px)_and_(max-width:339px)]:h-[89vh] object-contain "
-//             style={{
-//               transform: open ? "rotateX(-170deg)" : "rotateX(0deg)",
-//               transformOrigin: "top",
-//               backfaceVisibility: "hidden",
-//               maxBlockSize:"fit-content",
-//               transition:
-//                 "transform 1200ms cubic-bezier(0.22, 1, 0.36, 1)",
-//               boxShadow: open
-//                 ? "0px 40px 60px rgba(0,0,0,0.4)"
-//                 : "none",
-//             }}
-//           />
-
-//         </div>
-//       </div>
-
-//       {/* ================= OTHER SECTIONS ================= */}
-//       {open && (
-//         <>
-//           {/* SECTION 2 */}
-//           <div
-//             style={{
-//               display: "flex",
-//               flexDirection: "column",
-//               justifyContent: "center",
-//               alignItems: "center",
-//               width: "100%",
-//             }}
-//           >
-           
-//            <div className="h-screen [@media(min-width:320px)_and_(max-width:339px)]:h-[89vh]     [@media(min-width:340px)_and_(max-width:375px)]:h-[100vh]   [@media(min-width:320px)_and_(max-width:425px)]:w-[360px]   w-full  bg-[#5b3525] relative overflow-hidden">
-//               {!section2Loaded && (
-//                 <div className="absolute inset-0 flex items-center justify-center text-white">
-//                   Loading...
-//                 </div>
-//               )}
-
-//              <img
-//   src="/slidesecond.svg"
-//   loading="lazy"
-//   onLoad={() => setSection2Loaded(true)}
-//   className={`w-full h-screen  absolute 
-//    top-[-36px] xs:top-[-36px] sm:top-[-27px] 
-//     transition-opacity duration-500 
-//     ${section2Loaded ? "opacity-100" : "opacity-0"}
-//   `}
-// />
-//               <div className=" flex items-center justify-center bg-[#5b3525] px-6">
-//                 <div className="max-w-[380px] text-center text-[#f2c46d] mt-[84px] ">
-
-//                   {/* Parents */}
-//                   <h2 className="text-l md:text-xl font-semibold leading-tight ">
-//                     Sandhya & <br /> Anil Bahadure
-//                   </h2>
-
-//                   {/* Sub text */}
-//                   <p className="mt-[3px] text-sm leading-relaxed text-[#f6d38b]">
-//                     Await your presence for <br />
-//                     the wedding celebrations <br />
-//                     of their daughter
-//                   </p>
-
-//                   {/* Bride Name */}
-//                   <h1 className="mt-[14px] text-4xl font-bold tracking-wide">
-//                     Shreya
-//                   </h1>
-
-//                   {/* With */}
-//                   <p className="mt-[4px] text-xl text-[#f6d38b]">
-//                     with
-//                   </p>
-
-//                   {/* Groom Name */}
-//                   <h1 className="text-4xl font-bold tracking-wide">
-//                     Naivedya
-//                   </h1>
-
-//                   {/* Son of */}
-//                   <p className="mt-6 text-sm text-[#f6d38b]">
-//                     Son of
-//                   </p>
-
-//                   {/* Father */}
-//                   <h2 className="text-l md:text-xl font-semibold">
-//                     Kamlesh Joshi
-//                   </h2>
-
-//                 </div>
-//               </div>
-//             </div>
-//           </div>
-
-//           {/* SECTION 3 */}
-//           <div
-//             ref={section3Ref}
-//             className="h-screen [@media(min-width:320px)_and_(max-width:339px)]:h-[89vh]      [@media(min-width:340px)_and_(max-width:375px)]:h-[100vh]  w-full relative overflow-hidden"
-//           >
-//             <img
-//               src="/3rd slide bg.svg"
-//               loading="lazy"
-//               className="w-full h-full object-contain"
-//               data-aos="fade-up"
-//             />
-
-//             <img
-//               src="/3rd slide top.svg"
-
-//               className={`absolute w-full h-[88vh] object-contain top-[-279px] fade-up ${visible ? "show" : ""}`}
-//               style={{ transitionDelay: "0.1s" }}
-//             />
-
-//             <img
-//               src="/3rd slide second.svg"
-//               className="absolute w-full h-[88vh] object-contain top-[108px]"
-//               style={getSection3Style(0)}
-//             />
-
-//             <img
-//               src="/3rd slide4.svg"
-
-//               className={`absolute w-full h-[88vh] object-contain top-[100px] fade-up ${visible ? "show" : ""}`}
-//               style={{ transitionDelay: "0.3s" }}
-//             />
-//             <img
-//               src="/3rd slide3.svg"
-
-//               className={`absolute w-full h-[88vh] object-contain top-[100px] fade-up ${visible ? "show" : ""}`}
-//               style={{ transitionDelay: "0.4s" }}
-//             />
-
-//             <img
-//               src="/3rd slide bottom.svg"
-//               className="absolute w-full h-[88vh] object-contain top-[276px]"
-//               style={{
-//                 transform: scrollY < section3Start
-//                   ? "translateY(0px)"
-//                   : `translateY(${-section3Progress * windowHeight}px)`,
-//                 opacity: scrollY < section3Start
-//                   ? 1
-//                   : 1 - section3Progress, // fade out as scroll progresses
-//                 transition: "transform 0.1s linear, opacity 0.1s linear"
-//               }}
-//             />
-
-//           </div>
-
-//           {/* SECTION 4 */}
-//           <div className="relative h-[400vh] w-full">
-//             <div className="sticky top-0 h-screen [@media(min-width:320px)_and_(max-width:339px)]:h-[89vh]      [@media(min-width:340px)_and_(max-width:375px)]:h-[100vh]   w-full">
-//               <h2 className="absolute top-[7%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[#f3c53c] text-4xl font-bold z-10">Events</h2>
-//               <img
-//                 src="bg 4 section.svg"
-//                 loading="lazy"
-//                 style={{ maxBlockSize:"fit-content", }}
-//                 className="absolute w-full h-full object-contain"
-//               />
-
-
-
-//               <>
-//                 <div className="absolute inset-0 flex items-center justify-center" style={getStyle(0)}>
-//                   <img
-//                     src="/section 4 1.svg"
-//                     className="absolute w-full h-[100vh] object-contain"
-
-//                   />
-//                   <div className=" flex items-center justify-center  px-6">
-//                     <div className="max-w-[380px] text-center  mt-[52px] z-10">
-//                       <p className="text-lg text-brown-700">Day 1</p>
-//                       <p className="text-lg text-brown-700">03/05/26</p>
-
-//                       <h2 className="text-3xl font-semibold text-orange-700 mt-[-4px]">
-//                         Paritran
-//                       </h2>
-//                       <p className="text-lg text-orange-700">11 am</p>
-
-//                       <h2 className="text-3xl font-semibold text-green-700 mt-[-6px]">
-//                         Mehendi
-//                       </h2>
-//                       <p className="text-lg text-green-700">1 pm onwards</p>
-
-//                       <p className="text-lg text-brown-700 mt-4">@Home</p>
-//                     </div>
-//                   </div>
-//                 </div>
-
-//                 <div className="absolute inset-0 flex items-center justify-center" style={getStyle(1)}>
-//                   <img
-//                     src="/section 4 2.svg"
-//                     className="absolute w-full h-[100vh] object-contain"
-
-//                   />
-//                   <div className=" flex items-center justify-center  px-6">
-//                     <div className="max-w-[380px] text-center  mt-[20px] z-10">
-//                       <p className="text-lg text-brown-700">Day 2</p>
-//                       <p className="text-lg text-brown-700">04/05/26</p>
-
-//                       <h2 className="text-xl font-semibold text-[#c200b9] mt-[-4px]">
-//                         Carnival Haldi<br /> Lunch
-//                       </h2>
-//                       <p className="text-lg text-[#c200b9]">12 pm</p>
-
-//                       <h2 className="text-xl font-semibold text-green-700 mt-[-6px]">
-//                         High Tea
-//                       </h2>
-//                       <p className="text-lg text-green-700">5 pm </p>
-
-//                       <p className="text-lg text-brown-700 mt-2">@Mangli Lake <br /> Farm</p>
-//                     </div>
-//                   </div>
-//                 </div>
-
-//                 <div className="absolute inset-0 flex items-center justify-center" style={getStyle(2)}>
-//                   <img
-//                     src="/section 4 3.svg"
-//                     className="absolute w-full h-[100vh] object-contain"
-
-//                   />
-//                   <div className=" flex items-center justify-center  px-6">
-//                     <div className="max-w-[380px] text-center  mt-[20px] z-10">
-//                       <p className="text-lg text-brown-700">Day 2</p>
-//                       <p className="text-lg text-brown-700">04/05/26</p>
-
-//                       <h2 className="text-2xl font-bold text-[#2b2b9a] mt-[-4px]">
-//                         Sangeet
-//                       </h2>
-//                       <p className="text-lg text-[#2b2b9a]">7 pm onwards</p>
-
-                      
-
-//                       <p className="text-lg text-brown-700 mt-2">@Mangli Lake <br /> Farm</p>
-//                     </div>
-//                   </div>
-//                 </div>
-
-//                 <div className="absolute inset-0 flex items-center justify-center" style={getStyle(3)}>
-//                   <img
-//                     src="/section 4 3.svg"
-//                     className="absolute w-full h-[100vh] object-contain"
-
-//                   />
-//                   <div className=" flex items-center justify-center  px-6">
-//                     <div className="max-w-[380px] text-center  mt-[20px] z-10">
-//                       <p className="text-lg text-brown-700">Day 3</p>
-//                       <p className="text-lg text-brown-700">05/05/26</p>
-
-//                       <h2 className="text-2xl font-bold text-[#cc4949] mt-[-4px]">
-//                        Buddhist <br/> Wedding
-//                       </h2>
-//                       <p className="text-lg text-orange-700">12 pm onward</p>
-
-                      
-
-//                       <p className="text-lg text-brown-700 mt-2">@Mangli Lake <br /> Farm</p>
-//                     </div>
-//                   </div>
-//                 </div>
-//               </>
-//             </div>
-//           </div>
-
-//           {/* SECTION 5 */}
-//           <div className="h-screen [@media(min-width:320px)_and_(max-width:339px)]:h-[89vh] [@media(min-width:340px)_and_(max-width:375px)]:h-[100vh]  w-full relative">
-//             <img
-//               src="section 5 final screen.svg"
-//               loading="lazy"
-              
-//                 style={{ maxBlockSize:"fit-content", }}
-//               className="w-full h-full object-contain"
-//             />
-//           </div>
-
-//           {/* FINAL */}
-//           <div className="h-screen w-full [@media(min-width:320px)_and_(max-width:339px)]:h-[89vh]      [@media(min-width:340px)_and_(max-width:375px)]:h-[100vh]   relative">
-//             <img
-//               src="final.svg"
-//               loading="lazy"
-              
-//                 style={{ maxBlockSize:"fit-content", }}
-//               className="w-full h-full object-contain"
-//             />
-//           </div>
-//         </>
-//       )}
-//     </div>
-//   );
-// }
-
-// export default Open;
-
-
-
-
-
-
-
 "use client";
 import { useEffect, useRef, useState } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
+
+
 
 function Open() {
   const sectionRef = useRef(null);
@@ -1300,12 +744,12 @@ function Open() {
   const [section2Loaded, setSection2Loaded] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const [windowHeight, setWindowHeight] = useState(0);
+  const [criticalLoaded, setCriticalLoaded] = useState(false);
+  const [visible, setVisible] = useState(false);
   const [assetsLoaded, setAssetsLoaded] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [visible, setVisible] = useState(false);
 
-  // ================= ALL IMAGES (preloaded before any scroll/render) =================
-  const imageSources = [
+const imageSources = [
     "/openup.svg",
     "/openbottom.svg",
     "/1st bg imjage.svg",
@@ -1327,51 +771,128 @@ function Open() {
     "final.svg",
   ];
 
-  // ================= Section 3 scroll math (unchanged) =================
+
+  // Section start & end positions
   const section3Start = section3Ref.current?.offsetTop || 0;
-  const section3Height = windowHeight * 2;
+  const section3Height = windowHeight * 2; // scrollable area for animation
   const section3End = section3Start + section3Height;
 
+  // Only scroll relative to section3
   const section3Raw = scrollY - section3Start;
   const section3Scroll = Math.max(0, Math.min(section3Raw, section3Height));
   const section3Progress = section3Scroll / windowHeight;
 
   const getSection3Style = (index) => {
+    // Before section scroll → show images normally
     if (scrollY < section3Start) return { transform: "translateY(0px)" };
 
+    // First slide animation
     if (index === 0) {
       return { transform: `translateY(${-section3Progress * windowHeight}px)` };
     }
+
+    // Second slide animation
     if (index === 1) {
       return { transform: `translateY(${windowHeight - section3Progress * windowHeight}px)` };
     }
+
+    // Other slides: stay in place
     return { transform: "translateY(0px)" };
   };
 
-  // ================= Section 4 scroll math (unchanged) =================
+
   const sectionStart = windowHeight * 3;
   const raw = scrollY - sectionStart;
+
   const step = windowHeight;
   const max = step * 3;
+
   const scroll = Math.max(0, Math.min(raw, max));
+
   const activeIndex = Math.floor(scroll / step);
   const progressVal = (scroll % step) / step;
 
   const getStyle = (index) => {
+    // Current active slide
     if (index === activeIndex) {
-      return { transform: `translateY(${-progressVal * windowHeight}px)` };
+      return {
+        transform: `translateY(${-progressVal * windowHeight}px)`
+      };
     }
+
+    // Next slide coming from bottom
     if (index === activeIndex + 1) {
-      return { transform: `translateY(${windowHeight - progressVal * windowHeight}px)` };
+      return {
+        transform: `translateY(${windowHeight - progress * windowHeight}px)`
+      };
     }
+
+    // Slides above
     if (index < activeIndex) {
       return { transform: `translateY(${-windowHeight}px)` };
     }
+
+    // Slides below
     return { transform: `translateY(${windowHeight}px)` };
   };
 
-  // ================= PRELOAD EVERYTHING + BLOCK SCROLL =================
+
+
+
+
+
+
+  let current = 0;
+  let target = 0;
+  let isVisible = false;
+
   useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting;
+      },
+      { threshold: 0.3 }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    const handleScroll = () => {
+      if (!sectionRef.current || !isVisible) return;
+
+      const rect = sectionRef.current.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+
+      const progress = (windowHeight - rect.top) / windowHeight;
+      const clamped = Math.max(0, Math.min(progress, 1));
+
+      target = clamped * 40; // max movement 40px
+    };
+
+    const animate = () => {
+      if (isVisible) {
+        current += (target - current) * 0.08;
+
+        if (imageRef.current) {
+          imageRef.current.style.transform = `translateY(${current}px)`;
+        }
+      }
+
+      requestAnimationFrame(animate);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    animate();
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      observer.disconnect();
+    };
+  }, []);
+
+  /* ================= INIT ================= */
+   useEffect(() => {
     AOS.init({ duration: 800, once: false });
     setWindowHeight(window.innerHeight);
 
@@ -1415,7 +936,7 @@ function Open() {
     };
   }, []);
 
-  // ================= SMOOTH SCROLL (unchanged) =================
+  /* ================= SMOOTH SCROLL ================= */
   useEffect(() => {
     let ticking = false;
 
@@ -1430,13 +951,16 @@ function Open() {
     };
 
     window.addEventListener("scroll", handleScroll);
-    window.addEventListener("resize", () => setWindowHeight(window.innerHeight));
+    window.addEventListener("resize", () =>
+      setWindowHeight(window.innerHeight)
+    );
 
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
-  // ================= LOADING SCREEN (scroll completely blocked) =================
-  if (!assetsLoaded) {
+if (!assetsLoaded) {
     return (
       <div className="fixed inset-0 bg-[#fff5f1] flex flex-col items-center justify-center z-[9999]">
         <div className="text-[#b68d33] font-bold text-3xl mb-10 tracking-[4px]">
@@ -1462,8 +986,12 @@ function Open() {
   // ================= MAIN UI (only rendered after ALL assets loaded) =================
   const firstSectionScroll = Math.min(scrollY, windowHeight);
 
+
   return (
-    <div className={`relative ${open ? "min-h-[700vh]" : "h-screen overflow-hidden"}`}>
+    <div
+      className={`relative  ${open ? "min-h-[700vh]" : "h-screen overflow-hidden"
+        }` }
+    >
       {/* ================= FIRST SECTION ================= */}
       <div
         className="sticky top-0 max-top-[-75px] h-screen w-full overflow-hidden bg-white"
@@ -1473,20 +1001,25 @@ function Open() {
         <img
           src="/1st bg imjage.svg"
           className="absolute w-full h-full object-contain"
-          style={{ ...getSection3Style(0), maxBlockSize: "fit-content" }}
+          style={{...getSection3Style(0), maxBlockSize:"fit-content",}}
         />
 
         {/* Front */}
         <img
           src="/1st front.svg"
           className="absolute w-full h-full object-contain"
-          style={getSection3Style(0)}
+           style={getSection3Style(0)}
         />
-
         <img
           src="/logo 1.svg"
           className="absolute w-[122px] h-[100px] object-contain top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]"
-          style={getSection3Style(0)}
+        // style={{
+        //   transform: open
+        //     ? `translateY(-${firstSectionScroll * 0.7}px)`
+        //     : "translateY(0px)",
+        //   transition: "transform 0.3s linear",
+        // }}
+         style={getSection3Style(0)}
         />
 
         {/* Bottom */}
@@ -1494,15 +1027,21 @@ function Open() {
           src="/1stbottom.svg"
           className="absolute w-full h-full object-contain top-[50px]"
           style={{
-            transform: open ? `translateY(-${firstSectionScroll}px)` : "translateY(0px)",
+            transform: open
+              ? `translateY(-${firstSectionScroll}px)`
+              : "translateY(0px)",
+            // transition: "transform 0.3s linear",
           }}
+          
         />
 
         {/* OPEN BOTTOM */}
         <img
           src="/openbottom.svg"
           className="absolute w-full h-[100vh] [@media(min-width:320px)_and_(max-width:339px)]:h-[89vh] object-contain z-10 transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)]"
-          style={{ transform: open ? "translateY(700px)" : "translateY(0px)" }}
+          style={{
+            transform: open ? "translateY(700px)" : "translateY(0px)",
+          }}
         />
 
         {/* OPEN UP (3D FLIP) */}
@@ -1510,151 +1049,288 @@ function Open() {
           <img
             src="/openup.svg"
             onClick={() => setOpen(true)}
-            className="w-full h-[100vh] [@media(min-width:320px)_and_(max-width:339px)]:h-[89vh] object-contain"
+            className="w-full h-[100vh] [@media(min-width:320px)_and_(max-width:339px)]:h-[89vh] object-contain "
             style={{
               transform: open ? "rotateX(-170deg)" : "rotateX(0deg)",
               transformOrigin: "top",
               backfaceVisibility: "hidden",
-              maxBlockSize: "fit-content",
-              transition: "transform 1200ms cubic-bezier(0.22, 1, 0.36, 1)",
-              boxShadow: open ? "0px 40px 60px rgba(0,0,0,0.4)" : "none",
+              maxBlockSize:"fit-content",
+              transition:
+                "transform 1200ms cubic-bezier(0.22, 1, 0.36, 1)",
+              boxShadow: open
+                ? "0px 40px 60px rgba(0,0,0,0.4)"
+                : "none",
             }}
           />
+
         </div>
       </div>
 
-      {/* ================= OTHER SECTIONS (only after open) ================= */}
+      {/* ================= OTHER SECTIONS ================= */}
       {open && (
         <>
           {/* SECTION 2 */}
-          <div className="h-screen [@media(min-width:320px)_and_(max-width:339px)]:h-[89vh] [@media(min-width:340px)_and_(max-width:375px)]:h-[100vh] w-full bg-[#5b3525] relative overflow-hidden">
-            {!section2Loaded && (
-              <div className="absolute inset-0 flex items-center justify-center text-white">
-                Loading...
-              </div>
-            )}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
+            }}
+          >
+           
+           <div className="h-screen [@media(min-width:320px)_and_(max-width:339px)]:h-[89vh]     [@media(min-width:340px)_and_(max-width:375px)]:h-[100vh]   [@media(min-width:320px)_and_(max-width:425px)]:w-[360px]   w-full  bg-[#5b3525] relative overflow-hidden">
+              {!section2Loaded && (
+                <div className="absolute inset-0 flex items-center justify-center text-white">
+                  Loading...
+                </div>
+              )}
 
-            <img
-              src="/slidesecond.svg"
-              loading="lazy"
-              onLoad={() => setSection2Loaded(true)}
-              className={`w-full h-screen absolute top-[-36px] xs:top-[-36px] sm:top-[-27px] transition-opacity duration-500 ${section2Loaded ? "opacity-100" : "opacity-0"}`}
-            />
+             <img
+  src="/slidesecond.svg"
+  loading="lazy"
+  onLoad={() => setSection2Loaded(true)}
+  className={`w-full h-screen  absolute 
+   top-[-36px] xs:top-[-36px] sm:top-[-27px] 
+    transition-opacity duration-500 
+    ${section2Loaded ? "opacity-100" : "opacity-0"}
+  `}
+/>
+              <div className=" flex items-center justify-center bg-[#5b3525] px-6">
+                <div className="max-w-[380px] text-center text-[#f2c46d] mt-[84px] ">
 
-            <div className="flex items-center justify-center bg-[#5b3525] px-6">
-              <div className="max-w-[380px] text-center text-[#f2c46d] mt-[84px]">
-                <h2 className="text-l md:text-xl font-semibold leading-tight">Sandhya &amp; Anil Bahadure</h2>
-                <p className="mt-[3px] text-sm leading-relaxed text-[#f6d38b]">
-                  Await your presence for the wedding celebrations of their daughter
-                </p>
-                <h1 className="mt-[14px] text-4xl font-bold tracking-wide">Shreya</h1>
-                <p className="mt-[4px] text-xl text-[#f6d38b]">with</p>
-                <h1 className="text-4xl font-bold tracking-wide">Naivedya</h1>
-                <p className="mt-6 text-sm text-[#f6d38b]">Son of</p>
-                <h2 className="text-l md:text-xl font-semibold">Kamlesh Joshi</h2>
+                  {/* Parents */}
+                  <h2 className="text-l md:text-xl font-semibold leading-tight ">
+                    Sandhya & <br /> Anil Bahadure
+                  </h2>
+
+                  {/* Sub text */}
+                  <p className="mt-[3px] text-sm leading-relaxed text-[#f6d38b]">
+                    Await your presence for <br />
+                    the wedding celebrations <br />
+                    of their daughter
+                  </p>
+
+                  {/* Bride Name */}
+                  <h1 className="mt-[14px] text-4xl font-bold tracking-wide">
+                    Shreya
+                  </h1>
+
+                  {/* With */}
+                  <p className="mt-[4px] text-xl text-[#f6d38b]">
+                    with
+                  </p>
+
+                  {/* Groom Name */}
+                  <h1 className="text-4xl font-bold tracking-wide">
+                    Naivedya
+                  </h1>
+
+                  {/* Son of */}
+                  <p className="mt-6 text-sm text-[#f6d38b]">
+                    Son of
+                  </p>
+
+                  {/* Father */}
+                  <h2 className="text-l md:text-xl font-semibold">
+                    Kamlesh Joshi
+                  </h2>
+
+                </div>
               </div>
             </div>
           </div>
 
           {/* SECTION 3 */}
-          <div ref={section3Ref} className="h-screen [@media(min-width:320px)_and_(max-width:339px)]:h-[89vh] [@media(min-width:340px)_and_(max-width:375px)]:h-[100vh] w-full relative overflow-hidden">
-            <img src="/3rd slide bg.svg" loading="lazy" className="w-full h-full object-contain" data-aos="fade-up" />
+          <div
+            ref={section3Ref}
+            className="h-screen [@media(min-width:320px)_and_(max-width:339px)]:h-[89vh]      [@media(min-width:340px)_and_(max-width:375px)]:h-[100vh]  w-full relative overflow-hidden"
+          >
+            <img
+              src="/3rd slide bg.svg"
+              loading="lazy"
+              className="w-full h-full object-contain"
+              data-aos="fade-up"
+            />
 
-            <img src="/3rd slide top.svg" className="absolute w-full h-[88vh] object-contain top-[-279px]" style={{ transitionDelay: "0.1s" }} />
+            <img
+              src="/3rd slide top.svg"
 
-            <img src="/3rd slide second.svg" className="absolute w-full h-[88vh] object-contain top-[108px]" style={getSection3Style(0)} />
+              className={`absolute w-full h-[88vh] object-contain top-[-279px] fade-up ${visible ? "show" : ""}`}
+              style={{ transitionDelay: "0.1s" }}
+            />
 
-            <img src="/3rd slide4.svg" className="absolute w-full h-[88vh] object-contain top-[100px]" style={{ transitionDelay: "0.3s" }} />
+            <img
+              src="/3rd slide second.svg"
+              className="absolute w-full h-[88vh] object-contain top-[108px]"
+              style={getSection3Style(0)}
+            />
 
-            <img src="/3rd slide3.svg" className="absolute w-full h-[88vh] object-contain top-[100px]" style={{ transitionDelay: "0.4s" }} />
+            <img
+              src="/3rd slide4.svg"
+
+              className={`absolute w-full h-[88vh] object-contain top-[100px] fade-up ${visible ? "show" : ""}`}
+              style={{ transitionDelay: "0.3s" }}
+            />
+            <img
+              src="/3rd slide3.svg"
+
+              className={`absolute w-full h-[88vh] object-contain top-[100px] fade-up ${visible ? "show" : ""}`}
+              style={{ transitionDelay: "0.4s" }}
+            />
 
             <img
               src="/3rd slide bottom.svg"
               className="absolute w-full h-[88vh] object-contain top-[276px]"
               style={{
-                transform: scrollY < section3Start ? "translateY(0px)" : `translateY(${-section3Progress * windowHeight}px)`,
-                opacity: scrollY < section3Start ? 1 : 1 - section3Progress,
-                transition: "transform 0.1s linear, opacity 0.1s linear",
+                transform: scrollY < section3Start
+                  ? "translateY(0px)"
+                  : `translateY(${-section3Progress * windowHeight}px)`,
+                opacity: scrollY < section3Start
+                  ? 1
+                  : 1 - section3Progress, // fade out as scroll progresses
+                transition: "transform 0.1s linear, opacity 0.1s linear"
               }}
             />
+
           </div>
 
           {/* SECTION 4 */}
           <div className="relative h-[400vh] w-full">
-            <div className="sticky top-0 h-screen [@media(min-width:320px)_and_(max-width:339px)]:h-[89vh] [@media(min-width:340px)_and_(max-width:375px)]:h-[100vh] w-full">
+            <div className="sticky top-0 h-screen [@media(min-width:320px)_and_(max-width:339px)]:h-[89vh]      [@media(min-width:340px)_and_(max-width:375px)]:h-[100vh]   w-full">
               <h2 className="absolute top-[7%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[#f3c53c] text-4xl font-bold z-10">Events</h2>
-              <img src="bg 4 section.svg" loading="lazy" className="absolute w-full h-full object-contain" style={{ maxBlockSize: "fit-content" }} />
+              <img
+                src="bg 4 section.svg"
+                loading="lazy"
+                style={{ maxBlockSize:"fit-content", }}
+                className="absolute w-full h-full object-contain"
+              />
 
-              {/* Slide 1 */}
-              <div className="absolute inset-0 flex items-center justify-center" style={getStyle(0)}>
-                <img src="/section 4 1.svg" className="absolute w-full h-[100vh] object-contain" />
-                <div className="flex items-center justify-center px-6">
-                  <div className="max-w-[380px] text-center mt-[52px] z-10">
-                    <p className="text-lg text-brown-700">Day 1</p>
-                    <p className="text-lg text-brown-700">03/05/26</p>
-                    <h2 className="text-3xl font-semibold text-orange-700 mt-[-4px]">Paritran</h2>
-                    <p className="text-lg text-orange-700">11 am</p>
-                    <h2 className="text-3xl font-semibold text-green-700 mt-[-6px]">Mehendi</h2>
-                    <p className="text-lg text-green-700">1 pm onwards</p>
-                    <p className="text-lg text-brown-700 mt-4">@Home</p>
+
+
+              <>
+                <div className="absolute inset-0 flex items-center justify-center" style={getStyle(0)}>
+                  <img
+                    src="/section 4 1.svg"
+                    className="absolute w-full h-[100vh] object-contain"
+
+                  />
+                  <div className=" flex items-center justify-center  px-6">
+                    <div className="max-w-[380px] text-center  mt-[52px] z-10">
+                      <p className="text-lg text-brown-700">Day 1</p>
+                      <p className="text-lg text-brown-700">03/05/26</p>
+
+                      <h2 className="text-3xl font-semibold text-orange-700 mt-[-4px]">
+                        Paritran
+                      </h2>
+                      <p className="text-lg text-orange-700">11 am</p>
+
+                      <h2 className="text-3xl font-semibold text-green-700 mt-[-6px]">
+                        Mehendi
+                      </h2>
+                      <p className="text-lg text-green-700">1 pm onwards</p>
+
+                      <p className="text-lg text-brown-700 mt-4">@Home</p>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Slide 2 */}
-              <div className="absolute inset-0 flex items-center justify-center" style={getStyle(1)}>
-                <img src="/section 4 2.svg" className="absolute w-full h-[100vh] object-contain" />
-                <div className="flex items-center justify-center px-6">
-                  <div className="max-w-[380px] text-center mt-[20px] z-10">
-                    <p className="text-lg text-brown-700">Day 2</p>
-                    <p className="text-lg text-brown-700">04/05/26</p>
-                    <h2 className="text-xl font-semibold text-[#c200b9] mt-[-4px]">Carnival Haldi Lunch</h2>
-                    <p className="text-lg text-[#c200b9]">12 pm</p>
-                    <h2 className="text-xl font-semibold text-green-700 mt-[-6px]">High Tea</h2>
-                    <p className="text-lg text-green-700">5 pm</p>
-                    <p className="text-lg text-brown-700 mt-2">@Mangli Lake Farm</p>
+                <div className="absolute inset-0 flex items-center justify-center" style={getStyle(1)}>
+                  <img
+                    src="/section 4 2.svg"
+                    className="absolute w-full h-[100vh] object-contain"
+
+                  />
+                  <div className=" flex items-center justify-center  px-6">
+                    <div className="max-w-[380px] text-center  mt-[20px] z-10">
+                      <p className="text-lg text-brown-700">Day 2</p>
+                      <p className="text-lg text-brown-700">04/05/26</p>
+
+                      <h2 className="text-xl font-semibold text-[#c200b9] mt-[-4px]">
+                        Carnival Haldi<br /> Lunch
+                      </h2>
+                      <p className="text-lg text-[#c200b9]">12 pm</p>
+
+                      <h2 className="text-xl font-semibold text-green-700 mt-[-6px]">
+                        High Tea
+                      </h2>
+                      <p className="text-lg text-green-700">5 pm </p>
+
+                      <p className="text-lg text-brown-700 mt-2">@Mangli Lake <br /> Farm</p>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Slide 3 */}
-              <div className="absolute inset-0 flex items-center justify-center" style={getStyle(2)}>
-                <img src="/section 4 3.svg" className="absolute w-full h-[100vh] object-contain" />
-                <div className="flex items-center justify-center px-6">
-                  <div className="max-w-[380px] text-center mt-[20px] z-10">
-                    <p className="text-lg text-brown-700">Day 2</p>
-                    <p className="text-lg text-brown-700">04/05/26</p>
-                    <h2 className="text-2xl font-bold text-[#2b2b9a] mt-[-4px]">Sangeet</h2>
-                    <p className="text-lg text-[#2b2b9a]">7 pm onwards</p>
-                    <p className="text-lg text-brown-700 mt-2">@Mangli Lake Farm</p>
+                <div className="absolute inset-0 flex items-center justify-center" style={getStyle(2)}>
+                  <img
+                    src="/section 4 3.svg"
+                    className="absolute w-full h-[100vh] object-contain"
+
+                  />
+                  <div className=" flex items-center justify-center  px-6">
+                    <div className="max-w-[380px] text-center  mt-[20px] z-10">
+                      <p className="text-lg text-brown-700">Day 2</p>
+                      <p className="text-lg text-brown-700">04/05/26</p>
+
+                      <h2 className="text-2xl font-bold text-[#2b2b9a] mt-[-4px]">
+                        Sangeet
+                      </h2>
+                      <p className="text-lg text-[#2b2b9a]">7 pm onwards</p>
+
+                      
+
+                      <p className="text-lg text-brown-700 mt-2">@Mangli Lake <br /> Farm</p>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Slide 4 */}
-              <div className="absolute inset-0 flex items-center justify-center" style={getStyle(3)}>
-                <img src="/section 4 3.svg" className="absolute w-full h-[100vh] object-contain" />
-                <div className="flex items-center justify-center px-6">
-                  <div className="max-w-[380px] text-center mt-[20px] z-10">
-                    <p className="text-lg text-brown-700">Day 3</p>
-                    <p className="text-lg text-brown-700">05/05/26</p>
-                    <h2 className="text-2xl font-bold text-[#cc4949] mt-[-4px]">Buddhist Wedding</h2>
-                    <p className="text-lg text-orange-700">12 pm onward</p>
-                    <p className="text-lg text-brown-700 mt-2">@Mangli Lake Farm</p>
+                <div className="absolute inset-0 flex items-center justify-center" style={getStyle(3)}>
+                  <img
+                    src="/section 4 3.svg"
+                    className="absolute w-full h-[100vh] object-contain"
+
+                  />
+                  <div className=" flex items-center justify-center  px-6">
+                    <div className="max-w-[380px] text-center  mt-[20px] z-10">
+                      <p className="text-lg text-brown-700">Day 3</p>
+                      <p className="text-lg text-brown-700">05/05/26</p>
+
+                      <h2 className="text-2xl font-bold text-[#cc4949] mt-[-4px]">
+                       Buddhist <br/> Wedding
+                      </h2>
+                      <p className="text-lg text-orange-700">12 pm onward</p>
+
+                      
+
+                      <p className="text-lg text-brown-700 mt-2">@Mangli Lake <br /> Farm</p>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </>
             </div>
           </div>
 
           {/* SECTION 5 */}
-          <div className="h-screen [@media(min-width:320px)_and_(max-width:339px)]:h-[89vh] [@media(min-width:340px)_and_(max-width:375px)]:h-[100vh] w-full relative">
-            <img src="section 5 final screen.svg" loading="lazy" className="w-full h-full object-contain" style={{ maxBlockSize: "fit-content" }} />
+          <div className="h-screen [@media(min-width:320px)_and_(max-width:339px)]:h-[89vh] [@media(min-width:340px)_and_(max-width:375px)]:h-[100vh]  w-full relative">
+            <img
+              src="section 5 final screen.svg"
+              loading="lazy"
+              
+                style={{ maxBlockSize:"fit-content", }}
+              className="w-full h-full object-contain"
+            />
           </div>
 
           {/* FINAL */}
-          <div className="h-screen w-full [@media(min-width:320px)_and_(max-width:339px)]:h-[89vh] [@media(min-width:340px)_and_(max-width:375px)]:h-[100vh] relative">
-            <img src="final.svg" loading="lazy" className="w-full h-full object-contain" style={{ maxBlockSize: "fit-content" }} />
+          <div className="h-screen w-full [@media(min-width:320px)_and_(max-width:339px)]:h-[89vh]      [@media(min-width:340px)_and_(max-width:375px)]:h-[100vh]   relative">
+            <img
+              src="final.svg"
+              loading="lazy"
+              
+                style={{ maxBlockSize:"fit-content", }}
+              className="w-full h-full object-contain"
+            />
           </div>
         </>
       )}
@@ -1663,3 +1339,385 @@ function Open() {
 }
 
 export default Open;
+
+
+
+
+
+
+
+// "use client";
+// import { useEffect, useRef, useState } from "react";
+// import AOS from "aos";
+// import "aos/dist/aos.css";
+
+// function Open() {
+//   const sectionRef = useRef(null);
+//   const section3Ref = useRef(null);
+//   const [open, setOpen] = useState(false);
+//   const [section2Loaded, setSection2Loaded] = useState(false);
+//   const [scrollY, setScrollY] = useState(0);
+//   const [windowHeight, setWindowHeight] = useState(0);
+//   const [assetsLoaded, setAssetsLoaded] = useState(false);
+//   const [progress, setProgress] = useState(0);
+//   const [visible, setVisible] = useState(false);
+
+//   // ================= ALL IMAGES (preloaded before any scroll/render) =================
+//   const imageSources = [
+//     "/openup.svg",
+//     "/openbottom.svg",
+//     "/1st bg imjage.svg",
+//     "/1st front.svg",
+//     "/logo 1.svg",
+//     "/1stbottom.svg",
+//     "/slidesecond.svg",
+//     "/3rd slide bg.svg",
+//     "/3rd slide top.svg",
+//     "/3rd slide second.svg",
+//     "/3rd slide4.svg",
+//     "/3rd slide3.svg",
+//     "/3rd slide bottom.svg",
+//     "bg 4 section.svg",
+//     "/section 4 1.svg",
+//     "/section 4 2.svg",
+//     "/section 4 3.svg",
+//     "section 5 final screen.svg",
+//     "final.svg",
+//   ];
+
+//   // ================= Section 3 scroll math (unchanged) =================
+//   const section3Start = section3Ref.current?.offsetTop || 0;
+//   const section3Height = windowHeight * 2;
+//   const section3End = section3Start + section3Height;
+
+//   const section3Raw = scrollY - section3Start;
+//   const section3Scroll = Math.max(0, Math.min(section3Raw, section3Height));
+//   const section3Progress = section3Scroll / windowHeight;
+
+//   const getSection3Style = (index) => {
+//     if (scrollY < section3Start) return { transform: "translateY(0px)" };
+
+//     if (index === 0) {
+//       return { transform: `translateY(${-section3Progress * windowHeight}px)` };
+//     }
+//     if (index === 1) {
+//       return { transform: `translateY(${windowHeight - section3Progress * windowHeight}px)` };
+//     }
+//     return { transform: "translateY(0px)" };
+//   };
+
+//   // ================= Section 4 scroll math (unchanged) =================
+//   const sectionStart = windowHeight * 3;
+//   const raw = scrollY - sectionStart;
+//   const step = windowHeight;
+//   const max = step * 3;
+//   const scroll = Math.max(0, Math.min(raw, max));
+//   const activeIndex = Math.floor(scroll / step);
+//   const progressVal = (scroll % step) / step;
+
+//   const getStyle = (index) => {
+//     if (index === activeIndex) {
+//       return { transform: `translateY(${-progressVal * windowHeight}px)` };
+//     }
+//     if (index === activeIndex + 1) {
+//       return { transform: `translateY(${windowHeight - progressVal * windowHeight}px)` };
+//     }
+//     if (index < activeIndex) {
+//       return { transform: `translateY(${-windowHeight}px)` };
+//     }
+//     return { transform: `translateY(${windowHeight}px)` };
+//   };
+
+//   // ================= PRELOAD EVERYTHING + BLOCK SCROLL =================
+//   useEffect(() => {
+//     AOS.init({ duration: 800, once: false });
+//     setWindowHeight(window.innerHeight);
+
+//     // Block scroll immediately
+//     document.body.style.overflow = "hidden";
+
+//     let loadedCount = 0;
+//     const total = imageSources.length;
+
+//     const preloadPromises = imageSources.map((src) => {
+//       return new Promise((resolve) => {
+//         const img = new Image();
+//         img.src = src;
+
+//         img.onload = () => {
+//           loadedCount++;
+//           setProgress(Math.round((loadedCount / total) * 100));
+//           resolve();
+//         };
+
+//         img.onerror = () => {
+//           console.warn(`Image failed to load: ${src}`);
+//           loadedCount++;
+//           setProgress(Math.round((loadedCount / total) * 100));
+//           resolve(); // never block the user
+//         };
+
+//         // Safety timeout (max 4.5s per image)
+//         setTimeout(resolve, 4500);
+//       });
+//     });
+
+//     Promise.all(preloadPromises).then(() => {
+//       setAssetsLoaded(true);
+//       document.body.style.overflow = "auto"; // unlock scroll
+//     });
+
+//     // Cleanup
+//     return () => {
+//       document.body.style.overflow = "auto";
+//     };
+//   }, []);
+
+//   // ================= SMOOTH SCROLL (unchanged) =================
+//   useEffect(() => {
+//     let ticking = false;
+
+//     const handleScroll = () => {
+//       if (!ticking) {
+//         requestAnimationFrame(() => {
+//           setScrollY(window.scrollY);
+//           ticking = false;
+//         });
+//         ticking = true;
+//       }
+//     };
+
+//     window.addEventListener("scroll", handleScroll);
+//     window.addEventListener("resize", () => setWindowHeight(window.innerHeight));
+
+//     return () => window.removeEventListener("scroll", handleScroll);
+//   }, []);
+
+//   // ================= LOADING SCREEN (scroll completely blocked) =================
+//   if (!assetsLoaded) {
+//     return (
+//       <div className="fixed inset-0 bg-[#fff5f1] flex flex-col items-center justify-center z-[9999]">
+//         <div className="text-[#b68d33] font-bold text-3xl mb-10 tracking-[4px]">
+//           LOADING
+//         </div>
+
+//         <div className="w-80 h-1.5 bg-[#f8e4d0] rounded-full overflow-hidden">
+//           <div
+//             className="h-full bg-gradient-to-r from-[#b68d33] to-[#e8b56d] transition-all duration-300 ease-out"
+//             style={{ width: `${progress}%` }}
+//           />
+//         </div>
+
+//         <p className="mt-4 text-[#b68d33] font-medium text-xl">{progress}%</p>
+
+//         <p className="absolute bottom-12 text-[#c4a06a] text-sm tracking-widest">
+//           PREPARING YOUR INVITATION...
+//         </p>
+//       </div>
+//     );
+//   }
+
+//   // ================= MAIN UI (only rendered after ALL assets loaded) =================
+//   const firstSectionScroll = Math.min(scrollY, windowHeight);
+
+//   return (
+//     <div className={`relative ${open ? "min-h-[700vh]" : "h-screen overflow-hidden"}`}>
+//       {/* ================= FIRST SECTION ================= */}
+//       <div
+//         className="sticky top-0 max-top-[-75px] h-screen w-full overflow-hidden bg-white"
+//         style={{ perspective: "1400px" }}
+//       >
+//         {/* Background */}
+//         <img
+//           src="/1st bg imjage.svg"
+//           className="absolute w-full h-full object-contain"
+//           style={{ ...getSection3Style(0), maxBlockSize: "fit-content" }}
+//         />
+
+//         {/* Front */}
+//         <img
+//           src="/1st front.svg"
+//           className="absolute w-full h-full object-contain"
+//           style={getSection3Style(0)}
+//         />
+
+//         <img
+//           src="/logo 1.svg"
+//           className="absolute w-[122px] h-[100px] object-contain top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]"
+//           style={getSection3Style(0)}
+//         />
+
+//         {/* Bottom */}
+//         <img
+//           src="/1stbottom.svg"
+//           className="absolute w-full h-full object-contain top-[50px]"
+//           style={{
+//             transform: open ? `translateY(-${firstSectionScroll}px)` : "translateY(0px)",
+//           }}
+//         />
+
+//         {/* OPEN BOTTOM */}
+//         <img
+//           src="/openbottom.svg"
+//           className="absolute w-full h-[100vh] [@media(min-width:320px)_and_(max-width:339px)]:h-[89vh] object-contain z-10 transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)]"
+//           style={{ transform: open ? "translateY(700px)" : "translateY(0px)" }}
+//         />
+
+//         {/* OPEN UP (3D FLIP) */}
+//         <div className="absolute inset-0 z-20 cursor-pointer">
+//           <img
+//             src="/openup.svg"
+//             onClick={() => setOpen(true)}
+//             className="w-full h-[100vh] [@media(min-width:320px)_and_(max-width:339px)]:h-[89vh] object-contain"
+//             style={{
+//               transform: open ? "rotateX(-170deg)" : "rotateX(0deg)",
+//               transformOrigin: "top",
+//               backfaceVisibility: "hidden",
+//               maxBlockSize: "fit-content",
+//               transition: "transform 1200ms cubic-bezier(0.22, 1, 0.36, 1)",
+//               boxShadow: open ? "0px 40px 60px rgba(0,0,0,0.4)" : "none",
+//             }}
+//           />
+//         </div>
+//       </div>
+
+//       {/* ================= OTHER SECTIONS (only after open) ================= */}
+//       {open && (
+//         <>
+//           {/* SECTION 2 */}
+//           <div className="h-screen [@media(min-width:320px)_and_(max-width:339px)]:h-[89vh] [@media(min-width:340px)_and_(max-width:375px)]:h-[100vh] w-full bg-[#5b3525] relative overflow-hidden">
+//             {!section2Loaded && (
+//               <div className="absolute inset-0 flex items-center justify-center text-white">
+//                 Loading...
+//               </div>
+//             )}
+
+//             <img
+//               src="/slidesecond.svg"
+//               loading="lazy"
+//               onLoad={() => setSection2Loaded(true)}
+//               className={`w-full h-screen absolute top-[-36px] xs:top-[-36px] sm:top-[-27px] transition-opacity duration-500 ${section2Loaded ? "opacity-100" : "opacity-0"}`}
+//             />
+
+//             <div className="flex items-center justify-center bg-[#5b3525] px-6">
+//               <div className="max-w-[380px] text-center text-[#f2c46d] mt-[84px]">
+//                 <h2 className="text-l md:text-xl font-semibold leading-tight">Sandhya &amp; Anil Bahadure</h2>
+//                 <p className="mt-[3px] text-sm leading-relaxed text-[#f6d38b]">
+//                   Await your presence for the wedding celebrations of their daughter
+//                 </p>
+//                 <h1 className="mt-[14px] text-4xl font-bold tracking-wide">Shreya</h1>
+//                 <p className="mt-[4px] text-xl text-[#f6d38b]">with</p>
+//                 <h1 className="text-4xl font-bold tracking-wide">Naivedya</h1>
+//                 <p className="mt-6 text-sm text-[#f6d38b]">Son of</p>
+//                 <h2 className="text-l md:text-xl font-semibold">Kamlesh Joshi</h2>
+//               </div>
+//             </div>
+//           </div>
+
+//           {/* SECTION 3 */}
+//           <div ref={section3Ref} className="h-screen [@media(min-width:320px)_and_(max-width:339px)]:h-[89vh] [@media(min-width:340px)_and_(max-width:375px)]:h-[100vh] w-full relative overflow-hidden">
+//             <img src="/3rd slide bg.svg" loading="lazy" className="w-full h-full object-contain" data-aos="fade-up" />
+
+//             <img src="/3rd slide top.svg" className="absolute w-full h-[88vh] object-contain top-[-279px]" style={{ transitionDelay: "0.1s" }} />
+
+//             <img src="/3rd slide second.svg" className="absolute w-full h-[88vh] object-contain top-[108px]" style={getSection3Style(0)} />
+
+//             <img src="/3rd slide4.svg" className="absolute w-full h-[88vh] object-contain top-[100px]" style={{ transitionDelay: "0.3s" }} />
+
+//             <img src="/3rd slide3.svg" className="absolute w-full h-[88vh] object-contain top-[100px]" style={{ transitionDelay: "0.4s" }} />
+
+//             <img
+//               src="/3rd slide bottom.svg"
+//               className="absolute w-full h-[88vh] object-contain top-[276px]"
+//               style={{
+//                 transform: scrollY < section3Start ? "translateY(0px)" : `translateY(${-section3Progress * windowHeight}px)`,
+//                 opacity: scrollY < section3Start ? 1 : 1 - section3Progress,
+//                 transition: "transform 0.1s linear, opacity 0.1s linear",
+//               }}
+//             />
+//           </div>
+
+//           {/* SECTION 4 */}
+//           <div className="relative h-[400vh] w-full">
+//             <div className="sticky top-0 h-screen [@media(min-width:320px)_and_(max-width:339px)]:h-[89vh] [@media(min-width:340px)_and_(max-width:375px)]:h-[100vh] w-full">
+//               <h2 className="absolute top-[7%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[#f3c53c] text-4xl font-bold z-10">Events</h2>
+//               <img src="bg 4 section.svg" loading="lazy" className="absolute w-full h-full object-contain" style={{ maxBlockSize: "fit-content" }} />
+
+//               {/* Slide 1 */}
+//               <div className="absolute inset-0 flex items-center justify-center" style={getStyle(0)}>
+//                 <img src="/section 4 1.svg" className="absolute w-full h-[100vh] object-contain" />
+//                 <div className="flex items-center justify-center px-6">
+//                   <div className="max-w-[380px] text-center mt-[52px] z-10">
+//                     <p className="text-lg text-brown-700">Day 1</p>
+//                     <p className="text-lg text-brown-700">03/05/26</p>
+//                     <h2 className="text-3xl font-semibold text-orange-700 mt-[-4px]">Paritran</h2>
+//                     <p className="text-lg text-orange-700">11 am</p>
+//                     <h2 className="text-3xl font-semibold text-green-700 mt-[-6px]">Mehendi</h2>
+//                     <p className="text-lg text-green-700">1 pm onwards</p>
+//                     <p className="text-lg text-brown-700 mt-4">@Home</p>
+//                   </div>
+//                 </div>
+//               </div>
+
+//               {/* Slide 2 */}
+//               <div className="absolute inset-0 flex items-center justify-center" style={getStyle(1)}>
+//                 <img src="/section 4 2.svg" className="absolute w-full h-[100vh] object-contain" />
+//                 <div className="flex items-center justify-center px-6">
+//                   <div className="max-w-[380px] text-center mt-[20px] z-10">
+//                     <p className="text-lg text-brown-700">Day 2</p>
+//                     <p className="text-lg text-brown-700">04/05/26</p>
+//                     <h2 className="text-xl font-semibold text-[#c200b9] mt-[-4px]">Carnival Haldi Lunch</h2>
+//                     <p className="text-lg text-[#c200b9]">12 pm</p>
+//                     <h2 className="text-xl font-semibold text-green-700 mt-[-6px]">High Tea</h2>
+//                     <p className="text-lg text-green-700">5 pm</p>
+//                     <p className="text-lg text-brown-700 mt-2">@Mangli Lake Farm</p>
+//                   </div>
+//                 </div>
+//               </div>
+
+//               {/* Slide 3 */}
+//               <div className="absolute inset-0 flex items-center justify-center" style={getStyle(2)}>
+//                 <img src="/section 4 3.svg" className="absolute w-full h-[100vh] object-contain" />
+//                 <div className="flex items-center justify-center px-6">
+//                   <div className="max-w-[380px] text-center mt-[20px] z-10">
+//                     <p className="text-lg text-brown-700">Day 2</p>
+//                     <p className="text-lg text-brown-700">04/05/26</p>
+//                     <h2 className="text-2xl font-bold text-[#2b2b9a] mt-[-4px]">Sangeet</h2>
+//                     <p className="text-lg text-[#2b2b9a]">7 pm onwards</p>
+//                     <p className="text-lg text-brown-700 mt-2">@Mangli Lake Farm</p>
+//                   </div>
+//                 </div>
+//               </div>
+
+//               {/* Slide 4 */}
+//               <div className="absolute inset-0 flex items-center justify-center" style={getStyle(3)}>
+//                 <img src="/section 4 3.svg" className="absolute w-full h-[100vh] object-contain" />
+//                 <div className="flex items-center justify-center px-6">
+//                   <div className="max-w-[380px] text-center mt-[20px] z-10">
+//                     <p className="text-lg text-brown-700">Day 3</p>
+//                     <p className="text-lg text-brown-700">05/05/26</p>
+//                     <h2 className="text-2xl font-bold text-[#cc4949] mt-[-4px]">Buddhist Wedding</h2>
+//                     <p className="text-lg text-orange-700">12 pm onward</p>
+//                     <p className="text-lg text-brown-700 mt-2">@Mangli Lake Farm</p>
+//                   </div>
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+
+//           {/* SECTION 5 */}
+//           <div className="h-screen [@media(min-width:320px)_and_(max-width:339px)]:h-[89vh] [@media(min-width:340px)_and_(max-width:375px)]:h-[100vh] w-full relative">
+//             <img src="section 5 final screen.svg" loading="lazy" className="w-full h-full object-contain" style={{ maxBlockSize: "fit-content" }} />
+//           </div>
+
+//           {/* FINAL */}
+//           <div className="h-screen w-full [@media(min-width:320px)_and_(max-width:339px)]:h-[89vh] [@media(min-width:340px)_and_(max-width:375px)]:h-[100vh] relative">
+//             <img src="final.svg" loading="lazy" className="w-full h-full object-contain" style={{ maxBlockSize: "fit-content" }} />
+//           </div>
+//         </>
+//       )}
+//     </div>
+//   );
+// }
+
+// export default Open;
