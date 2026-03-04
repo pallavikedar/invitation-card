@@ -1737,7 +1737,7 @@ function Open() {
           z-index: 30;
         }
         .env-flap.opened {
-          transform: rotateX(-175deg);
+          transform: rotateX(175deg);
         }
 
         /*
@@ -1745,20 +1745,32 @@ function Open() {
          * Slides straight down (translateY) out of viewport.
          * 200ms delay so flap starts first.
          */
-        .env-body {
-          position: absolute;
-          inset: 0;
-          width: 100%;
-          height: 100%;
-          transform: translateY(0%);
-          transition: transform 950ms cubic-bezier(0.4, 0, 0.2, 1) 200ms;
-          will-change: transform;
-          z-index: 20;
-          pointer-events: none;
-        }
-        .env-body.opened {
-          transform: translateY(110%);
-        }
+       .env-body {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+
+  /* 🔥 Hinge at bottom */
+  transform-origin: bottom center;
+
+  transform: rotateX(0deg);
+  transition: transform 1100ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  will-change: transform;
+
+  z-index: 20;
+  pointer-events: none;
+}
+
+.env-body.opened {
+  /* 🔥 Negative = top moves toward viewer */
+  transform: rotateX(-175deg);
+}
+          
+
 
         /* Subtle shimmer on the flap before tap */
         .env-flap::after {
@@ -1771,20 +1783,20 @@ function Open() {
           animation: shimmer-move 3.2s linear infinite;
         }
         @keyframes shimmer-move {
-          0%   { background-position: -220% center; }
+          0%   { background-position: 220% center; }
           100% { background-position: 220% center; }
         }
 
         /* Tap hint */
         @keyframes tap-float {
           0%, 100% { transform: translateX(-50%) translateY(0);   opacity: 0.55; }
-          50%       { transform: translateX(-50%) translateY(-9px); opacity: 1; }
+          50%       { transform: translateX(50%) translateY(-9px); opacity: 1; }
         }
         .tap-hint {
           position: absolute;
           bottom: 28px;
           left: 50%;
-          transform: translateX(-50%);
+          transform: translateX(50%);
           z-index: 40;
           pointer-events: none;
           animation: tap-float 2s ease-in-out infinite;
@@ -1815,6 +1827,7 @@ function Open() {
         <div
           className="sticky top-0 h-screen w-full overflow-hidden"
           style={{ background: "linear-gradient(160deg,#fff8f0 0%,#fdecd8 55%,#f5d5b8 100%)" }}
+          data-aos="fade-up" data-aos-duration="700"
         >
           {/* First section content — fades in as envelope opens */}
           <img
@@ -1822,12 +1835,14 @@ function Open() {
             className="absolute inset-0 w-full h-full object-cover"
             style={{ ...getSection3Style(0), opacity: open ? 1 : 0, transition: "opacity 0.7s ease 1.3s" }}
             alt=""
+            data-aos="fade-up" data-aos-duration="700"
           />
           <img
             src="/1st front.svg"
             className="absolute inset-0 w-full h-full object-cover"
             style={{ ...getSection3Style(0), opacity: open ? 1 : 0, transition: "opacity 0.7s ease 1.45s" }}
             alt=""
+            data-aos="fade-up" data-aos-duration="1500"
           />
           <img
             src="/logo 1.svg"
@@ -1841,6 +1856,7 @@ function Open() {
               transition: "opacity 0.6s ease 1.55s",
             }}
             alt="Logo"
+            data-aos="fade-up" data-aos-duration="1800"
           />
           <img
             src="/1stbottom.svg"
@@ -1852,6 +1868,7 @@ function Open() {
               transform: open ? `translateY(-${firstSectionScroll}px)` : "translateY(0px)",
             }}
             alt=""
+            data-aos="fade-up" data-aos-duration="1800"
           />
 
           {/* ── ENVELOPE ── */}
