@@ -1312,7 +1312,7 @@ if (!assetsLoaded) {
           </div>
 
           {/* SECTION 5 */}
-          <div className="h-screen  w-[88vh] relative">
+          <div className="h-[88vh]  w-full relative">
             <img
               src="section 5 final screen.svg"
               loading="lazy"
@@ -1323,7 +1323,7 @@ if (!assetsLoaded) {
           </div>
 
           {/* FINAL */}
-          <div className="h-screen w-[88vh]  relative">
+          <div className="h-[88vh] w-full relative">
             <img
               src="final.svg"
               loading="lazy"
