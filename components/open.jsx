@@ -1038,7 +1038,7 @@ if (!assetsLoaded) {
         {/* OPEN BOTTOM */}
         <img
           src="/openbottom.svg"
-          className="absolute w-full h-[100vh] [@media(min-width:315px)_and_(max-width:339px)]:h-[88vh] [@media(min-width:0px)_and_(max-width:314px)]:h-[83vh] object-contain z-10 transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)]"
+          className="absolute w-full h-[88vh]  object-contain z-10 transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)]"
           style={{
             transform: open ? "translateY(700px)" : "translateY(0px)",
           }}
@@ -1049,7 +1049,7 @@ if (!assetsLoaded) {
           <img
             src="/openup.svg"
             onClick={() => setOpen(true)}
-            className="w-full h-[100vh] [@media(min-width:315px)_and_(max-width:339px)]:h-[88vh] [@media(min-width:0px)_and_(max-width:314px)]:h-[83vh] object-contain "
+            className="w-full h-[88vh]  object-contain "
             style={{
               transform: open ? "rotateX(-170deg)" : "rotateX(0deg)",
               transformOrigin: "top",
@@ -1080,7 +1080,7 @@ if (!assetsLoaded) {
             }}
           >
            
-           <div className="h-screen    [@media(min-width:0px)_and_(max-width:314px)]:h-[83vh] [@media(min-width:315px)_and_(max-width:345px)]:h-[88vh]     [@media(min-width:346px)_and_(max-width:375px)]:h-[100vh]   [@media(min-width:320px)_and_(max-width:425px)]:w-[360px]   w-full  bg-[#5b3525] relative overflow-hidden">
+           <div className="h-[88vh]  w-full  bg-[#5b3525] relative overflow-hidden">
               {!section2Loaded && (
                 <div className="absolute inset-0 flex items-center justify-center text-white">
                   Loading...
@@ -1145,7 +1145,7 @@ if (!assetsLoaded) {
           {/* SECTION 3 */}
           <div
             ref={section3Ref}
-            className="h-screen   [@media(min-width:0px)_and_(max-width:314px)]:h-[83vh] [@media(min-width:315px)_and_(max-width:345px)]:h-[88vh]      [@media(min-width:346px)_and_(max-width:375px)]:h-[100vh]  w-full relative overflow-hidden"
+            className="h-[88vh] w-full relative overflow-hidden"
           >
             <img
               src="/3rd slide bg.svg"
@@ -1198,7 +1198,7 @@ if (!assetsLoaded) {
 
           {/* SECTION 4 */}
           <div className="relative h-[400vh] w-full">
-            <div className="sticky top-0 h-screen  [@media(min-width:0px)_and_(max-width:314px)]:h-[83vh] [@media(min-width:315px)_and_(max-width:345px)]:h-[88vh]      [@media(min-width:346px)_and_(max-width:375px)]:h-[100vh]   w-full">
+            <div className="sticky top-0 h-[88vh] w-full">
               <h2 className="absolute top-[7%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[#f3c53c] text-4xl font-bold z-10">Events</h2>
               <img
                 src="bg 4 section.svg"
@@ -1312,7 +1312,7 @@ if (!assetsLoaded) {
           </div>
 
           {/* SECTION 5 */}
-          <div className="h-screen [@media(min-width:0px)_and_(max-width:314px)]:h-[83vh] [@media(min-width:315px)_and_(max-width:345px)]:h-[88vh] [@media(min-width:346px)_and_(max-width:375px)]:h-[100vh]  w-full relative">
+          <div className="h-screen  w-[88vh] relative">
             <img
               src="section 5 final screen.svg"
               loading="lazy"
@@ -1323,7 +1323,7 @@ if (!assetsLoaded) {
           </div>
 
           {/* FINAL */}
-          <div className="h-screen w-full [@media(min-width:0px)_and_(max-width:314px)]:h-[83vh] [@media(min-width:315px)_and_(max-width:345px)]:h-[88vh]      [@media(min-width:346px)_and_(max-width:375px)]:h-[100vh]   relative">
+          <div className="h-screen w-[88vh]  relative">
             <img
               src="final.svg"
               loading="lazy"
@@ -1339,6 +1339,7 @@ if (!assetsLoaded) {
 }
 
 export default Open;
+// [@media(min-width:0px)_and_(max-width:314px)]:h-[83vh] [@media(min-width:315px)_and_(max-width:345px)]:h-[88vh]      [@media(min-width:346px)_and_(max-width:375px)]:h-[100vh] 
 
 
 
