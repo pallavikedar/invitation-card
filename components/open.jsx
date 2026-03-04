@@ -1021,25 +1021,29 @@ function Open() {
               width: "100%",
             }}
           >
-           <div className="h-screen w-full max-w-[360px] bg-[#593838] relative overflow-hidden">
+           
+           <div className="h-screen [@media(width:320px)]:h-[88vh]     [@media(min-width:320px)_and_(max-width:375px)]:h-[100vh]   w-full max-w-[360px] bg-[#5b3525] relative overflow-hidden">
               {!section2Loaded && (
                 <div className="absolute inset-0 flex items-center justify-center text-white">
                   Loading...
                 </div>
               )}
 
-              <img
-                src="/slidesecond.svg"
-                loading="lazy"
-                onLoad={() => setSection2Loaded(true)}
-                className={`w-full h-full object-contain absolute top-[-27px] transition-opacity duration-500 ${section2Loaded ? "opacity-100" : "opacity-0"
-                  }`}
-              />
-              <div className="min-h-screen flex items-center justify-center bg-[#5b3525] px-6">
-                <div className="max-w-[380px] text-center text-[#f2c46d] mt-[-190px]">
+             <img
+  src="/slidesecond.svg"
+  loading="lazy"
+  onLoad={() => setSection2Loaded(true)}
+  className={`w-full h-screen  absolute 
+   top-[-36px] xs:top-[-36px] sm:top-[-27px] 
+    transition-opacity duration-500 
+    ${section2Loaded ? "opacity-100" : "opacity-0"}
+  `}
+/>
+              <div className=" flex items-center justify-center bg-[#5b3525] px-6">
+                <div className="max-w-[380px] text-center text-[#f2c46d] mt-[84px] ">
 
                   {/* Parents */}
-                  <h2 className="text-xl md:text-3xl font-semibold leading-tight ">
+                  <h2 className="text-l md:text-xl font-semibold leading-tight ">
                     Sandhya & <br /> Anil Bahadure
                   </h2>
 
@@ -1051,7 +1055,7 @@ function Open() {
                   </p>
 
                   {/* Bride Name */}
-                  <h1 className="mt-[14px] text-5xl font-bold tracking-wide">
+                  <h1 className="mt-[14px] text-4xl font-bold tracking-wide">
                     Shreya
                   </h1>
 
@@ -1061,7 +1065,7 @@ function Open() {
                   </p>
 
                   {/* Groom Name */}
-                  <h1 className="text-5xl font-bold tracking-wide">
+                  <h1 className="text-4xl font-bold tracking-wide">
                     Naivedya
                   </h1>
 
@@ -1071,7 +1075,7 @@ function Open() {
                   </p>
 
                   {/* Father */}
-                  <h2 className="text-xl font-semibold">
+                  <h2 className="text-l md:text-xl font-semibold">
                     Kamlesh Joshi
                   </h2>
 
@@ -1083,7 +1087,7 @@ function Open() {
           {/* SECTION 3 */}
           <div
             ref={section3Ref}
-            className="h-screen w-full relative overflow-hidden"
+            className="h-screen [@media(width:320px)]:h-[88vh]     [@media(min-width:320px)_and_(max-width:375px)]:h-[100vh]  w-full relative overflow-hidden"
           >
             <img
               src="/3rd slide bg.svg"
@@ -1136,7 +1140,7 @@ function Open() {
 
           {/* SECTION 4 */}
           <div className="relative h-[400vh] w-full">
-            <div className="sticky top-0 h-screen w-full">
+            <div className="sticky top-0 h-screen [@media(width:320px)]:h-[88vh]     [@media(min-width:320px)_and_(max-width:375px)]:h-[100vh]   w-full">
               <h2 className="absolute top-[7%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[#f3c53c] text-4xl font-bold z-10">Events</h2>
               <img
                 src="bg 4 section.svg"
@@ -1250,7 +1254,7 @@ function Open() {
           </div>
 
           {/* SECTION 5 */}
-          <div className="h-screen w-full relative">
+          <div className="h-screen [@media(width:320px)]:h-[88vh]     [@media(min-width:320px)_and_(max-width:375px)]:h-[100vh]  w-full relative">
             <img
               src="section 5 final screen.svg"
               loading="lazy"
@@ -1261,7 +1265,7 @@ function Open() {
           </div>
 
           {/* FINAL */}
-          <div className="h-screen w-full relative">
+          <div className="h-screen w-full [@media(width:320px)]:h-[88vh]     [@media(min-width:320px)_and_(max-width:375px)]:h-[100vh]   relative">
             <img
               src="final.svg"
               loading="lazy"
