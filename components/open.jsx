@@ -749,6 +749,41 @@ function Open() {
   const [assetsLoaded, setAssetsLoaded] = useState(false);
   const [progress, setProgress] = useState(0);
 
+
+
+
+  const targetDate = new Date("2026-05-05T00:00:00").getTime();
+
+  const [timeLeft, setTimeLeft] = useState(getTimeRemaining());
+
+  function getTimeRemaining() {
+    const now = new Date().getTime();
+    const distance = targetDate - now;
+
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor(
+      (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+    );
+    const minutes = Math.floor(
+      (distance % (1000 * 60 * 60)) / (1000 * 60)
+    );
+
+    return { days, hours, minutes };
+  }
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(getTimeRemaining());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+
+
+
+
+
 const imageSources = [
     "/openup.svg",
     "/openbottom.svg",
@@ -891,9 +926,13 @@ const imageSources = [
     };
   }, []);
 
+
+useEffect(() => {
+ AOS.init({ duration: 800, once: false });
+}, []);
   /* ================= INIT ================= */
    useEffect(() => {
-    AOS.init({ duration: 800, once: false });
+   
     setWindowHeight(window.innerHeight);
 
     // Block scroll immediately
@@ -977,7 +1016,7 @@ if (!assetsLoaded) {
         <p className="mt-4 text-[#b68d33] font-medium text-xl">{progress}%</p>
 
         <p className="absolute bottom-12 text-[#c4a06a] text-sm tracking-widest">
-          PREPARING YOUR INVITATION...
+          Please Wait...
         </p>
       </div>
     );
@@ -1000,6 +1039,7 @@ if (!assetsLoaded) {
         {/* Background */}
         <img
           src="/1st bg imjage.svg"
+        
           className="absolute w-full h-full object-contain"
           style={{...getSection3Style(0), maxBlockSize:"fit-content",}}
         />
@@ -1007,11 +1047,13 @@ if (!assetsLoaded) {
         {/* Front */}
         <img
           src="/1st front.svg"
+         
           className="absolute w-full h-full object-contain"
            style={getSection3Style(0)}
         />
         <img
           src="/logo 1.svg"
+         
           className="absolute w-[122px] h-[100px] object-contain top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]"
         // style={{
         //   transform: open
@@ -1026,6 +1068,7 @@ if (!assetsLoaded) {
         <img
           src="/1stbottom.svg"
           className="absolute w-full h-full object-contain top-[50px]"
+        
           style={{
             transform: open
               ? `translateY(-${firstSectionScroll}px)`
@@ -1037,30 +1080,57 @@ if (!assetsLoaded) {
 
         {/* OPEN BOTTOM */}
         <img
-          src="/openbottom.svg"
-          className="absolute w-full h-[88vh]  object-contain z-10 transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)]"
-          style={{
-            transform: open ? "translateY(700px)" : "translateY(0px)",
-          }}
+    //       src="/openbottom.svg"
+    //       data-aos="fade-up"
+    //  data-aos-duration="3000"
+    //       className="absolute w-full h-[88vh]  object-contain z-10 transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)]"
+    //       style={{
+    //         transform: open ? "translateY(700px)" : "translateY(0px)",
+    //       }}
+
+
+     src="/openbottom.svg"
+    data-aos="fade-up"
+    data-aos-duration="1200"
+    className="absolute w-full h-[88vh] object-contain z-10
+    transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)]"
+    style={{
+      transform: open ? "translateY(700px)" : "translateY(0px)",
+    }}
         />
 
         {/* OPEN UP (3D FLIP) */}
         <div className="absolute inset-0 z-20 cursor-pointer">
           <img
-            src="/openup.svg"
-            onClick={() => setOpen(true)}
-            className="w-full h-[88vh]  object-contain "
-            style={{
-              transform: open ? "rotateX(-170deg)" : "rotateX(0deg)",
-              transformOrigin: "top",
-              backfaceVisibility: "hidden",
-              maxBlockSize:"fit-content",
-              transition:
-                "transform 1200ms cubic-bezier(0.22, 1, 0.36, 1)",
-              boxShadow: open
-                ? "0px 40px 60px rgba(0,0,0,0.4)"
-                : "none",
-            }}
+    //         src="/openup.svg"
+    //        data-aos="fade-down"
+    //  data-aos-easing="ease-in-sine"
+    //  data-aos-duration="3000"
+    //         onClick={() => setOpen(true)}
+    //         className="w-full h-[88vh]  object-contain "
+    //         style={{
+    //           transform: open ? "rotateX(-170deg)" : "rotateX(0deg)",
+    //           transformOrigin: "top",
+    //           backfaceVisibility: "hidden",
+    //           maxBlockSize:"fit-content",
+    //           transition:
+    //             "transform 1200ms cubic-bezier(0.22, 1, 0.36, 1)",
+    //           boxShadow: open
+    //             ? "0px 40px 60px rgba(0,0,0,0.4)"
+    //             : "none",
+    //         }}
+     src="/openup.svg"
+      data-aos="fade-down"
+      data-aos-duration="1200"
+      onClick={() => setOpen(true)}
+      className="w-full h-[88vh] object-contain"
+      style={{
+        transform: open ? "rotateX(-170deg)" : "rotateX(0deg)",
+        transformOrigin: "top",
+        backfaceVisibility: "hidden",
+        transition:
+          "transform 1200ms cubic-bezier(0.22, 1, 0.36, 1)",
+      }}
           />
 
         </div>
@@ -1078,6 +1148,8 @@ if (!assetsLoaded) {
               alignItems: "center",
               width: "100%",
             }}
+             data-aos="fade-up"
+    data-aos-duration="300"
           >
            
            <div className="h-[88vh]  w-full  bg-[#5b3525] relative overflow-hidden">
@@ -1090,6 +1162,8 @@ if (!assetsLoaded) {
              <img
   src="/slidesecond.svg"
   loading="lazy"
+  data-aos="fade-up"
+    data-aos-duration="900"
   onLoad={() => setSection2Loaded(true)}
   className={`w-full h-screen  absolute 
    top-[-36px] xs:top-[-36px] sm:top-[-27px] 
@@ -1101,39 +1175,47 @@ if (!assetsLoaded) {
                 <div className="max-w-[380px] text-center text-[#f2c46d] mt-[84px] ">
 
                   {/* Parents */}
-                  <h2 className="text-l md:text-xl font-semibold leading-tight ">
+                  <h2 className="text-l md:text-xl font-semibold leading-tight "  data-aos="fade-up"
+    data-aos-duration="1200" 
+>
                     Sandhya & <br /> Anil Bahadure
                   </h2>
 
                   {/* Sub text */}
-                  <p className="mt-[3px] text-sm leading-relaxed text-[#f6d38b]">
+                  <p className="mt-[3px] text-sm leading-relaxed text-[#f6d38b]" data-aos="fade-up"
+    data-aos-duration="1230">
                     Await your presence for <br />
                     the wedding celebrations <br />
                     of their daughter
                   </p>
 
                   {/* Bride Name */}
-                  <h1 className="mt-[14px] text-4xl font-bold tracking-wide">
+                  <h1 className="mt-[14px] text-4xl font-bold tracking-wide" data-aos="fade-up"
+    data-aos-duration="1260">
                     Shreya
                   </h1>
 
                   {/* With */}
-                  <p className="mt-[4px] text-xl text-[#f6d38b]">
+                  <p className="mt-[4px] text-xl text-[#f6d38b]" data-aos="fade-up"
+    data-aos-duration="1280">
                     with
                   </p>
 
                   {/* Groom Name */}
-                  <h1 className="text-4xl font-bold tracking-wide">
+                  <h1 className="text-4xl font-bold tracking-wide" data-aos="fade-up"
+    data-aos-duration="1290">
                     Naivedya
                   </h1>
 
                   {/* Son of */}
-                  <p className="mt-6 text-sm text-[#f6d38b]">
+                  <p className="mt-6 text-sm text-[#f6d38b]" data-aos="fade-up"
+    data-aos-duration="1300">
                     Son of
                   </p>
 
                   {/* Father */}
-                  <h2 className="text-l md:text-xl font-semibold">
+                  <h2 className="text-l md:text-xl font-semibold" data-aos="fade-up"
+    data-aos-duration="1300">
                     Kamlesh Joshi
                   </h2>
 
@@ -1210,54 +1292,66 @@ if (!assetsLoaded) {
 
 
               <>
-                <div className="absolute inset-0 flex items-center justify-center" style={getStyle(0)}>
+                <div
+  className={`absolute inset-0 flex items-center justify-center 
+  transition-all duration-700 ease-out
+  ${activeIndex === 0 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}
+  `}
+  style={getStyle(0)}
+>
                   <img
                     src="/section 4 1.svg"
                     className="absolute w-full h-[100vh] object-contain"
+                     data-aos="fade-up"
+    data-aos-duration="1200"
 
                   />
-                  <div className=" flex items-center justify-center  px-6">
+                  <div className=" flex items-center justify-center  px-6"  data-aos="fade-up"
+    data-aos-duration="1200">
                     <div className="max-w-[380px] text-center  mt-[52px] z-10">
                       <p className="text-lg text-brown-700">Day 1</p>
                       <p className="text-lg text-brown-700">03/05/26</p>
 
-                      <h2 className="text-3xl font-semibold text-orange-700 mt-[-4px]">
+                      <h2 className="text-2xl font-semibold text-orange-700 mt-[-4px]">
                         Paritran
                       </h2>
-                      <p className="text-lg text-orange-700">11 am</p>
+                      <p className="text-md text-orange-700">11 am</p>
 
-                      <h2 className="text-3xl font-semibold text-green-700 mt-[-6px]">
+                      <h2 className="text-2xl font-semibold text-green-700 mt-[-6px]">
                         Mehendi
                       </h2>
-                      <p className="text-lg text-green-700">1 pm onwards</p>
+                      <p className="text-md text-green-700">1 pm onwards</p>
 
-                      <p className="text-lg text-brown-700 mt-4">@Home</p>
+                      <p className="text-md text-brown-700 mt-4">@Home</p>
                     </div>
                   </div>
                 </div>
 
-                <div className="absolute inset-0 flex items-center justify-center" style={getStyle(1)}>
+                <div className="absolute inset-0 flex items-center justify-center" style={getStyle(1)} >
                   <img
                     src="/section 4 2.svg"
                     className="absolute w-full h-[100vh] object-contain"
+                     data-aos="fade-up"
+    data-aos-duration="1200"
 
                   />
-                  <div className=" flex items-center justify-center  px-6">
+                  <div className=" flex items-center justify-center  px-6"  data-aos="fade-up"
+    data-aos-duration="1200">
                     <div className="max-w-[380px] text-center  mt-[20px] z-10">
-                      <p className="text-lg text-brown-700">Day 2</p>
-                      <p className="text-lg text-brown-700">04/05/26</p>
+                      <p className="text-md text-brown-700">Day 2</p>
+                      <p className="text-md text-brown-700">04/05/26</p>
 
-                      <h2 className="text-xl font-semibold text-[#c200b9] mt-[-4px]">
+                      <h2 className="text-lg font-semibold text-[#c200b9] mt-[-2px]">
                         Carnival Haldi<br /> Lunch
                       </h2>
-                      <p className="text-lg text-[#c200b9]">12 pm</p>
+                      <p className="text-md mt-[-10px] text-[#c200b9]">12 pm</p>
 
-                      <h2 className="text-xl font-semibold text-green-700 mt-[-6px]">
+                      <h2 className="text-lg font-semibold text-green-700 mt-[6px]">
                         High Tea
                       </h2>
-                      <p className="text-lg text-green-700">5 pm </p>
+                      <p className="text-md text-green-700">5 pm </p>
 
-                      <p className="text-lg text-brown-700 mt-2">@Mangli Lake <br /> Farm</p>
+                      <p className="text-md text-brown-700 mt-2">@Mangli Lake <br /> Farm</p>
                     </div>
                   </div>
                 </div>
@@ -1266,9 +1360,12 @@ if (!assetsLoaded) {
                   <img
                     src="/section 4 3.svg"
                     className="absolute w-full h-[100vh] object-contain"
+                     data-aos="fade-up"
+    data-aos-duration="1200"
 
                   />
-                  <div className=" flex items-center justify-center  px-6">
+                  <div className=" flex items-center justify-center  px-6"  data-aos="fade-up"
+    data-aos-duration="1200">
                     <div className="max-w-[380px] text-center  mt-[20px] z-10">
                       <p className="text-lg text-brown-700">Day 2</p>
                       <p className="text-lg text-brown-700">04/05/26</p>
@@ -1289,9 +1386,12 @@ if (!assetsLoaded) {
                   <img
                     src="/section 4 3.svg"
                     className="absolute w-full h-[100vh] object-contain"
+                     data-aos="fade-up"
+    data-aos-duration="1200"
 
                   />
-                  <div className=" flex items-center justify-center  px-6">
+                  <div className=" flex items-center justify-center  px-6"  data-aos="fade-up"
+    data-aos-duration="1200">
                     <div className="max-w-[380px] text-center  mt-[20px] z-10">
                       <p className="text-lg text-brown-700">Day 3</p>
                       <p className="text-lg text-brown-700">05/05/26</p>
@@ -1308,30 +1408,103 @@ if (!assetsLoaded) {
                   </div>
                 </div>
               </>
+             
             </div>
           </div>
 
           {/* SECTION 5 */}
-          <div className="h-[88vh]  w-full relative">
-            <img
-              src="section 5 final screen.svg"
-              loading="lazy"
-              
-                style={{ maxBlockSize:"fit-content", }}
-              className="w-full h-full object-contain"
-            />
-          </div>
+        <div className="h-[88vh] w-full relative flex flex-col items-center justify-center text-center" data-aos="fade-up"
+    data-aos-duration="1200">
+
+  {/* Background SVG */}
+  <img
+    src="/section 5 final screen.svg"
+    loading="lazy"
+    className="absolute w-full h-full object-contain"
+    alt="Venue Background"
+  />
+
+  {/* Content */}
+  <div className="relative top-[-93px] z-10 flex flex-col items-center w-full">
+
+    {/* Venue Title */}
+    <h2 className="text-4xl font-serif text-[#1f2a5a] mb-2" data-aos="fade-up"
+    data-aos-duration="1200">
+      Venue
+    </h2>
+
+    {/* Address */}
+    <p className="text-lg text-[#1f2a5a] leading-relaxed mb-8" data-aos="fade-up"
+    data-aos-duration="1200">
+      Mangli Lake Farm,<br />
+      Near Champa (2km), Umred Road,<br />
+      Nagpur, Maharashtra 441204
+    </p>
+
+    {/* Responsive Clickable Map */}
+    <div className="w-[50%] max-w-[400px] h-[120px] rounded-lg overflow-hidden shadow-xl mb-8" data-aos="fade-up"
+    data-aos-duration="1200">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3725.1813833139236!2d79.21359369999999!3d20.985365100000003!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bd4b06250837d09%3A0x1e737c4de53c6add!2sMangli%20Lake%20Farm!5e0!3m2!1sen!2sin!4v1772619329004!5m2!1sen!2sin"
+        className="w-full h-full"
+        style={{ border: 0 }}
+        allowFullScreen=""
+        loading="lazy"
+        referrerPolicy="no-referrer-when-downgrade"
+        title="Mangli Lake Farm Location"
+      ></iframe>
+    </div>
+
+    {/* Get Directions (Design Only - NOT Clickable) */}
+    <div className="bg-[#c94c4c] text-white px-7 py-3 rounded-full text-xl font-semibold shadow-lg" data-aos="fade-up"
+    data-aos-duration="1200">
+      Get Directions
+    </div>
+
+  </div>
+</div>
 
           {/* FINAL */}
-          <div className="h-[88vh] w-full relative">
-            <img
-              src="final.svg"
-              loading="lazy"
-              
-                style={{ maxBlockSize:"fit-content", }}
-              className="w-full h-full object-contain"
-            />
-          </div>
+ <div
+      className="h-[88vh] w-full relative flex items-center justify-center text-center"
+      data-aos="fade-up"
+      data-aos-duration="1200"
+    >
+      {/* Background SVG */}
+      <img
+        src="/final.svg"
+        loading="lazy"
+        className="absolute w-full h-full object-contain"
+        alt="Countdown Background"
+        
+      />
+
+      {/* Content */}
+      <div className="relative z-10 flex flex-col items-center top-[-67px">
+
+        {/* Title */}
+        <h2 className="text-3xl font-bold text-[#f3c178] mb-8"  data-aos="fade-up"
+      data-aos-duration="1200">
+          The Countdown Begins
+        </h2>
+
+        {/* Timer Box */}
+        <div className="bg-[#1e2250] text-white px-8 py-2 rounded-full text-xl font-semibold shadow-lg mb-8 tracking-widest"  data-aos="fade-up"
+      data-aos-duration="1200">
+          {timeLeft.days} D&nbsp;&nbsp;
+          {timeLeft.hours} H&nbsp;&nbsp;
+          {timeLeft.minutes} M
+        </div>
+
+        {/* Subtitle */}
+        <p className="text-white text-md max-w-md leading-relaxed"  data-aos="fade-up"
+      data-aos-duration="1200">
+          One love, one promise,<br />
+          one celebration — with you.
+        </p>
+
+      </div>
+    </div>
         </>
       )}
     </div>
