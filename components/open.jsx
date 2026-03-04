@@ -1022,7 +1022,7 @@ function Open() {
             }}
           >
            
-           <div className="h-screen [@media(min-width:320px)_and_(max-width:339px)]:h-[89vh]     [@media(min-width:340px)_and_(max-width:375px)]:h-[100vh]   w-full max-w-[360px] bg-[#5b3525] relative overflow-hidden">
+           <div className="h-screen [@media(min-width:320px)_and_(max-width:339px)]:h-[89vh]     [@media(min-width:340px)_and_(max-width:375px)]:h-[100vh]   [@media(min-width:320px)_and_(max-width:425px)]:w-[360px]   w-full  bg-[#5b3525] relative overflow-hidden">
               {!section2Loaded && (
                 <div className="absolute inset-0 flex items-center justify-center text-white">
                   Loading...
