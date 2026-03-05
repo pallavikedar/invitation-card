@@ -1511,6 +1511,19 @@
 
 // export default Open;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 "use client";
 import { useEffect, useRef, useState } from "react";
 import AOS from "aos";
@@ -1681,14 +1694,19 @@ function Open() {
       document.body.style.overflow = "auto";
     }, 1700);
   };
-
+const fadeUp = (delay) => ({
+  opacity: open ? 1 : 0,
+  transform: open ? "translateY(0px)" : "translateY(40px)",
+  transition: "opacity 1s ease, transform 1s ease",
+  transitionDelay: `${delay}s`,
+});
   if (!assetsLoaded) {
     return (
       <div
         className="fixed inset-0 flex flex-col items-center justify-center z-[9999]"
         style={{ background: "linear-gradient(160deg,#fff8f0,#fdecd8,#f9dfc8)" }}
       >
-        <p className="text-[#b68d33] font-bold text-2xl mb-8 tracking-[4px] uppercase">Loading</p>
+        <p className="text-[#b68d33] font-bold text-2xl mb-8 tracking-[4px] uppercase"> Wedding Loading</p>
         <div className="w-64 h-1.5 bg-[#f8e4d0] rounded-full overflow-hidden">
           <div
             className="h-full rounded-full transition-all duration-300 ease-out"
@@ -1729,7 +1747,7 @@ function Open() {
           height: 100%;
           transform-origin: top center;
           transform: rotateX(0deg);
-          transition: transform 1100ms cubic-bezier(0.4, 0, 0.2, 1);
+          transition: transform 2000ms cubic-bezier(0.4, 0, 0.2, 1);
           backface-visibility: hidden;
           -webkit-backface-visibility: hidden;
           will-change: transform;
@@ -1755,7 +1773,7 @@ function Open() {
   transform-origin: bottom center;
 
   transform: rotateX(0deg);
-  transition: transform 1100ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 3000ms cubic-bezier(0.4, 0, 0.2, 1);
 
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
@@ -1794,12 +1812,12 @@ function Open() {
         }
         .tap-hint {
           position: absolute;
-          bottom: 28px;
-          left: 50%;
-          transform: translateX(50%);
+          top: 65%;
+          left: 40%;
+          // transform: translateX(50%);
           z-index: 40;
           pointer-events: none;
-          animation: tap-float 2s ease-in-out infinite;
+          // animation: tap-float 2s ease-in-out infinite;
           text-align: center;
         }
         .tap-hint-label {
@@ -1807,7 +1825,7 @@ function Open() {
           color: #b68d33;
           font-size: 10px;
           letter-spacing: 3.5px;
-          font-weight: 700;
+          font-weight: 900;
           text-transform: uppercase;
           white-space: nowrap;
         }
@@ -1827,49 +1845,78 @@ function Open() {
         <div
           className="sticky top-0 h-screen w-full overflow-hidden"
           style={{ background: "linear-gradient(160deg,#fff8f0 0%,#fdecd8 55%,#f5d5b8 100%)" }}
-          data-aos="fade-up" data-aos-duration="700"
+      
         >
-          {/* First section content — fades in as envelope opens */}
-          <img
-            src="/1st bg imjage.svg"
-            className="absolute inset-0 w-full h-full object-cover"
-            style={{ ...getSection3Style(0), opacity: open ? 1 : 0, transition: "opacity 0.7s ease 1.3s" }}
-            alt=""
-            data-aos="fade-up" data-aos-duration="700"
-          />
-          <img
-            src="/1st front.svg"
-            className="absolute inset-0 w-full h-full object-cover"
-            style={{ ...getSection3Style(0), opacity: open ? 1 : 0, transition: "opacity 0.7s ease 1.45s" }}
-            alt=""
-            data-aos="fade-up" data-aos-duration="1500"
-          />
-          <img
-            src="/logo 1.svg"
-            className="absolute object-contain"
-            style={{
-              width: "clamp(80px, 22vw, 122px)",
-              height: "auto",
-              top: "50%", left: "50%",
-              transform: "translate(-50%,-50%)",
+
+
+
+
+
+
+
+
+<img
+  src="/1st bg imjage.svg"
+  className="absolute inset-0 w-full h-full object-cover"
+  style={{ ...getSection3Style(0), ...fadeUp(0),opacity: open ? 1 : 0, }}
+  alt=""
+/>
+
+<img
+  src="/1st front.svg"
+  className="absolute inset-0 w-full h-full object-cover"
+  style={{ ...getSection3Style(0), ...fadeUp(1) ,opacity: open ? 1 : 0, }}
+  alt=""
+  
+/>
+
+<img
+  src="/logo 1.svg"
+  className="absolute object-contain"
+  style={{
+    width: "clamp(80px, 22vw, 122px)",
+    height: "auto",
+    top: "50%",
+    left: "50%",
+    transform: open
+      ? "translate(-50%, -50%) translateY(0)"
+      : "translate(-50%, -50%) translateY(40px)",
+    opacity: open ? 1 : 0,
+    transition: "opacity 1.4s ease, transform 1.5s ease",
+    transitionDelay: "1.5s",
+   
+  }}
+  alt="Logo"
+/>
+
+<img
+  src="/1stbottom.svg"
+  className="absolute w-full object-cover"
+ 
+   style={{
+              bottom:"-11px",
               opacity: open ? 1 : 0,
-              transition: "opacity 0.6s ease 1.55s",
-            }}
-            alt="Logo"
-            data-aos="fade-up" data-aos-duration="1800"
-          />
-          <img
-            src="/1stbottom.svg"
-            className="absolute w-full object-cover"
-            style={{
-              top: "50px",
-              opacity: open ? 1 : 0,
-              transition: "opacity 0.6s ease 1.55s",
+              transition: "opacity 1.4s ease 1.5s",
               transform: open ? `translateY(-${firstSectionScroll}px)` : "translateY(0px)",
             }}
-            alt=""
-            data-aos="fade-up" data-aos-duration="1800"
-          />
+  alt=""
+/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
           {/* ── ENVELOPE ── */}
           <div
@@ -1923,7 +1970,7 @@ function Open() {
         {open && envelopeAnimDone && (
           <>
             {/* SECTION 2 */}
-            <div data-aos="fade-up" data-aos-duration="300" className="w-full">
+            <div  className="w-full">
               <div className="h-screen w-full bg-[#5b3525] relative overflow-hidden">
                 {!section2Loaded && (
                   <div className="absolute inset-0 flex items-center justify-center text-white text-sm">Loading…</div>
@@ -1936,7 +1983,7 @@ function Open() {
                   alt=""
                 />
                 <div className="relative flex items-center justify-center h-full px-6">
-                  <div className="max-w-[340px] w-full text-center text-[#f2c46d]">
+                  <div className="max-w-[340px] w-full text-center text-[#f2c46d] absolute top-[40%] left-[50%] -translate-x-1/2 -translate-y-1/2" data-aos="fade-up" data-aos-duration="1200">
                     <h2 className="text-lg md:text-xl font-semibold leading-tight" data-aos="fade-up" data-aos-duration="1200">
                       Sandhya &amp; <br />Anil Bahadure
                     </h2>
@@ -1950,43 +1997,99 @@ function Open() {
                     <h2 className="text-lg md:text-xl font-semibold" data-aos="fade-up" data-aos-duration="1300">Kamlesh Joshi</h2>
                   </div>
                 </div>
+                 {/* <img
+                src="/3rd slide top.svg"  className="absolute w-full object-cover"
+ 
+   style={{
+              top:"101px",
+              opacity: open ? 1 : 0,
+              transition: "opacity 1.4s ease 1.5s",
+              
+              transform: open ? `translateY(-${firstSectionScroll}px)` : "translateY(0px)",
+            }}
+            data-aos="fade-up" data-aos-duration="2000"
+  alt=""
+              />             */}
               </div>
             </div>
+   
 
-            {/* SECTION 3 */}
-            <div ref={section3Ref} className="h-screen w-full relative overflow-hidden">
-              <img src="/3rd slide bg.svg" loading="lazy" className="absolute inset-0 w-full h-full object-cover" data-aos="fade-up" alt="" />
-              <img
-                src="/3rd slide top.svg" loading="lazy"
-                className={`absolute w-full h-full object-cover top-[-279px] fade-up ${visible ? "show" : ""}`}
-                style={{ transitionDelay: "0.1s" }} alt=""
-              />
-              <img
-                src="/3rd slide second.svg" loading="lazy"
-                className="absolute w-full h-full object-cover top-[108px]"
-                style={getSection3Style(0)} alt=""
-              />
-              <img
-                src="/3rd slide4.svg" loading="lazy"
-                className={`absolute w-full h-full object-cover top-[100px] fade-up ${visible ? "show" : ""}`}
-                style={{ transitionDelay: "0.3s" }} alt=""
-              />
-              <img
-                src="/3rd slide3.svg" loading="lazy"
-                className={`absolute w-full h-full object-cover top-[100px] fade-up ${visible ? "show" : ""}`}
-                style={{ transitionDelay: "0.4s" }} alt=""
-              />
-              <img
-                src="/3rd slide bottom.svg" loading="lazy"
-                className="absolute w-full h-full object-cover top-[276px]"
-                style={{
-                  transform: scrollY < section3Start ? "translateY(0px)" : `translateY(${-section3Progress * windowHeight}px)`,
-                  opacity: scrollY < section3Start ? 1 : 1 - section3Progress,
-                  transition: "transform 0.1s linear, opacity 0.1s linear",
-                }}
-                alt=""
-              />
-            </div>
+  {/* ── BRIDGE IMAGE ── */}
+{(() => {
+  // Start fading bridge much earlier — as soon as Section 2 appears
+  const bridgeStart = windowHeight * 1.1;
+  const bridgeRaw = scrollY - bridgeStart;
+  const progress = Math.max(0, Math.min(bridgeRaw / (windowHeight * 0.6), 1));
+
+  return (
+    <div
+      style={{
+        position: "relative",
+        top: "-183px",
+        zIndex: 20,
+        pointerEvents: "none",
+        opacity: 1,
+        // Fade UP from below — starts 30px below, rises to natural position
+        transform: `translateY(${(1 - progress) * 30}px)`,
+        transition: "opacity 1s linear, transform 1s linear",
+        marginBottom: "-267px",
+        height:"320px"
+      }}
+    >
+      <img
+        src="/3rd slide top.svg"
+        loading="lazy"
+        className="w-full object-cover"
+        style={{ height: "300px", display: "block" }}
+        alt=""
+      />
+    </div>
+  );
+})()}
+
+{/* SECTION 3 — starts behind the bridge image */}
+<div
+  ref={section3Ref}
+  className="h-screen w-full relative overflow-hidden"
+  style={{ zIndex: 10 }}
+  data-aos="fade-up" data-aos-duration="500"
+  
+>
+  {/* Remove data-aos="fade-up" from bg — it should always be visible */}
+  <img
+    src="/3rd slide bg.svg"
+    loading="lazy"
+    className="absolute inset-0 w-full h-full object-cover"
+    alt=""
+  />
+  {/* rest unchanged... */}
+  <img
+    src="/3rd slide second.svg" loading="lazy"
+    className="absolute w-full h-full object-cover top-[108px]"
+    style={getSection3Style(0)} alt=""
+  />
+  <img
+    src="/3rd slide4.svg" loading="lazy"
+    className={`absolute w-full h-full object-cover top-[100px] fade-up ${visible ? "show" : ""}`}
+    style={{ transitionDelay: "0.3s" }} alt=""
+  />
+  <img
+    src="/3rd slide3.svg" loading="lazy"
+    className={`absolute w-full h-full object-cover top-[100px] fade-up ${visible ? "show" : ""}`}
+    style={{ transitionDelay: "0.4s" }} alt=""
+  />
+  <img
+    src="/3rd slide bottom.svg" loading="lazy"
+    className="absolute w-full h-full object-cover top-[276px]"
+    style={{
+      transform: scrollY < section3Start ? "translateY(0px)" : `translateY(${-section3Progress * windowHeight}px)`,
+      opacity: scrollY < section3Start ? 1 : 1 - section3Progress,
+      transition: "transform 0.1s linear, opacity 0.1s linear",
+    }}
+    alt=""
+  />
+</div>
+         
 
             {/* SECTION 4 — Events */}
             <div className="relative h-[400vh] w-full">
@@ -2061,7 +2164,7 @@ function Open() {
             {/* SECTION 5 — Venue */}
             <div
               className="h-screen w-full relative flex flex-col items-center justify-center text-center overflow-hidden"
-              data-aos="fade-up" data-aos-duration="1200"
+            
             >
               <img src="/section 5 final screen.svg" loading="lazy" className="absolute inset-0 w-full h-full object-cover" alt="" />
               <div className="relative z-10 flex flex-col items-center w-full px-4" style={{ marginTop: "-80px" }}>
@@ -2097,7 +2200,7 @@ function Open() {
             {/* FINAL — Countdown */}
             <div
               className="h-screen w-full relative flex items-center justify-center text-center overflow-hidden"
-              data-aos="fade-up" data-aos-duration="1200"
+            
             >
               <img src="/final.svg" loading="lazy" className="absolute inset-0 w-full h-full object-cover" alt="" />
               <div className="relative z-10 flex flex-col items-center px-4" style={{ marginTop: "-60px" }}>
