@@ -143,6 +143,7 @@ html {
   will-change: transform;
   backface-visibility: hidden;
 }
-body{
-  
+body {
+  overscroll-behavior: none;
+  font-family: Georgia, 'Times New Roman', Times, serif;
 }

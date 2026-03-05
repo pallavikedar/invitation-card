@@ -1521,54 +1521,349 @@
 
 
 
-
-
-
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
-function Open() {
-  const sectionRef = useRef(null);
-  const section3Ref = useRef(null);
-  const imageRef = useRef(null);
+// ─────────────────────────────────────────────────────────────────────────────
+// CONFETTI BURST
+// ─────────────────────────────────────────────────────────────────────────────
+function ConfettiBurst({ active }) {
+  const [particles, setParticles] = useState([]);
+  const particlesRef = useRef([]);
 
+  const COLORS = [
+    "#FFD700", "#FF6B6B", "#4ECDC4", "#A78BFA",
+    "#F97316", "#22D3EE", "#EC4899", "#84CC16",
+    "#FFF", "#C9A96E",
+  ];
+
+  useEffect(() => {
+    if (!active) return;
+    const cx = typeof window !== "undefined" ? window.innerWidth / 2 : 200;
+    const cy = typeof window !== "undefined" ? window.innerHeight * 0.52 : 300;
+    const count = 140;
+
+    particlesRef.current = Array.from({ length: count }, (_, i) => ({
+      id: i,
+      x: cx + (Math.random() - 0.5) * 60,
+      y: cy,
+      vx: (Math.random() - 0.5) * 20,
+      vy: -(Math.random() * 16 + 5),
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      size: Math.random() * 16 + 6,
+      rotation: Math.random() * 360,
+      rotSpeed: (Math.random() - 0.5) * 14,
+      gravity: 0.5,
+      life: 1,
+      decay: Math.random() * 0.013 + 0.007,
+      isCircle: Math.random() > 0.7,
+    }));
+
+    let frame;
+    const tick = () => {
+      particlesRef.current = particlesRef.current
+        .map((p) => ({
+          ...p,
+          x: p.x + p.vx,
+          y: p.y + p.vy,
+          vy: p.vy + p.gravity,
+          vx: p.vx * 0.985,
+          rotation: p.rotation + p.rotSpeed,
+          life: p.life - p.decay,
+        }))
+        .filter((p) => p.life > 0);
+      setParticles([...particlesRef.current]);
+      if (particlesRef.current.length > 0) frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [active]);
+
+  if (!active && particles.length === 0) return null;
+
+  return (
+    <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 9999, overflow: "hidden" }}>
+      {particles.map((p) => (
+        <div
+          key={p.id}
+          style={{
+            position: "absolute",
+            left: p.x,
+            top: p.y,
+            width: p.size,
+            height: p.isCircle ? p.size : p.size * 0.4,
+            backgroundColor: p.color,
+            borderRadius: p.isCircle ? "50%" : 2,
+            transform: `rotate(${p.rotation}deg)`,
+            opacity: p.life,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SCRATCH CARD
+// ─────────────────────────────────────────────────────────────────────────────
+function ScratchCard({ weddingDate = "05/05/26", onFullReveal }) {
+  const canvasRef = useRef(null);
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [revealed, setRevealed] = useState(false);
+  const [hintVisible, setHintVisible] = useState(true);
+  const hasTriggered = useRef(false);
+  const lastPos = useRef(null);
+
+  // Draw the gold foil onto canvas
+  const initCanvas = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+
+    const img = new Image();
+    img.src = "/3rd slide3.svg";
+    img.onload = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    };
+    img.onerror = () => {
+      // Rich gold foil fallback
+      const grad = ctx.createLinearGradient(0, 0, canvas.width, 0);
+      grad.addColorStop(0,    "#8B6914");
+      grad.addColorStop(0.15, "#F5D060");
+      grad.addColorStop(0.3,  "#C9940A");
+      grad.addColorStop(0.5,  "#FFF0A0");
+      grad.addColorStop(0.7,  "#B8860B");
+      grad.addColorStop(0.85, "#E8C84A");
+      grad.addColorStop(1,    "#8B6914");
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Brush-stroke shimmer
+      ctx.save();
+      ctx.globalAlpha = 0.18;
+      for (let i = 0; i < 40; i++) {
+        ctx.beginPath();
+        ctx.strokeStyle = i % 2 === 0 ? "#fff" : "#7A5C00";
+        ctx.lineWidth = Math.random() * 8 + 1;
+        const y = Math.random() * canvas.height;
+        ctx.moveTo(Math.random() * 20, y);
+        ctx.bezierCurveTo(
+          canvas.width * 0.25, y - 15 + Math.random() * 30,
+          canvas.width * 0.75, y - 15 + Math.random() * 30,
+          canvas.width - Math.random() * 20, y + (Math.random() - 0.5) * 20
+        );
+        ctx.stroke();
+      }
+      ctx.restore();
+    };
+  }, []);
+
+  useEffect(() => { initCanvas(); }, [initCanvas]);
+
+  const getPos = (e, canvas) => {
+    const rect = canvas.getBoundingClientRect();
+    const sx = canvas.width / rect.width;
+    const sy = canvas.height / rect.height;
+    if (e.touches) {
+      return {
+        x: (e.touches[0].clientX - rect.left) * sx,
+        y: (e.touches[0].clientY - rect.top) * sy,
+      };
+    }
+    return {
+      x: (e.clientX - rect.left) * sx,
+      y: (e.clientY - rect.top) * sy,
+    };
+  };
+
+  const doScratch = useCallback((e) => {
+    if (!isDrawing || revealed) return;
+    e.preventDefault();
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    const pos = getPos(e, canvas);
+
+    ctx.globalCompositeOperation = "destination-out";
+
+    // Draw a filled line segment between last and current pos for smooth scratch
+    if (lastPos.current) {
+      ctx.beginPath();
+      ctx.lineWidth = 56;
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      ctx.moveTo(lastPos.current.x, lastPos.current.y);
+      ctx.lineTo(pos.x, pos.y);
+      ctx.stroke();
+    }
+    // Also paint a circle at current position
+    ctx.beginPath();
+    ctx.arc(pos.x, pos.y, 28, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.globalCompositeOperation = "source-over";
+    lastPos.current = pos;
+    setHintVisible(false);
+    checkReveal(ctx, canvas);
+  }, [isDrawing, revealed]);
+
+  const checkReveal = (ctx, canvas) => {
+    if (hasTriggered.current) return;
+    const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+    let transparent = 0;
+    for (let i = 3; i < data.length; i += 4) {
+      if (data[i] < 128) transparent++;
+    }
+    const pct = (transparent / (canvas.width * canvas.height)) * 100;
+    if (pct > 45) {
+      hasTriggered.current = true;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      setRevealed(true);
+      onFullReveal?.();
+    }
+  };
+
+  return (
+    <div
+      style={{
+        position: "relative",
+        width: "75%",
+        maxWidth: 340,
+        margin: "0 auto",
+        height:"304px",
+        aspectRatio: "2.8 / 1",
+        userSelect: "none",
+        WebkitUserSelect: "none",
+      }}
+    >
+      {/* Date revealed beneath the foil */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1,
+        }}
+      >
+        <span
+          style={{
+            fontFamily: "'Georgia', 'Times New Roman', serif",
+            fontSize: "clamp(1.5rem, 4.5vw, 1.9rem)",
+            fontWeight: 700,
+            color: "#ffc55a",
+            letterSpacing: "0.1em",
+            background: "#7B1D3A",
+            padding: "10px 28px",
+            borderRadius: 8,
+             marginTop:"-120px",
+            // border: "1.5px solid rgba(255,255,255,0.25)",
+            // boxShadow: "0 4px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1)",
+            opacity: revealed ? 1 : 0,
+            transform: revealed
+              ? "scale(1) translateY(0)"
+              : "scale(0.8) translateY(6px)",
+            transition:
+              "opacity 0.5s ease, transform 0.5s cubic-bezier(0.34,1.56,0.64,1)",
+          }}
+        >
+          {weddingDate}
+        </span>
+      </div>
+
+      {/* Canvas */}
+      <canvas
+        ref={canvasRef}
+        width={520}
+        height={186}
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          zIndex: 2,
+          cursor: revealed ? "default" : "crosshair",
+          borderRadius: 6,
+          touchAction: "none",
+          opacity: revealed ? 0 : 1,
+          transition: "opacity 0.6s ease",
+          marginTop:"-100px"
+        }}
+        onMouseDown={(e) => { setIsDrawing(true); lastPos.current = getPos(e, canvasRef.current); }}
+        onMouseUp={() => { setIsDrawing(false); lastPos.current = null; }}
+        onMouseLeave={() => { setIsDrawing(false); lastPos.current = null; }}
+        onMouseMove={doScratch}
+        onTouchStart={(e) => {
+          setIsDrawing(true);
+          lastPos.current = getPos(e, canvasRef.current);
+          doScratch(e);
+        }}
+        onTouchEnd={() => { setIsDrawing(false); lastPos.current = null; }}
+        onTouchMove={doScratch}
+      />
+
+      {/* Hint */}
+      {hintVisible && !revealed && (
+        <div
+          style={{
+            position: "absolute",
+            bottom: -30,
+            left: "50%",
+            transform: "translateX(-50%)",
+            color: "#C9A96E",
+            fontSize: "0.75rem",
+            fontFamily: "Georgia, serif",
+            letterSpacing: "0.07em",
+            whiteSpace: "nowrap",
+            textShadow: "0 1px 4px rgba(0,0,0,0.5)",
+            animation: "scratchPulse 1.8s ease-in-out infinite",
+          }}
+        >
+         
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MAIN COMPONENT
+// ─────────────────────────────────────────────────────────────────────────────
+function Open() {
+  const sectionRef      = useRef(null);
+  const section3Ref     = useRef(null);
+  const imageRef        = useRef(null);
   const section1SentinelRef = useRef(null);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  const [open, setOpen] = useState(false);
+  const [open, setOpen]                       = useState(false);
   const [envelopeAnimDone, setEnvelopeAnimDone] = useState(false);
-  const [section2Loaded, setSection2Loaded] = useState(false);
-  const [scrollY, setScrollY] = useState(0);
-  const [windowHeight, setWindowHeight] = useState(0);
-  const [visible, setVisible] = useState(false);
-  const [assetsLoaded, setAssetsLoaded] = useState(false);
-  const [progress, setProgress] = useState(0);
+  const [section2Loaded, setSection2Loaded]   = useState(false);
+  const [scrollY, setScrollY]                 = useState(0);
+  const [windowHeight, setWindowHeight]       = useState(0);
+  const [visible, setVisible]                 = useState(false);
+  const [assetsLoaded, setAssetsLoaded]       = useState(false);
+  const [progress, setProgress]               = useState(0);
 
+  // Scratch / confetti state
+  const [confettiActive, setConfettiActive]   = useState(false);
+
+  const handleScratchReveal = useCallback(() => {
+    setConfettiActive(true);
+    setTimeout(() => setConfettiActive(false), 3500);
+  }, []);
+
+  // Countdown
   const targetDate = new Date("2026-05-05T00:00:00").getTime();
   const [timeLeft, setTimeLeft] = useState(getTimeRemaining());
 
   function getTimeRemaining() {
-    const now = new Date().getTime();
+    const now      = new Date().getTime();
     const distance = targetDate - now;
-    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const days    = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours   = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
     return { days, hours, minutes };
   }
@@ -1578,7 +1873,6 @@ function Open() {
     return () => clearInterval(timer);
   }, []);
 
-  // Only critical envelope images are preloaded; rest kick off in background
   const criticalImages = ["/openup.svg", "/openbottom.svg"];
   const lazyImages = [
     "/1st bg imjage.svg", "/1st front.svg", "/logo 1.svg", "/1stbottom.svg",
@@ -1588,11 +1882,11 @@ function Open() {
     "/section 4 2.svg", "/section 4 3.svg", "/section 5 final screen.svg", "/final.svg",
   ];
 
-  // Scroll helpers
-  const section3Start = section3Ref.current?.offsetTop || 0;
-  const section3Height = windowHeight * 2;
-  const section3Raw = scrollY - section3Start;
-  const section3Scroll = Math.max(0, Math.min(section3Raw, section3Height));
+  // Scroll calculations
+  const section3Start    = section3Ref.current?.offsetTop || 0;
+  const section3Height   = windowHeight * 2;
+  const section3Raw      = scrollY - section3Start;
+  const section3Scroll   = Math.max(0, Math.min(section3Raw, section3Height));
   const section3Progress = section3Scroll / windowHeight;
 
   const getSection3Style = (index) => {
@@ -1602,26 +1896,23 @@ function Open() {
     return { transform: "translateY(0px)" };
   };
 
-  const sectionStart = windowHeight * 3;
-  const raw = scrollY - sectionStart;
-  const step = windowHeight;
-  const scrollClamped = Math.max(0, Math.min(raw, step * 4));
-  const activeIndex = Math.floor(scrollClamped / step);
-  const progressVal = (scrollClamped % step) / step;
+  const sectionStart   = windowHeight * 3;
+  const raw            = scrollY - sectionStart;
+  const step           = windowHeight;
+  const scrollClamped  = Math.max(0, Math.min(raw, step * 4));
+  const activeIndex    = Math.floor(scrollClamped / step);
+  const progressVal    = (scrollClamped % step) / step;
 
   const getStyle = (index) => {
-    if (index === activeIndex) return { transform: `translateY(${-progressVal * windowHeight}px)` };
+    if (index === activeIndex)     return { transform: `translateY(${-progressVal * windowHeight}px)` };
     if (index === activeIndex + 1) return { transform: `translateY(${windowHeight - progressVal * windowHeight}px)` };
-    if (index < activeIndex) return { transform: `translateY(${-windowHeight}px)` };
+    if (index < activeIndex)       return { transform: `translateY(${-windowHeight}px)` };
     return { transform: `translateY(${windowHeight}px)` };
   };
 
-  // Parallax for sectionRef
+  // Parallax
   useEffect(() => {
-    let current = 0;
-    let target = 0;
-    let isVis = false;
-
+    let current = 0, target = 0, isVis = false;
     const observer = new IntersectionObserver(
       ([entry]) => { isVis = entry.isIntersecting; },
       { threshold: 0.3 }
@@ -1631,11 +1922,9 @@ function Open() {
     const handleScroll = () => {
       if (!sectionRef.current || !isVis) return;
       const rect = sectionRef.current.getBoundingClientRect();
-      const wh = window.innerHeight;
-      const prog = Math.max(0, Math.min((wh - rect.top) / wh, 1));
+      const prog = Math.max(0, Math.min((window.innerHeight - rect.top) / window.innerHeight, 1));
       target = prog * 40;
     };
-
     const animate = () => {
       if (isVis) {
         current += (target - current) * 0.08;
@@ -1643,7 +1932,6 @@ function Open() {
       }
       requestAnimationFrame(animate);
     };
-
     window.addEventListener("scroll", handleScroll, { passive: true });
     animate();
     return () => { window.removeEventListener("scroll", handleScroll); observer.disconnect(); };
@@ -1651,11 +1939,10 @@ function Open() {
 
   useEffect(() => { AOS.init({ duration: 800, once: false }); }, []);
 
-  // Preload only envelope images; lazy images load in background
+  // Preload
   useEffect(() => {
     setWindowHeight(window.innerHeight);
     document.body.style.overflow = "hidden";
-
     let loadedCount = 0;
     const total = criticalImages.length;
 
@@ -1663,25 +1950,17 @@ function Open() {
       new Promise((resolve) => {
         const img = new Image();
         img.src = src;
-        const done = () => {
-          loadedCount++;
-          setProgress(Math.round((loadedCount / total) * 100));
-          resolve();
-        };
+        const done = () => { loadedCount++; setProgress(Math.round((loadedCount / total) * 100)); resolve(); };
         img.onload = done;
         img.onerror = done;
         setTimeout(resolve, 3000);
       })
     );
-
-    // Kick off lazy images in background without blocking
     lazyImages.forEach((src) => { const img = new Image(); img.src = src; });
-
     Promise.all(preloadPromises).then(() => {
       setProgress(100);
       setTimeout(() => setAssetsLoaded(true), 200);
     });
-
     return () => { document.body.style.overflow = "auto"; };
   }, []);
 
@@ -1703,18 +1982,17 @@ function Open() {
     };
   }, []);
 
-  // ── SENTINEL observer — place HERE, after all state/refs are declared ──
+  // Sentinel
   useEffect(() => {
     if (!section1SentinelRef.current) return;
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        setSection1Covered(entry.isIntersecting);
-      },
+      ([entry]) => { /* setSection1Covered(entry.isIntersecting) */ },
       { threshold: 1.0 }
     );
     observer.observe(section1SentinelRef.current);
     return () => observer.disconnect();
   }, [envelopeAnimDone]);
+
   // Envelope open
   const handleOpen = () => {
     if (open) return;
@@ -1724,19 +2002,21 @@ function Open() {
       document.body.style.overflow = "auto";
     }, 1700);
   };
-const fadeUp = (delay) => ({
-  opacity: open ? 1 : 0,
-  transform: open ? "translateY(0px)" : "translateY(40px)",
-  transition: "opacity 1s ease, transform 1s ease",
-  transitionDelay: `${delay}s`,
-});
+
+  const fadeUp = (delay) => ({
+    opacity: open ? 1 : 0,
+    transform: open ? "translateY(0px)" : "translateY(40px)",
+    transition: "opacity 1s ease, transform 1s ease",
+    transitionDelay: `${delay}s`,
+  });
+
   if (!assetsLoaded) {
     return (
       <div
         className="fixed inset-0 flex flex-col items-center justify-center z-[9999]"
         style={{ background: "linear-gradient(160deg,#fff8f0,#fdecd8,#f9dfc8)" }}
       >
-        <p className="text-[#b68d33] font-bold text-2xl mb-8 tracking-[4px] uppercase"> Wedding Loading</p>
+        <p className="text-[#b68d33] font-bold text-2xl mb-8 tracking-[4px] uppercase">Wedding Loading</p>
         <div className="w-64 h-1.5 bg-[#f8e4d0] rounded-full overflow-hidden">
           <div
             className="h-full rounded-full transition-all duration-300 ease-out"
@@ -1753,219 +2033,152 @@ const fadeUp = (delay) => ({
 
   return (
     <>
+      {/* ── Global styles ── */}
       <style>{`
-        /* ── 3D stage: perspective on parent, flat children by default ── */
         .env-stage {
           perspective: 1000px;
-          perspective-origin: 50% 0%;   /* hinge at the very top */
+          perspective-origin: 50% 0%;
           transform-style: preserve-3d;
         }
-
-        /*
-         * TOP FLAP
-         * The SVG sits naturally flat (facing viewer).
-         * transformOrigin "top center" = hinge at envelope's top edge.
-         * rotateX(-175deg):
-         *   – Negative X rotates the BOTTOM of the flap AWAY from the viewer first,
-         *     so the flap folds OUTWARD / UPWARD — like a real envelope lid opening.
-         *   – 175deg (not 180) leaves a tiny gap so the backface never fully faces us.
-         */
         .env-flap {
-          position: absolute;
-          inset: 0;
-          width: 100%;
-          height: 100%;
+          position: absolute; inset: 0; width: 100%; height: 100%;
           transform-origin: top center;
           transform: rotateX(0deg);
-          transition: transform 2000ms cubic-bezier(0.4, 0, 0.2, 1);
-          backface-visibility: hidden;
-          -webkit-backface-visibility: hidden;
-          will-change: transform;
-          cursor: pointer;
-          z-index: 30;
+          transition: transform 2000ms cubic-bezier(0.4,0,0.2,1);
+          backface-visibility: hidden; -webkit-backface-visibility: hidden;
+          will-change: transform; cursor: pointer; z-index: 30;
         }
-        .env-flap.opened {
-          transform: rotateX(175deg);
+        .env-flap.opened { transform: rotateX(175deg); }
+        .env-body {
+          position: absolute; inset: 0; width: 100%; height: 100%;
+          transform-origin: bottom center;
+          transform: rotateX(0deg);
+          transition: transform 3000ms cubic-bezier(0.4,0,0.2,1);
+          backface-visibility: hidden; -webkit-backface-visibility: hidden;
+          will-change: transform; z-index: 20; pointer-events: none;
         }
-
-        /*
-         * BOTTOM HALF
-         * Slides straight down (translateY) out of viewport.
-         * 200ms delay so flap starts first.
-         */
-       .env-body {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-
-  /* 🔥 Hinge at bottom */
-  transform-origin: bottom center;
-
-  transform: rotateX(0deg);
-  transition: transform 3000ms cubic-bezier(0.4, 0, 0.2, 1);
-
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  will-change: transform;
-
-  z-index: 20;
-  pointer-events: none;
-}
-
-.env-body.opened {
-  /* 🔥 Negative = top moves toward viewer */
-  transform: rotateX(-175deg);
-}
-          
-
-
-        /* Subtle shimmer on the flap before tap */
+        .env-body.opened { transform: rotateX(-175deg); }
         .env-flap::after {
-          content: "";
-          position: absolute;
-          inset: 0;
-          pointer-events: none;
-          background: linear-gradient(105deg, transparent 38%, rgba(255,255,255,0.22) 50%, transparent 62%);
+          content: ""; position: absolute; inset: 0; pointer-events: none;
+          background: linear-gradient(105deg,transparent 38%,rgba(255,255,255,0.22) 50%,transparent 62%);
           background-size: 220% 100%;
           animation: shimmer-move 3.2s linear infinite;
         }
         @keyframes shimmer-move {
-          0%   { background-position: 220% center; }
-          100% { background-position: 220% center; }
-        }
-
-        /* Tap hint */
-        @keyframes tap-float {
-          0%, 100% { transform: translateX(-50%) translateY(0);   opacity: 0.55; }
-          50%       { transform: translateX(50%) translateY(-9px); opacity: 1; }
+          0%,100% { background-position: 220% center; }
         }
         .tap-hint {
-          position: absolute;
-          top: 65%;
-          left: 40%;
-          // transform: translateX(50%);
-          z-index: 40;
-          pointer-events: none;
-          // animation: tap-float 2s ease-in-out infinite;
-          text-align: center;
+          position: absolute; top: 65%; left: 40%;
+          z-index: 40; pointer-events: none; text-align: center;
         }
         .tap-hint-label {
-          display: block;
-          color: #b68d33;
-          font-size: 10px;
-          letter-spacing: 3.5px;
-          font-weight: 900;
-          text-transform: uppercase;
-          white-space: nowrap;
+          display: block; color: #b68d33; font-size: 10px;
+          letter-spacing: 3.5px; font-weight: 900;
+          text-transform: uppercase; white-space: nowrap;
         }
         .tap-hint-bar {
-          margin: 7px auto 0;
-          width: 1px;
-          height: 20px;
+          margin: 7px auto 0; width: 1px; height: 20px;
           background: linear-gradient(to bottom, #b68d33, transparent);
+        }
+
+        /* ── Scratch hint pulse ── */
+        @keyframes scratchPulse {
+          0%,100% { opacity:1; transform:translateX(-50%) scale(1); }
+          50%      { opacity:0.4; transform:translateX(-50%) scale(0.97); }
+        }
+
+        /* ── Scratch section layout ── */
+        .scratch-overlay {
+          position: absolute;
+          top: 70%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 100%;
+          z-index: 20;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 6px;
+          padding-bottom: 40px;
+        }
+        .scratch-title {
+          font-family: 'Georgia', serif;
+          font-size: clamp(2rem, 5vw, 2.2rem);
+          color: #ffc55a;
+          font-weight: 700;
+          letter-spacing: 0.04em;
+          text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+          text-align: center;
+          margin-bottom: 2px;
+        }
+        .scratch-subtitle {
+          font-family: 'Georgia', serif;
+          font-size: clamp(1rem, 2.4vw, 0.98rem);
+          color: #671d02;
+          text-align: center;
+          letter-spacing: 0.03em;
+          margin-bottom: 14px;
+          line-height: 1.5;
         }
       `}</style>
 
+      {/* ── Confetti (renders fixed above everything) ── */}
+      <ConfettiBurst active={confettiActive} />
+
       <div className={`relative ${open && envelopeAnimDone ? "min-h-[700vh]" : "h-screen overflow-hidden"}`}>
 
-        {/* ══════════════════════════════════════════
-            STICKY FIRST SECTION + ENVELOPE ON TOP
-        ══════════════════════════════════════════ */}
+        {/* ══ STICKY FIRST SECTION + ENVELOPE ══ */}
         <div
           className="sticky top-0 h-screen w-full overflow-hidden"
           style={{ background: "linear-gradient(160deg,#fff8f0 0%,#fdecd8 55%,#f5d5b8 100%)" }}
-      
         >
-
-
-
-
-
-
-
-
-<img
-  src="/1st bg imjage.svg"
-  className="absolute inset-0 w-full h-full object-cover"
-  style={{ ...getSection3Style(0), ...fadeUp(0),opacity: open ? 1 : 0, }}
-  alt=""
-/>
-
-<img
-  src="/1st front.svg"
-  className="absolute inset-0 w-full h-full object-cover"
-  style={{ ...getSection3Style(0), ...fadeUp(1) ,opacity: open ? 1 : 0, }}
-  alt=""
-  
-/>
-
-<img
-  src="/logo 1.svg"
-  className="absolute object-contain"
-  style={{
-    width: "clamp(80px, 22vw, 122px)",
-    height: "auto",
-    top: "50%",
-    left: "50%",
-    transform: open
-      ? "translate(-50%, -50%) translateY(0)"
-      : "translate(-50%, -50%) translateY(40px)",
-    opacity: open ? 1 : 0,
-    transition: "opacity 1.4s ease, transform 1.5s ease",
-    transitionDelay: "1.5s",
-   
-  }}
-  alt="Logo"
-/>
-
-<img
-  src="/1stbottom.svg"
-  className="absolute w-full object-cover"
- 
-   style={{
-              bottom:"-11px",
+          <img
+            src="/1st bg imjage.svg"
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{ ...getSection3Style(0), ...fadeUp(0), opacity: open ? 1 : 0 }}
+            alt=""
+          />
+          <img
+            src="/1st front.svg"
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{ ...getSection3Style(0), ...fadeUp(1), opacity: open ? 1 : 0 }}
+            alt=""
+          />
+          <img
+            src="/logo 1.svg"
+            className="absolute object-contain"
+            style={{
+              width: "clamp(80px, 22vw, 122px)", height: "auto",
+              top: "50%", left: "50%",
+              transform: open
+                ? "translate(-50%, -50%) translateY(0)"
+                : "translate(-50%, -50%) translateY(40px)",
+              opacity: open ? 1 : 0,
+              transition: "opacity 1.4s ease, transform 1.5s ease",
+              transitionDelay: "1.5s",
+            }}
+            alt="Logo"
+          />
+          <img
+            src="/1stbottom.svg"
+            className="absolute w-full object-cover"
+            style={{
+              bottom: "-11px",
               opacity: open ? 1 : 0,
               transition: "opacity 1.4s ease 1.5s",
               transform: open ? `translateY(-${firstSectionScroll}px)` : "translateY(0px)",
             }}
-  alt=""
-/>
+            alt=""
+          />
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-          {/* ── ENVELOPE ── */}
+          {/* ENVELOPE */}
           <div
             className="env-stage absolute inset-0 w-full h-full"
             style={{ pointerEvents: open ? "none" : "auto" }}
           >
-            {/* Bottom body — slides down */}
             <div className={`env-body${open ? " opened" : ""}`}>
-              <img
-                src="/openbottom.svg"
-                className="w-full h-full object-cover"
-                // eslint-disable-next-line react/no-unknown-property
-                fetchpriority="high"
-                alt=""
-                draggable={false}
-              />
+              <img src="/openbottom.svg" className="w-full h-full object-cover" fetchpriority="high" alt="" draggable={false} />
             </div>
-
-            {/* Top flap — folds outward/upward */}
             <div
               className={`env-flap${open ? " opened" : ""}`}
               onClick={handleOpen}
@@ -1974,18 +2187,10 @@ const fadeUp = (delay) => ({
               tabIndex={0}
               onKeyDown={(e) => e.key === "Enter" && handleOpen()}
             >
-              <img
-                src="/openup.svg"
-                className="w-full h-full object-cover"
-                // eslint-disable-next-line react/no-unknown-property
-                fetchpriority="high"
-                alt=""
-                draggable={false}
-              />
+              <img src="/openup.svg" className="w-full h-full object-cover" fetchpriority="high" alt="" draggable={false} />
             </div>
           </div>
 
-          {/* Tap hint */}
           {!open && (
             <div className="tap-hint">
               <span className="tap-hint-label">Tap to Open</span>
@@ -1994,13 +2199,11 @@ const fadeUp = (delay) => ({
           )}
         </div>
 
-        {/* ══════════════════════════════════════════
-            REST OF SECTIONS
-        ══════════════════════════════════════════ */}
+        {/* ══ REST OF SECTIONS ══ */}
         {open && envelopeAnimDone && (
           <>
             {/* SECTION 2 */}
-            <div  className="w-full">
+            <div className="w-full">
               <div className="h-screen w-full bg-[#5b3525] relative overflow-hidden">
                 {!section2Loaded && (
                   <div className="absolute inset-0 flex items-center justify-center text-white text-sm">Loading…</div>
@@ -2012,10 +2215,10 @@ const fadeUp = (delay) => ({
                   className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${section2Loaded ? "opacity-100" : "opacity-0"}`}
                   alt=""
                 />
-                <div className="relative flex items-center justify-center h-full px-6">
-                  <div className="max-w-[340px] w-full text-center text-[#f2c46d] absolute top-[40%] left-[50%] -translate-x-1/2 -translate-y-1/2" data-aos="fade-up" data-aos-duration="1200">
+                <div className="relative flex items-center justify-center h-full px-6" style={{fontFamily:"'Georgia', 'Times New Roman', serif",}}>
+                  <div className="max-w-[340px] w-full text-center text-[#f5cb7d] absolute top-[40%] left-[50%] -translate-x-1/2 -translate-y-1/2" data-aos="fade-up" data-aos-duration="1200">
                     <h2 className="text-lg md:text-xl font-semibold leading-tight" data-aos="fade-up" data-aos-duration="1200">
-                     Mrs. Sandhya &amp; <br /> Mr.Anil Bahadure
+                      Mrs. Sandhya &amp; <br /> Mr.Anil Bahadure
                     </h2>
                     <p className="mt-1 text-sm leading-relaxed text-[#f6d38b]" data-aos="fade-up" data-aos-duration="1230">
                       Await your presence for <br />the wedding celebrations <br />of their daughter
@@ -2027,111 +2230,111 @@ const fadeUp = (delay) => ({
                     <h2 className="text-lg md:text-xl font-semibold" data-aos="fade-up" data-aos-duration="1300">Mrs. Kamlesh Joshi & <br/> Late Mr. Mukul Joshi</h2>
                   </div>
                 </div>
-                 {/* <img
-                src="/3rd slide top.svg"  className="absolute w-full object-cover"
- 
-   style={{
-              top:"101px",
-              opacity: open ? 1 : 0,
-              transition: "opacity 1.4s ease 1.5s",
-              
-              transform: open ? `translateY(-${firstSectionScroll}px)` : "translateY(0px)",
-            }}
-            data-aos="fade-up" data-aos-duration="2000"
-  alt=""
-              />             */}
               </div>
             </div>
-       <div
-              ref={section1SentinelRef}
-              style={{ height: "1px" }}
-            />
 
-  {/* ── BRIDGE IMAGE ── */}
-{(() => {
-  // Start fading bridge much earlier — as soon as Section 2 appears
-  const bridgeStart = windowHeight * 1.1;
-  const bridgeRaw = scrollY - bridgeStart;
-  const progress = Math.max(0, Math.min(bridgeRaw / (windowHeight * 0.6), 1));
+            <div ref={section1SentinelRef} style={{ height: "1px" }} />
 
-  return (
-    <div
-      style={{
-        position: "relative",
-        top: "-183px",
-        zIndex: 20,
-        pointerEvents: "none",
-        opacity: 1,
-        // Fade UP from below — starts 30px below, rises to natural position
-        transform: `translateY(${(1 - progress) * 30}px)`,
-        transition: "opacity 1s linear, transform 1s linear",
-        marginBottom: "-267px",
-        height:"320px"
-      }}
-    >
-      <img
-        src="/3rd slide top.svg"
-        loading="lazy"
-        className="w-full object-cover"
-        style={{ height: "300px", display: "block" }}
-        alt=""
-      />
-    </div>
-  );
-})()}
+            {/* BRIDGE IMAGE */}
+            {(() => {
+              const bridgeStart = windowHeight * 1.1;
+              const bridgeRaw   = scrollY - bridgeStart;
+              const prog        = Math.max(0, Math.min(bridgeRaw / (windowHeight * 0.6), 1));
+              return (
+                <div
+                  style={{
+                    position: "relative", top: "-183px", zIndex: 20,
+                    pointerEvents: "none", opacity: 1,
+                    transform: `translateY(${(1 - prog) * 30}px)`,
+                    transition: "opacity 1s linear, transform 1s linear",
+                    marginBottom: "-267px", height: "320px",
+                  }}
+                >
+                  <img
+                    src="/3rd slide top.svg"
+                    loading="lazy"
+                    className="w-full object-cover"
+                    style={{ height: "300px", display: "block" }}
+                    alt=""
+                  />
+                </div>
+              );
+            })()}
 
-{/* SECTION 3 — starts behind the bridge image */}
-<div
-  ref={section3Ref}
-  className=" h-screen w-full relative overflow-hidden"
-  style={{ zIndex: 10 }}
-  data-aos="fade-up" data-aos-duration="500"
-  
->
-  <div className="sticky top-0 h-screen w-full overflow-hidden">
-  {/* Remove data-aos="fade-up" from bg — it should always be visible */}
-  <img
-    src="/3rd slide bg.svg"
-    loading="lazy"
-    className="absolute inset-0 w-full h-full object-cover"
-    alt=""
-  />
-  {/* rest unchanged... */}
-  <img
-    src="/3rd slide second.svg" loading="lazy"
-    className="absolute w-full h-full object-cover top-[40px]  fade-up"
-    style={getSection3Style(0)} alt=""
-  />
-  <img
-    src="/3rd slide4.svg" loading="lazy"
-    className={`absolute w-full h-full object-cover top-[100px] fade-up ${visible ? "show" : ""}`}
-    style={{ transitionDelay: "0.3s" }} alt=""
-  />
-  <img
-    src="/3rd slide3.svg" loading="lazy"
-    className={`absolute w-full h-full object-cover top-[100px] fade-up ${visible ? "show" : ""}`}
-    style={{ transitionDelay: "0.4s" }} alt=""
-  />
-  <img
-    src="/3rd slide bottom.svg" loading="lazy"
-    className="absolute w-full h-full object-cover top-[276px]"
-    style={{
-      transform: scrollY < section3Start ? "translateY(0px)" : `translateY(${-section3Progress * windowHeight}px)`,
-      opacity: scrollY < section3Start ? 1 : 1 - section3Progress,
-      transition: "transform 0.1s linear, opacity 0.1s linear",
-    }}
-    alt=""
-  />
-  </div>
-</div>
-         
+            {/* ══ SECTION 3 — SCRATCH CARD ══ */}
+            <div
+              ref={section3Ref}
+              className="h-screen w-full relative overflow-hidden"
+              style={{ zIndex: 10 }}
+              data-aos="fade-up"
+              data-aos-duration="500"
+            >
+              <div className="sticky top-0 h-screen w-full overflow-hidden">
+
+                {/* Background */}
+                <img
+                  src="/3rd slide bg.svg"
+                  loading="lazy"
+                  className="absolute inset-0 w-full h-full object-cover"
+                  alt=""
+                />
+
+                {/* Second decorative layer */}
+                <img
+                  src="/3rd slide second.svg"
+                  loading="lazy"
+                  className="absolute w-full h-full object-cover top-[40px] fade-up"
+                  style={getSection3Style(0)}
+                  alt=""
+                />
+
+                {/* Slide 4 layer */}
+                {/* <img
+                  src="/3rd slide4.svg"
+                  loading="lazy"
+                  className={`absolute w-full h-full object-cover top-[100px] fade-up ${visible ? "show" : ""}`}
+                  style={{ transitionDelay: "0.3s" }}
+                  alt=""
+                /> */}
+
+                {/*
+                  ── SCRATCH CARD replaces /3rd slide3.svg ──
+                  Positioned in the centre of the slide, above the bg layers.
+                */}
+                <div className="scratch-overlay">
+                  <p className="scratch-title">Reveal</p>
+                  <p className="scratch-subtitle">
+                    Scratch to discover<br />the wedding date
+                  </p>
+                  <ScratchCard
+                    weddingDate="05/05/26"
+                    onFullReveal={handleScratchReveal}
+                  />
+                </div>
+
+                {/* Bottom sofa image */}
+                <img
+                  src="/3rd slide bottom.svg"
+                  loading="lazy"
+                  className="absolute w-full h-full object-cover top-[276px] z-10"
+                  style={{
+                    transform: scrollY < section3Start
+                      ? "translateY(0px)"
+                      : `translateY(${-section3Progress * windowHeight}px)`,
+                    opacity: scrollY < section3Start ? 1 : 1 - section3Progress,
+                    transition: "transform 0.1s linear, opacity 0.1s linear",
+                  }}
+                  alt=""
+                />
+
+              </div>
+            </div>
 
             {/* SECTION 4 — Events */}
             <div className="relative h-[500vh] w-full">
-              <div className="sticky top-0 h-screen w-full overflow-hidden">
-               
+              <div className="sticky top-0 h-screen w-full overflow-hidden" style={{fontFamily:"'Georgia', 'Times New Roman', serif"}}>
                 <img src="/bg 4 section.svg" loading="lazy" className="absolute inset-0 w-full h-full object-cover" alt="" />
- <h2 className="absolute top-[6%] left-1/2 -translate-x-1/2 text-[#f3c53c] text-3xl font-bold ">Events</h2>
+                <h2 className="absolute top-[6%] left-1/2 -translate-x-1/2 text-[#f3c53c] text-3xl font-bold">Events</h2>
                 {[
                   {
                     img: "/section 4 1.svg",
@@ -2177,7 +2380,7 @@ const fadeUp = (delay) => ({
                         <p className="text-base font-medium text-[#5c3a1e]">Day 3 <br/> 05/05/26</p>
                         <h2 className="text-2xl font-bold text-[#cc4949] mt-1">Buddhist<br />Wedding</h2>
                         <p className="text-base text-orange-700">12 pm</p>
-                         <h2 className="text-xl font-semibold text-green-700 mt-2">High Tea</h2>
+                        <h2 className="text-xl font-semibold text-green-700 mt-2">High Tea</h2>
                         <p className="text-sm text-green-700">5 pm</p>
                         <p className="text-sm text-[#5c3a1e] mt-2">@Mangli Lake Farm</p>
                       </div>
@@ -2190,19 +2393,15 @@ const fadeUp = (delay) => ({
                         <p className="text-base font-medium text-[#5c3a1e]">Day 3 <br/> 05/05/26</p>
                         <h2 className="text-2xl font-semibold text-orange-700 mt-1">Barat</h2>
                         <p className="text-sm text-orange-700">6pm</p>
-                        <h2 className="text-2xl font-semibold text-green-700 mt-1">Warmala & <br/>Reception</h2>
+                        <h2 className="text-xl font-semibold text-green-700 mt-1">Warmala & <br/>Reception</h2>
                         <p className="text-sm text-green-700">7pm onwards</p>
-                         <h2 className="text-2xl font-semibold text-[#c200b9] mt-1">Hindu Wedding</h2>
-                        <p className="text-sm text-[#5c3a1e] mt-3">@Mangli Lake Farm</p>
+                        <h2 className="text-xl font-semibold text-[#c200b9] mt-1">Hindu<br/> Wedding</h2>
+                        <p className="text-sm text-[#5c3a1e] mt-1">@Mangli Lake Farm</p>
                       </div>
                     ),
                   },
                 ].map((slide, i) => (
-                  <div
-                    key={i}
-                    className="absolute inset-0 flex items-center justify-center"
-                    style={getStyle(i)}
-                  >
+                  <div key={i} className="absolute inset-0 flex items-center justify-center" style={getStyle(i)}>
                     <img src={slide.img} loading="lazy" className="absolute inset-0 w-full h-full object-cover" alt="" />
                     <div className="relative flex items-center justify-center w-full h-full px-6">
                       {slide.node}
@@ -2213,16 +2412,13 @@ const fadeUp = (delay) => ({
             </div>
 
             {/* SECTION 5 — Venue */}
-            <div
-              className="h-screen w-full relative flex flex-col items-center justify-center text-center overflow-hidden"
-            
-            >
+            <div className="h-screen w-full relative flex flex-col items-center justify-center text-center overflow-hidden" style={{fontFamily:"Georgia, 'Times New Roman', Times, serif"}} >
               <img src="/section 5 final screen.svg" loading="lazy" className="absolute inset-0 w-full h-full object-cover" alt="" />
-              <div className="relative z-10 flex flex-col items-center w-full px-4" style={{ marginTop: "-80px" }}>
-                <h2 className="text-4xl font-serif text-[#1f2a5a] mb-2" data-aos="fade-up">Venue</h2>
+              <div className="relative z-10 flex flex-col items-center w-full px-4" style={{ marginTop: "-242px" }}>
+                <h2 className="text-4xl font-bold text-[#1f2a5a] mb-2" data-aos="fade-up" >Venue</h2>
                 <p className="text-base text-[#1f2a5a] leading-relaxed mb-6" data-aos="fade-up">
                   Mangli Lake Farm,<br />
-                  Near Champa (2km), Umred Road,<br />
+                  Near Champa (2km), Umred Road,<br/>  
                   Nagpur, Maharashtra 441204
                 </p>
                 <div className="w-full max-w-[320px] h-[130px] rounded-xl overflow-hidden shadow-xl mb-6" data-aos="fade-up">
@@ -2249,10 +2445,7 @@ const fadeUp = (delay) => ({
             </div>
 
             {/* FINAL — Countdown */}
-            <div
-              className="h-screen w-full relative flex items-center justify-center text-center overflow-hidden"
-            
-            >
+            <div className="h-screen w-full relative flex items-center justify-center text-center overflow-hidden" style={{fontFamily:"Georgia, 'Times New Roman', Times, serif"}} >
               <img src="/final.svg" loading="lazy" className="absolute inset-0 w-full h-full object-cover" alt="" />
               <div className="relative z-10 flex flex-col items-center px-4" style={{ marginTop: "-60px" }}>
                 <h2 className="text-3xl md:text-4xl font-bold text-[#f3c178] mb-6" data-aos="fade-up">
