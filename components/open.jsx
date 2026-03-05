@@ -1534,6 +1534,24 @@ function Open() {
   const section3Ref = useRef(null);
   const imageRef = useRef(null);
 
+  const section1SentinelRef = useRef(null);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
   const [open, setOpen] = useState(false);
   const [envelopeAnimDone, setEnvelopeAnimDone] = useState(false);
   const [section2Loaded, setSection2Loaded] = useState(false);
@@ -1587,7 +1605,7 @@ function Open() {
   const sectionStart = windowHeight * 3;
   const raw = scrollY - sectionStart;
   const step = windowHeight;
-  const scrollClamped = Math.max(0, Math.min(raw, step * 3));
+  const scrollClamped = Math.max(0, Math.min(raw, step * 4));
   const activeIndex = Math.floor(scrollClamped / step);
   const progressVal = (scrollClamped % step) / step;
 
@@ -1685,6 +1703,18 @@ function Open() {
     };
   }, []);
 
+  // ── SENTINEL observer — place HERE, after all state/refs are declared ──
+  useEffect(() => {
+    if (!section1SentinelRef.current) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setSection1Covered(entry.isIntersecting);
+      },
+      { threshold: 1.0 }
+    );
+    observer.observe(section1SentinelRef.current);
+    return () => observer.disconnect();
+  }, [envelopeAnimDone]);
   // Envelope open
   const handleOpen = () => {
     if (open) return;
@@ -1985,7 +2015,7 @@ const fadeUp = (delay) => ({
                 <div className="relative flex items-center justify-center h-full px-6">
                   <div className="max-w-[340px] w-full text-center text-[#f2c46d] absolute top-[40%] left-[50%] -translate-x-1/2 -translate-y-1/2" data-aos="fade-up" data-aos-duration="1200">
                     <h2 className="text-lg md:text-xl font-semibold leading-tight" data-aos="fade-up" data-aos-duration="1200">
-                      Sandhya &amp; <br />Anil Bahadure
+                     Mrs. Sandhya &amp; <br /> Mr.Anil Bahadure
                     </h2>
                     <p className="mt-1 text-sm leading-relaxed text-[#f6d38b]" data-aos="fade-up" data-aos-duration="1230">
                       Await your presence for <br />the wedding celebrations <br />of their daughter
@@ -1994,7 +2024,7 @@ const fadeUp = (delay) => ({
                     <p className="mt-1 text-xl text-[#f6d38b]" data-aos="fade-up" data-aos-duration="1280">with</p>
                     <h1 className="text-4xl font-bold tracking-wide" data-aos="fade-up" data-aos-duration="1290">Naivedya</h1>
                     <p className="mt-5 text-sm text-[#f6d38b]" data-aos="fade-up" data-aos-duration="1300">Son of</p>
-                    <h2 className="text-lg md:text-xl font-semibold" data-aos="fade-up" data-aos-duration="1300">Kamlesh Joshi</h2>
+                    <h2 className="text-lg md:text-xl font-semibold" data-aos="fade-up" data-aos-duration="1300">Mrs. Kamlesh Joshi & <br/> Late Mr. Mukul Joshi</h2>
                   </div>
                 </div>
                  {/* <img
@@ -2012,7 +2042,10 @@ const fadeUp = (delay) => ({
               />             */}
               </div>
             </div>
-   
+       <div
+              ref={section1SentinelRef}
+              style={{ height: "1px" }}
+            />
 
   {/* ── BRIDGE IMAGE ── */}
 {(() => {
@@ -2050,11 +2083,12 @@ const fadeUp = (delay) => ({
 {/* SECTION 3 — starts behind the bridge image */}
 <div
   ref={section3Ref}
-  className="h-screen w-full relative overflow-hidden"
+  className=" h-screen w-full relative overflow-hidden"
   style={{ zIndex: 10 }}
   data-aos="fade-up" data-aos-duration="500"
   
 >
+  <div className="sticky top-0 h-screen w-full overflow-hidden">
   {/* Remove data-aos="fade-up" from bg — it should always be visible */}
   <img
     src="/3rd slide bg.svg"
@@ -2065,7 +2099,7 @@ const fadeUp = (delay) => ({
   {/* rest unchanged... */}
   <img
     src="/3rd slide second.svg" loading="lazy"
-    className="absolute w-full h-full object-cover top-[108px]"
+    className="absolute w-full h-full object-cover top-[40px]  fade-up"
     style={getSection3Style(0)} alt=""
   />
   <img
@@ -2088,21 +2122,22 @@ const fadeUp = (delay) => ({
     }}
     alt=""
   />
+  </div>
 </div>
          
 
             {/* SECTION 4 — Events */}
-            <div className="relative h-[400vh] w-full">
+            <div className="relative h-[500vh] w-full">
               <div className="sticky top-0 h-screen w-full overflow-hidden">
-                <h2 className="absolute top-[6%] left-1/2 -translate-x-1/2 text-[#f3c53c] text-3xl font-bold z-10">Events</h2>
+               
                 <img src="/bg 4 section.svg" loading="lazy" className="absolute inset-0 w-full h-full object-cover" alt="" />
-
+ <h2 className="absolute top-[6%] left-1/2 -translate-x-1/2 text-[#f3c53c] text-3xl font-bold ">Events</h2>
                 {[
                   {
                     img: "/section 4 1.svg",
                     node: (
                       <div className="max-w-[300px] w-full text-center mt-10 z-10">
-                        <p className="text-base font-medium text-[#5c3a1e]">Day 1 · 03/05/26</p>
+                        <p className="text-base font-medium text-[#5c3a1e]">Day 1 <br/> 03/05/26</p>
                         <h2 className="text-2xl font-semibold text-orange-700 mt-1">Paritran</h2>
                         <p className="text-sm text-orange-700">11 am</p>
                         <h2 className="text-2xl font-semibold text-green-700 mt-1">Mehendi</h2>
@@ -2115,7 +2150,7 @@ const fadeUp = (delay) => ({
                     img: "/section 4 2.svg",
                     node: (
                       <div className="max-w-[300px] w-full text-center z-10">
-                        <p className="text-base font-medium text-[#5c3a1e]">Day 2 · 04/05/26</p>
+                        <p className="text-base font-medium text-[#5c3a1e]">Day 2 <br/> 04/05/26</p>
                         <h2 className="text-xl font-semibold text-[#c200b9] mt-1">Carnival Haldi<br />Lunch</h2>
                         <p className="text-sm text-[#c200b9]">12 pm</p>
                         <h2 className="text-xl font-semibold text-green-700 mt-2">High Tea</h2>
@@ -2128,7 +2163,7 @@ const fadeUp = (delay) => ({
                     img: "/section 4 3.svg",
                     node: (
                       <div className="max-w-[300px] w-full text-center z-10">
-                        <p className="text-base font-medium text-[#5c3a1e]">Day 2 · 04/05/26</p>
+                        <p className="text-base font-medium text-[#5c3a1e]">Day 2 <br/> 04/05/26</p>
                         <h2 className="text-2xl font-bold text-[#2b2b9a] mt-1">Sangeet</h2>
                         <p className="text-base text-[#2b2b9a]">7 pm onwards</p>
                         <p className="text-sm text-[#5c3a1e] mt-2">@Mangli Lake Farm</p>
@@ -2139,10 +2174,26 @@ const fadeUp = (delay) => ({
                     img: "/section 4 3.svg",
                     node: (
                       <div className="max-w-[300px] w-full text-center z-10">
-                        <p className="text-base font-medium text-[#5c3a1e]">Day 3 · 05/05/26</p>
+                        <p className="text-base font-medium text-[#5c3a1e]">Day 3 <br/> 05/05/26</p>
                         <h2 className="text-2xl font-bold text-[#cc4949] mt-1">Buddhist<br />Wedding</h2>
-                        <p className="text-base text-orange-700">12 pm onward</p>
+                        <p className="text-base text-orange-700">12 pm</p>
+                         <h2 className="text-xl font-semibold text-green-700 mt-2">High Tea</h2>
+                        <p className="text-sm text-green-700">5 pm</p>
                         <p className="text-sm text-[#5c3a1e] mt-2">@Mangli Lake Farm</p>
+                      </div>
+                    ),
+                  },
+                  {
+                    img: "/section 4 1.svg",
+                    node: (
+                      <div className="max-w-[300px] w-full text-center mt-10 z-10">
+                        <p className="text-base font-medium text-[#5c3a1e]">Day 3 <br/> 05/05/26</p>
+                        <h2 className="text-2xl font-semibold text-orange-700 mt-1">Barat</h2>
+                        <p className="text-sm text-orange-700">6pm</p>
+                        <h2 className="text-2xl font-semibold text-green-700 mt-1">Warmala & <br/>Reception</h2>
+                        <p className="text-sm text-green-700">7pm onwards</p>
+                         <h2 className="text-2xl font-semibold text-[#c200b9] mt-1">Hindu Wedding</h2>
+                        <p className="text-sm text-[#5c3a1e] mt-3">@Mangli Lake Farm</p>
                       </div>
                     ),
                   },
@@ -2205,7 +2256,7 @@ const fadeUp = (delay) => ({
               <img src="/final.svg" loading="lazy" className="absolute inset-0 w-full h-full object-cover" alt="" />
               <div className="relative z-10 flex flex-col items-center px-4" style={{ marginTop: "-60px" }}>
                 <h2 className="text-3xl md:text-4xl font-bold text-[#f3c178] mb-6" data-aos="fade-up">
-                  The Countdown Begins
+                  The Countdown <br/>Begins
                 </h2>
                 <div
                   className="bg-[#1e2250] text-white px-6 py-2 rounded-full text-lg font-semibold shadow-lg mb-6 tracking-widest"
