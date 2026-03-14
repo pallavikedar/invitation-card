@@ -1,1515 +1,3 @@
-// "use client";
-// import { useState, useEffect } from "react";
-
-// function Open() {
-//   const [open, setOpen] = useState(false);
-//   const [scrollY, setScrollY] = useState(0);
-
-// useEffect(() => {
-//   const handleScroll = () => {
-//     setScrollY(window.scrollY);
-//   };
-
-//   window.addEventListener("scroll", handleScroll);
-//   return () => window.removeEventListener("scroll", handleScroll);
-// }, []);
-
-//   return (
-//    <div
-//   className={`relative perspective-[2000px] transition-all duration-700
-//   ${open ? "min-h-screen overflow-y-auto" : "h-[700px] overflow-hidden"}`}
-// >
-
-//       {/* fist part  */}
-//       <div
-//         className={`absolute w-[100%] h-[100%] bg-white shadow-xl rounded-lg 
-//         flex items-center justify-center text-2xl font-semibold
-//         `}
-//       >
-//        <img src="1st bg imjage.svg" className={` relative w-full h-[100vh] top-[-65px] object-contain transition-all duration-100 ease-in-out
-//         ${open ? "opacity-100 translate-y-0 delay-100" : "opacity-0 translate-y-10"}`}/>
-//        <img src="/1st front.svg" className={` absolute w-full h-[100vh] object-contain transition-all duration-700 ease-in-out
-//         ${open ? "opacity-100 translate-y-0 delay-700" : "opacity-0 translate-y-10"}`}/>
-//        <img src="/1stbottom.svg" className={`absolute w-full h-[100vh] object-contain transition-all duration-700 ease-in-out
-//         ${open ? "opacity-100 translate-y-0 delay-700" : "opacity-0 translate-y-10"}`}/>
-
-//       </div>
-
-//     {/* second part */}
-//        <div className={`absolute w-full h-[87vh] top-[605px]  bg-[#593838]
-//        ${open ? "opacity-100 delay-700" : "opacity-0 translate-y-10"}`}>
-
-//        <img
-//   src="/slidesecond.svg"
-//   className={`absolute w-full h-[100vh] object-contain transition-all duration-700 ease-in-out 
-//   ${open ? "opacity-100 delay-700" : "opacity-0 translate-y-10"}`}
-//   style={{
-//     top: `${-44- scrollY * 0.5}px`,
-//   }}
-// />
-//        </div>
-
-
-//       {/* open screen  */}
-//       <img
-//         src="/openbottom.svg"
-//         alt="Wedding decoration bottom"
-//         className={`relative w-full h-[589px] object-contain z-10
-//         transition-all duration-1000 ease-in-out
-//         ${open ? "translate-y-[700px] opacity-0" : "translate-y-0 opacity-100"}`}
-//       />
-
-//       {/* Top Flap */}
-//       <img
-//         src="/openup.svg"
-//         alt="Wedding decoration top"
-//         onClick={() => setOpen(true)}
-//         className={`absolute left-0 w-full h-[655px] object-contain   top-[-38px]
-//         transition-transform duration-1000 ease-in-out z-20 cursor-pointer
-//         ${open ? "rotate-x-[-180deg]" : "rotate-x-0"}`}
-//         style={{
-//           transformOrigin: "top",
-//           transformStyle: "preserve-3d",
-//         }}
-//       />
-
-
-//     </div>
-//   );
-// }
-
-// export default Open;
-
-
-
-
-
-
-
-// "use client";
-// import { useState, useEffect } from "react";
-
-// function Open() {
-//   const [open, setOpen] = useState(false);
-//   const [scrollY, setScrollY] = useState(0);
-//   const [windowHeight, setWindowHeight] = useState(0);
-
-//   useEffect(() => {
-//     setWindowHeight(window.innerHeight);
-
-//     let ticking = false;
-
-//     const handleScroll = () => {
-//       if (!ticking) {
-//         window.requestAnimationFrame(() => {
-//           setScrollY(window.scrollY);
-//           ticking = false;
-//         });
-//         ticking = true;
-//       }
-//     };
-
-//     window.addEventListener("scroll", handleScroll);
-//     return () => window.removeEventListener("scroll", handleScroll);
-//   }, []);
-
-//   const firstSectionScroll = Math.min(scrollY, windowHeight);
-
-//   return (
-//     <div
-//       className={`relative ${
-//         open ? "min-h-[200vh]" : "h-auto overflow-hidden"
-//       }`}
-//     >
-//       {/* ================= FIRST SECTION (STICKY) ================= */}
-//       <div className="sticky top-0 h-[88vh] w-full overflow-hidden bg-white shadow-xl rounded-lg">
-
-//         {/* Background */}
-//         <img
-//           src="1st bg imjage.svg"
-//           className={`absolute w-full h-[88vh] object-contain transition-opacity duration-700
-//           ${open ? "opacity-100" : "opacity-0"}`}
-//           style={{
-//             transform: open
-//               ? `translateY(-${firstSectionScroll * 0.5}px)`
-//               : "translateY(0px)",
-//           }}
-//         />
-
-//         {/* Front */}
-//         <img
-//           src="/1st front.svg"
-//           className={`absolute w-full h-[88vh] object-contain transition-opacity duration-700
-//           ${open ? "opacity-100 delay-700" : "opacity-0"}`}
-//           style={{
-//             transform: open
-//               ? `translateY(-${firstSectionScroll * 0.7}px)`
-//               : "translateY(0px)",
-//           }}
-//         />
-
-//         {/* Bottom */}
-//         <img
-//           src="/1stbottom.svg"
-//           className={`absolute w-full h-screen object-contain transition-opacity duration-700
-//           ${open ? "opacity-100 delay-700" : "opacity-0"}`}
-//           style={{
-//             transform: open
-//               ? `translateY(-${firstSectionScroll}px)`
-//               : "translateY(0px)",
-//           }}
-//         />
-
-//              <img
-//         src="/openbottom.svg"
-//         alt="Wedding decoration bottom"
-//         className={`relative w-full h-[589px] object-contain z-10
-//         transition-all duration-1000 ease-in-out
-//         ${open ? "translate-y-[700px] opacity-0" : "translate-y-0 opacity-100"}`}
-//       />
-
-//       {/* Top Flap */}
-//       <img
-//         src="/openup.svg"
-//         alt="Wedding decoration top"
-//         onClick={() => setOpen(true)}
-//         className={`absolute left-0 w-full h-[655px] object-contain   top-[-38px]
-//         transition-transform duration-1000 ease-in-out z-20 cursor-pointer
-//         ${open ? "rotate-x-[-180deg]" : "rotate-x-0"}`}
-//         style={{
-//           transformOrigin: "top",
-//           transformStyle: "preserve-3d",
-//         }}
-//       />
-
-//       </div>
-
-//       {/* ================= SECOND SECTION ================= */}
-//       <div className="h-[88vh] w-full bg-[#593838] relative">
-//         <img
-//           src="/slidesecond.svg"
-//           className="absolute w-full h-[88vh] object-contain"
-//         />
-//       </div>
-
-
-//     {/* //  third section */}
-//     <div>
-//         <img
-//           src="3rd slide bg.svg"
-//           className={`absolute w-full h-[88vh] object-contain transition-opacity duration-700 top-[1210px]
-//           ${open ? "opacity-100" : "opacity-0"}`}
-//         //   style={{
-//         //     transform: open
-//         //       ? `translateY(-${firstSectionScroll * 0.5}px)`
-//         //       : "translateY(0px)",
-//         //   }}
-//         />
-
-//         {/* Front */}
-//         <img
-//           src="/3rd slide top.svg"
-//           className={`absolute w-full h-[88vh] object-contain transition-opacity duration-700 top-[843px]
-//           ${open ? "opacity-100 delay-700" : "opacity-0"}`}
-//         //   style={{
-//         //     transform: open
-//         //       ? `translateY(-${firstSectionScroll * 0.7}px)`
-//         //       : "translateY(0px)",
-//         //   }}
-//         />
-
-//         {/* Bottom */}
-//         <img
-//           src="/3rd slide second.svg"
-//           className={`absolute w-full h-screen object-contain transition-opacity duration-700 top-[1188px]
-//           ${open ? "opacity-100 delay-700" : "opacity-0"}`}
-//         //   style={{
-//         //     transform: open
-//         //       ? `translateY(-${firstSectionScroll}px)`
-//         //       : "translateY(0px)",
-//         //   }}
-//         />
-//            <img
-//           src="/3rd slide4.svg"
-//           className={`absolute w-full h-screen object-contain transition-opacity duration-700 top-[1210px]
-//           ${open ? "opacity-100 delay-700" : "opacity-0"}`}
-//         //   style={{
-//         //     transform: open
-//         //       ? `translateY(-${firstSectionScroll}px)`
-//         //       : "translateY(0px)",
-//         //   }}
-//         />
-//         <img
-//           src="/3rd slide3.svg"
-//           className={`absolute w-full h-screen object-contain transition-opacity duration-700 top-[1210px]
-//           ${open ? "opacity-100 delay-700" : "opacity-0"}`}
-//         //   style={{
-//         //     transform: open
-//         //       ? `translateY(-${firstSectionScroll}px)`
-//         //       : "translateY(0px)",
-//         //   }}
-//         />
-//          <img
-//           src="/3rd slide bottom.svg"
-//           className={`absolute w-full h-screen object-contain transition-opacity duration-700 top-[1370px]
-//           ${open ? "opacity-100 delay-700" : "opacity-0"}`}
-//         //   style={{
-//         //     transform: open
-//         //       ? `translateY(-${firstSectionScroll}px)`
-//         //       : "translateY(0px)",
-//         //   }}
-//         />
-
-//     </div>
-//     <div>
-//          <img
-//           src="bg 4 section.svg"
-//           className={`absolute w-full h-[88vh] object-contain transition-opacity duration-700 top-[1774px]
-//           ${open ? "opacity-100" : "opacity-0"}`}
-//         //   style={{
-//         //     transform: open
-//         //       ? `translateY(-${firstSectionScroll * 0.5}px)`
-//         //       : "translateY(0px)",
-//         //   }}
-//         />
-
-//         {/* Front */}
-//         <img
-//           src="/section 4 1.svg"
-//           className={`absolute w-full h-[88vh] object-contain transition-opacity duration-700 top-[1913px]
-//           ${open ? "opacity-100 delay-700" : "opacity-0"}`}
-//         //   style={{
-//         //     transform: open
-//         //       ? `translateY(-${firstSectionScroll * 0.7}px)`
-//         //       : "translateY(0px)",
-//         //   }}
-//         />
-
-//         {/* Bottom */}
-//         <img
-//           src="/section 4 2.svg"
-//           className={`absolute w-full h-screen object-contain transition-opacity duration-700 top-[2100px]
-//           ${open ? "opacity-100 delay-700" : "opacity-0"}`}
-//         //   style={{
-//         //     transform: open
-//         //       ? `translateY(-${firstSectionScroll}px)`
-//         //       : "translateY(0px)",
-//         //   }}
-//         />
-
-//            <img
-//           src="/section 4 3.svg"
-//           className={`absolute w-full h-screen object-contain transition-opacity duration-700 top-[2550px]
-//           ${open ? "opacity-100 delay-700" : "opacity-0"}`}
-//         //   style={{
-//         //     transform: open
-//         //       ? `translateY(-${firstSectionScroll}px)`
-//         //       : "translateY(0px)",
-//         //   }}
-//         /> 
-//     </div>
-//      </div>
-
-
-
-//   );
-// }
-
-// export default Open;
-
-
-
-
-
-
-
-
-// "use client";
-// import { useEffect, useRef, useState } from "react";
-// import AOS from 'aos';
-// import 'aos/dist/aos.css';
-// import ScratchCard from "./ScratchCard"
-// import MyScratchCard from "./ScratchCard";
-
-// function Open() {
-
-
-
-
-
-//   const sectionRef = useRef(null);
-//   const section3Ref = useRef(null);
-//   const imageRef = useRef(null);
-//   const [offset, setOffset] = useState(0);
-//   const [visible, setVisible] = useState(false);
-//   useEffect(() => {
-//     AOS.init({
-//       // You can add global settings here, e.g.:
-//       duration: 800, // values from 0 to 3000, with step 50ms
-//       once: false, // whether animation should happen only once - while scrolling down
-//     });
-//   }, []);
-//   useEffect(() => {
-//     if (!sectionRef.current) return;
-
-//     const observer = new IntersectionObserver(
-//       ([entry]) => {
-//         setVisible(entry.isIntersecting);
-//       },
-//       { threshold: 0.3 }
-//     );
-
-//     observer.observe(sectionRef.current);
-
-//     return () => observer.disconnect();
-//   }, []);
-//   const [open, setOpen] = useState(false);
-//   const [scrollY, setScrollY] = useState(0);
-//   const [windowHeight, setWindowHeight] = useState(0);
-
-//   useEffect(() => {
-//     setWindowHeight(window.innerHeight);
-
-//     let ticking = false;
-
-//     const handleScroll = () => {
-//       if (!ticking) {
-//         window.requestAnimationFrame(() => {
-//           setScrollY(window.scrollY);
-//           ticking = false;
-//         });
-//         ticking = true;
-//       }
-//     };
-
-//     window.addEventListener("scroll", handleScroll);
-//     return () => window.removeEventListener("scroll", handleScroll);
-//   }, []);
-
-//   const firstSectionScroll = Math.min(scrollY, windowHeight);
-
-
-
-//   let current = 0;
-//   let target = 0;
-//   let isVisible = false;
-
-//   useEffect(() => {
-//     const observer = new IntersectionObserver(
-//       ([entry]) => {
-//         isVisible = entry.isIntersecting;
-//       },
-//       { threshold: 0.3 }
-//     );
-
-//     if (sectionRef.current) {
-//       observer.observe(sectionRef.current);
-//     }
-
-//     const handleScroll = () => {
-//       if (!sectionRef.current || !isVisible) return;
-
-//       const rect = sectionRef.current.getBoundingClientRect();
-//       const windowHeight = window.innerHeight;
-
-//       const progress = (windowHeight - rect.top) / windowHeight;
-//       const clamped = Math.max(0, Math.min(progress, 1));
-
-//       target = clamped * 40; // max movement 40px
-//     };
-
-//     const animate = () => {
-//       if (isVisible) {
-//         current += (target - current) * 0.08;
-
-//         if (imageRef.current) {
-//           imageRef.current.style.transform = `translateY(${current}px)`;
-//         }
-//       }
-
-//       requestAnimationFrame(animate);
-//     };
-
-//     window.addEventListener("scroll", handleScroll);
-//     animate();
-
-//     return () => {
-//       window.removeEventListener("scroll", handleScroll);
-//       observer.disconnect();
-//     };
-//   }, []);
-
-
-
-
-
-//                 const sectionStart = windowHeight * 3;
-//                 const raw = scrollY - sectionStart;
-
-//                 const step = windowHeight;
-//                 const max = step * 3;
-
-//                 const scroll = Math.max(0, Math.min(raw, max));
-
-//                 const activeIndex = Math.floor(scroll / step);
-//                 const progress = (scroll % step) / step;
-
-//                 const getStyle = (index) => {
-//                   // Current active slide
-//                   if (index === activeIndex) {
-//                     return {
-//                       transform: `translateY(${-progress * windowHeight}px)`
-//                     };
-//                   }
-
-//                   // Next slide coming from bottom
-//                   if (index === activeIndex + 1) {
-//                     return {
-//                       transform: `translateY(${windowHeight - progress * windowHeight}px)`
-//                     };
-//                   }
-
-//                   // Slides above
-//                   if (index < activeIndex) {
-//                     return { transform: `translateY(${-windowHeight}px)` };
-//                   }
-
-//                   // Slides below
-//                   return { transform: `translateY(${windowHeight}px)` };
-//                 };
-
-
-//   useEffect(() => {
-//     const handleScroll = () => setScrollY(window.scrollY);
-//     window.addEventListener("scroll", handleScroll);
-//     return () => window.removeEventListener("scroll", handleScroll);
-//   }, []);
-
-//   // Section start & end positions
-//    const section3Start = section3Ref.current?.offsetTop || 0;
-//   const section3Height = windowHeight * 2; // scrollable area for animation
-//   const section3End = section3Start + section3Height;
-
-//   // Only scroll relative to section3
-//   const section3Raw = scrollY - section3Start;
-//   const section3Scroll = Math.max(0, Math.min(section3Raw, section3Height));
-//   const section3Progress = section3Scroll / windowHeight;
-
-//   const getSection3Style = (index) => {
-//     // Before section scroll → show images normally
-//     if (scrollY < section3Start) return { transform: "translateY(0px)" };
-
-//     // First slide animation
-//     if (index === 0) {
-//       return { transform: `translateY(${-section3Progress * windowHeight}px)` };
-//     }
-
-//     // Second slide animation
-//     if (index === 1) {
-//       return { transform: `translateY(${windowHeight - section3Progress * windowHeight}px)` };
-//     }
-
-//     // Other slides: stay in place
-//     return { transform: "translateY(0px)" };
-//   };
-//   return (
-//     <div
-//       className={`relative ${open ? "min-h-[500vh]" : "h-screen overflow-hidden"
-//         }`}
-//     >
-//       {/* ================= FIRST SECTION (STICKY) ================= */}
-//       <div className="sticky top-0 h-[88vh] w-full overflow-hidden bg-white shadow-xl rounded-lg">
-
-//         {/* Background */}
-//         <img
-//           src="1st bg imjage.svg"
-//           className="absolute w-full h-[88vh] object-contain"
-//           style={{
-//             transform: open
-//               ? `translateY(-${firstSectionScroll * 0.5}px)`
-//               : "translateY(0px)",
-//           }}
-//         />
-
-//         {/* Front */}
-//         <img
-//           src="/1st front.svg"
-//           className="absolute w-full h-[88vh] object-contain"
-//           style={{
-//             transform: open
-//               ? `translateY(-${firstSectionScroll * 0.7}px)`
-//               : "translateY(0px)",
-//           }}
-//         />
-
-//         {/* Bottom */}
-//         <img
-//           src="/1stbottom.svg"
-//           className="absolute w-full h-screen object-contain"
-//           style={{
-//             transform: open
-//               ? `translateY(-${firstSectionScroll}px)`
-//               : "translateY(0px)",
-//           }}
-//         />
-
-//         {/* Envelope Bottom */}
-//         <img
-//           src="/openbottom.svg"
-//           className={`relative w-full h-[589px] object-contain z-10
-//           transition-all duration-1000 ease-in-out
-//           ${open ? "translate-y-[700px]" : "translate-y-0"}`}
-//         />
-
-//         {/* Envelope Top */}
-//         <img
-//           src="/openup.svg"
-//           onClick={() => setOpen(true)}
-//           className={`absolute left-0 w-full h-[655px] object-contain top-[-38px]
-//           transition-transform duration-1000 ease-in-out z-20 cursor-pointer
-//           ${open ? "rotate-x-[-180deg]" : "rotate-x-0"}`}
-//           style={{
-//             transformOrigin: "top",
-//             transformStyle: "preserve-3d",
-//           }}
-//         />
-//       </div>
-
-//       {/* ================= RENDER OTHER SECTIONS ONLY AFTER OPEN ================= */}
-//       {open && (
-//         <>
-//           {/* ================= SECOND SECTION ================= */}
-//           <div className="h-[88vh] w-full  bg-[#593838] relative">
-//             <img
-//               src="/slidesecond.svg"
-
-//               className="sticky w-full h-[88vh] object-contain"
-//             />
-//           </div>
-
-//           {/* ================= THIRD SECTION ================= */}
-//           <div
-//             ref={section3Ref}
-
-//             className="h-[100vh] w-full relative overflow-hidden"
-
-//           >
-
-//             <img
-//               src="3rd slide bg.svg"
-//               data-aos="fade-up"
-//               data-aos-duration="100"
-//               className={`sticky w-full h-[100vh] object-contain top-[65px] fade-up ${visible ? "show" : ""}`}
-//             />
-
-//             <img
-//               src="/3rd slide top.svg"
-
-//               className={`absolute w-full h-[88vh] object-contain top-[-279px] fade-up ${visible ? "show" : ""}`}
-//               style={{ transitionDelay: "0.1s" }}
-//             />
-
-//           <img
-//         src="/3rd slide second.svg"
-//         className="absolute w-full h-[88vh] object-contain top-[108px]"
-//         style={getSection3Style(0)}
-//       />
-
-//             <img
-//               src="/3rd slide4.svg"
-
-//               className={`absolute w-full h-[88vh] object-contain top-[100px] fade-up ${visible ? "show" : ""}`}
-//               style={{ transitionDelay: "0.3s" }}
-//             />
-//             <img
-//               src="/3rd slide3.svg"
-
-//               className={`absolute w-full h-[88vh] object-contain top-[100px] fade-up ${visible ? "show" : ""}`}
-//               style={{ transitionDelay: "0.4s" }}
-//             /> 
-
-
-//        <div className="absolute top-[100px] w-full h-[88vh]">
-
-// </div>
-
-
-//           <img
-//   src="/3rd slide bottom.svg"
-//   className="absolute w-full h-[88vh] object-contain top-[276px]"
-//   style={{
-//     transform: scrollY < section3Start 
-//       ? "translateY(0px)" 
-//       : `translateY(${-section3Progress * windowHeight}px)`,
-//     opacity: scrollY < section3Start 
-//       ? 1 
-//       : 1 - section3Progress, // fade out as scroll progresses
-//     transition: "transform 0.1s linear, opacity 0.1s linear"
-//   }}
-// />
-
-
-//           </div>
-
-//           {/* ================= SECTION 4 (SCROLL ANIMATION) ================= */}
-//           <div className="relative h-[400vh] w-full">
-//             <div className="sticky top-0 h-[100vh] w-full overflow-hidden">
-
-//               {/* Background Fixed */}
-//               <img
-//                 src="bg 4 section.svg"
-//                 className="absolute w-full h-[88vh] object-contain "
-//               />
-//               <img
-//                 src="bg 4 section.svg"
-//                 className="absolute w-full h-[88vh] object-contain top-[100px]"
-//               />
-
-
-
-//                   <>
-//                     <img
-//                       src="/section 4 1.svg"
-//                       className="absolute w-full h-[100vh] object-contain"
-//                       style={getStyle(0)}
-//                     />
-
-//                     <img
-//                       src="/section 4 2.svg"
-//                       className="absolute w-full h-[100vh] object-contain"
-//                       style={getStyle(1)}
-//                     />
-
-//                     <img
-//                       src="/section 4 3.svg"
-//                       className="absolute w-full h-[100vh] object-contain"
-//                       style={getStyle(2)}
-//                     />
-//                     <img
-//                       src="/section 4 1.svg"
-//                       className="absolute w-full h-[100vh] object-contain"
-//                       style={getStyle(3)}
-//                     />
-//                   </>
-
-//             </div>
-//           </div>
-//           <div >
-
-// <img
-//                 src="section 5 final screen.svg"
-//                 className="absolute w-full h-[88vh] object-contain "
-
-//               />
-
-//           </div>
-//             <div>
-
-// <img
-//                 src="final.svg"
-//                 className="absolute w-full h-[88vh] object-contain bottom-[-1130px] "
-//               />
-
-//           </div>
-//         </>
-//       )}
-//     </div>
-//   );
-// }
-
-// export default Open;
-
-
-
-
-
-
-
-
-
-
-
-
-// "use client";
-// import { useEffect, useRef, useState } from "react";
-// import AOS from "aos";
-// import "aos/dist/aos.css";
-
-
-
-// function Open() {
-//   const sectionRef = useRef(null);
-//   const section3Ref = useRef(null);
-//   const [open, setOpen] = useState(false);
-//   const [section2Loaded, setSection2Loaded] = useState(false);
-//   const [scrollY, setScrollY] = useState(0);
-//   const [windowHeight, setWindowHeight] = useState(0);
-//   const [criticalLoaded, setCriticalLoaded] = useState(false);
-//   const [visible, setVisible] = useState(false);
-//   const [assetsLoaded, setAssetsLoaded] = useState(false);
-//   const [progress, setProgress] = useState(0);
-
-
-
-
-//   const targetDate = new Date("2026-05-05T00:00:00").getTime();
-
-//   const [timeLeft, setTimeLeft] = useState(getTimeRemaining());
-
-//   function getTimeRemaining() {
-//     const now = new Date().getTime();
-//     const distance = targetDate - now;
-
-//     const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-//     const hours = Math.floor(
-//       (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-//     );
-//     const minutes = Math.floor(
-//       (distance % (1000 * 60 * 60)) / (1000 * 60)
-//     );
-
-//     return { days, hours, minutes };
-//   }
-
-//   useEffect(() => {
-//     const timer = setInterval(() => {
-//       setTimeLeft(getTimeRemaining());
-//     }, 1000);
-
-//     return () => clearInterval(timer);
-//   }, []);
-
-
-
-
-
-
-// const imageSources = [
-//     "/openup.svg",
-//     "/openbottom.svg",
-//     "/1st bg imjage.svg",
-//     "/1st front.svg",
-//     "/logo 1.svg",
-//     "/1stbottom.svg",
-//     "/slidesecond.svg",
-//     "/3rd slide bg.svg",
-//     "/3rd slide top.svg",
-//     "/3rd slide second.svg",
-//     "/3rd slide4.svg",
-//     "/3rd slide3.svg",
-//     "/3rd slide bottom.svg",
-//     "bg 4 section.svg",
-//     "/section 4 1.svg",
-//     "/section 4 2.svg",
-//     "/section 4 3.svg",
-//     "section 5 final screen.svg",
-//     "final.svg",
-//   ];
-
-
-//   // Section start & end positions
-//   const section3Start = section3Ref.current?.offsetTop || 0;
-//   const section3Height = windowHeight * 2; // scrollable area for animation
-//   const section3End = section3Start + section3Height;
-
-//   // Only scroll relative to section3
-//   const section3Raw = scrollY - section3Start;
-//   const section3Scroll = Math.max(0, Math.min(section3Raw, section3Height));
-//   const section3Progress = section3Scroll / windowHeight;
-
-//   const getSection3Style = (index) => {
-//     // Before section scroll → show images normally
-//     if (scrollY < section3Start) return { transform: "translateY(0px)" };
-
-//     // First slide animation
-//     if (index === 0) {
-//       return { transform: `translateY(${-section3Progress * windowHeight}px)` };
-//     }
-
-//     // Second slide animation
-//     if (index === 1) {
-//       return { transform: `translateY(${windowHeight - section3Progress * windowHeight}px)` };
-//     }
-
-//     // Other slides: stay in place
-//     return { transform: "translateY(0px)" };
-//   };
-
-
-//   const sectionStart = windowHeight * 3;
-//   const raw = scrollY - sectionStart;
-
-//   const step = windowHeight;
-//   const max = step * 3;
-
-//   const scroll = Math.max(0, Math.min(raw, max));
-
-//   const activeIndex = Math.floor(scroll / step);
-//   const progressVal = (scroll % step) / step;
-
-//   const getStyle = (index) => {
-//     // Current active slide
-//     if (index === activeIndex) {
-//       return {
-//         transform: `translateY(${-progressVal * windowHeight}px)`
-//       };
-//     }
-
-//     // Next slide coming from bottom
-//     if (index === activeIndex + 1) {
-//       return {
-//         transform: `translateY(${windowHeight - progress * windowHeight}px)`
-//       };
-//     }
-
-//     // Slides above
-//     if (index < activeIndex) {
-//       return { transform: `translateY(${-windowHeight}px)` };
-//     }
-
-//     // Slides below
-//     return { transform: `translateY(${windowHeight}px)` };
-//   };
-
-
-
-
-
-
-
-//   let current = 0;
-//   let target = 0;
-//   let isVisible = false;
-
-//   useEffect(() => {
-//     const observer = new IntersectionObserver(
-//       ([entry]) => {
-//         isVisible = entry.isIntersecting;
-//       },
-//       { threshold: 0.3 }
-//     );
-
-//     if (sectionRef.current) {
-//       observer.observe(sectionRef.current);
-//     }
-
-//     const handleScroll = () => {
-//       if (!sectionRef.current || !isVisible) return;
-
-//       const rect = sectionRef.current.getBoundingClientRect();
-//       const windowHeight = window.innerHeight;
-
-//       const progress = (windowHeight - rect.top) / windowHeight;
-//       const clamped = Math.max(0, Math.min(progress, 1));
-
-//       target = clamped * 40; // max movement 40px
-//     };
-
-//     const animate = () => {
-//       if (isVisible) {
-//         current += (target - current) * 0.08;
-
-//         if (imageRef.current) {
-//           imageRef.current.style.transform = `translateY(${current}px)`;
-//         }
-//       }
-
-//       requestAnimationFrame(animate);
-//     };
-
-//     window.addEventListener("scroll", handleScroll);
-//     animate();
-
-//     return () => {
-//       window.removeEventListener("scroll", handleScroll);
-//       observer.disconnect();
-//     };
-//   }, []);
-
-
-// useEffect(() => {
-//  AOS.init({ duration: 800, once: false });
-// }, []);
-//   /* ================= INIT ================= */
-//    useEffect(() => {
-   
-//     setWindowHeight(window.innerHeight);
-
-//     // Block scroll immediately
-//     document.body.style.overflow = "hidden";
-
-//     let loadedCount = 0;
-//     const total = imageSources.length;
-
-//     const preloadPromises = imageSources.map((src) => {
-//       return new Promise((resolve) => {
-//         const img = new Image();
-//         img.src = src;
-
-//         img.onload = () => {
-//           loadedCount++;
-//           setProgress(Math.round((loadedCount / total) * 100));
-//           resolve();
-//         };
-
-//         img.onerror = () => {
-//           console.warn(`Image failed to load: ${src}`);
-//           loadedCount++;
-//           setProgress(Math.round((loadedCount / total) * 100));
-//           resolve(); // never block the user
-//         };
-
-//         // Safety timeout (max 4.5s per image)
-//         setTimeout(resolve, 4500);
-//       });
-//     });
-
-//     Promise.all(preloadPromises).then(() => {
-//       setAssetsLoaded(true);
-//       document.body.style.overflow = "auto"; // unlock scroll
-//     });
-
-//     // Cleanup
-//     return () => {
-//       document.body.style.overflow = "auto";
-//     };
-//   }, []);
-
-//   /* ================= SMOOTH SCROLL ================= */
-//   useEffect(() => {
-//     let ticking = false;
-
-//     const handleScroll = () => {
-//       if (!ticking) {
-//         requestAnimationFrame(() => {
-//           setScrollY(window.scrollY);
-//           ticking = false;
-//         });
-//         ticking = true;
-//       }
-//     };
-
-//     window.addEventListener("scroll", handleScroll);
-//     window.addEventListener("resize", () =>
-//       setWindowHeight(window.innerHeight)
-//     );
-
-//     return () => {
-//       window.removeEventListener("scroll", handleScroll);
-//     };
-//   }, []);
-
-// if (!assetsLoaded) {
-//     return (
-//       <div className="fixed inset-0 bg-[#fff5f1] flex flex-col items-center justify-center z-[9999]">
-//         <div className="text-[#b68d33] font-bold text-3xl mb-10 tracking-[4px]">
-//           LOADING
-//         </div>
-
-//         <div className="w-80 h-1.5 bg-[#f8e4d0] rounded-full overflow-hidden">
-//           <div
-//             className="h-full bg-gradient-to-r from-[#b68d33] to-[#e8b56d] transition-all duration-300 ease-out"
-//             style={{ width: `${progress}%` }}
-//           />
-//         </div>
-
-//         <p className="mt-4 text-[#b68d33] font-medium text-xl">{progress}%</p>
-
-//         <p className="absolute bottom-12 text-[#c4a06a] text-sm tracking-widest">
-//           Please Wait...
-//         </p>
-//       </div>
-//     );
-//   }
-
-//   // ================= MAIN UI (only rendered after ALL assets loaded) =================
-//   const firstSectionScroll = Math.min(scrollY, windowHeight);
-
-
-//   return (
-//     <div
-//       className={`relative  ${open ? "min-h-[700vh]" : "h-screen overflow-hidden"
-//         }` }
-//     >
-//       {/* ================= FIRST SECTION ================= */}
-//       <div
-//         className="sticky top-0 max-top-[-75px] h-screen w-full overflow-hidden bg-white"
-//         style={{ perspective: "1400px" }}
-//       >
-//         {/* Background */}
-//         <img
-//           src="/1st bg imjage.svg"
-        
-//           className="absolute w-full h-full object-contain"
-//           style={{...getSection3Style(0), maxBlockSize:"fit-content",}}
-//         />
-
-//         {/* Front */}
-//         <img
-//           src="/1st front.svg"
-         
-//           className="absolute w-full h-full object-contain"
-//            style={getSection3Style(0)}
-//         />
-//         <img
-//           src="/logo 1.svg"
-         
-//           className="absolute w-[122px] h-[100px] object-contain top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]"
-//         // style={{
-//         //   transform: open
-//         //     ? `translateY(-${firstSectionScroll * 0.7}px)`
-//         //     : "translateY(0px)",
-//         //   transition: "transform 0.3s linear",
-//         // }}
-//          style={getSection3Style(0)}
-//         />
-
-//         {/* Bottom */}
-//         <img
-//           src="/1stbottom.svg"
-//           className="absolute w-full h-full object-contain top-[50px]"
-        
-//           style={{
-//             transform: open
-//               ? `translateY(-${firstSectionScroll}px)`
-//               : "translateY(0px)",
-//             // transition: "transform 0.3s linear",
-//           }}
-          
-//         />
-
-//         {/* OPEN BOTTOM */}
-//         <img
-//     //       src="/openbottom.svg"
-//     //       data-aos="fade-up"
-//     //  data-aos-duration="3000"
-//     //       className="absolute w-full h-[88vh]  object-contain z-10 transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)]"
-//     //       style={{
-//     //         transform: open ? "translateY(700px)" : "translateY(0px)",
-//     //       }}
-
-
-//      src="/openbottom.svg"
-   
-//     className="absolute w-full h-[88vh] object-contain z-10
-//     transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)]"
-//     style={{
-//       transform: open ? "translateY(700px)" : "translateY(0px)",
-//     }}
-//         />
-
-//         {/* OPEN UP (3D FLIP) */}
-//         <div className="absolute inset-0 z-20 cursor-pointer">
-//           <img
-//     //         src="/openup.svg"
-//     //        data-aos="fade-down"
-//     //  data-aos-easing="ease-in-sine"
-//     //  data-aos-duration="3000"
-//     //         onClick={() => setOpen(true)}
-//     //         className="w-full h-[88vh]  object-contain "
-//     //         style={{
-//     //           transform: open ? "rotateX(-170deg)" : "rotateX(0deg)",
-//     //           transformOrigin: "top",
-//     //           backfaceVisibility: "hidden",
-//     //           maxBlockSize:"fit-content",
-//     //           transition:
-//     //             "transform 1200ms cubic-bezier(0.22, 1, 0.36, 1)",
-//     //           boxShadow: open
-//     //             ? "0px 40px 60px rgba(0,0,0,0.4)"
-//     //             : "none",
-//     //         }}
-//      src="/openup.svg"
-      
-//       onClick={() => setOpen(true)}
-//       className="w-full h-[88vh] object-contain"
-//       style={{
-//         transform: open ? "rotateX(-170deg)" : "rotateX(0deg)",
-//         transformOrigin: "top",
-//         backfaceVisibility: "hidden",
-//         transition:
-//           "transform 1200ms cubic-bezier(0.22, 1, 0.36, 1)",
-//       }}
-//           />
-
-//         </div>
-//       </div>
-
-//       {/* ================= OTHER SECTIONS ================= */}
-//       {open && (
-//         <>
-//           {/* SECTION 2 */}
-//           <div
-//             style={{
-//               display: "flex",
-//               flexDirection: "column",
-//               justifyContent: "center",
-//               alignItems: "center",
-//               width: "100%",
-//             }}
-//              data-aos="fade-up"
-//     data-aos-duration="300"
-//           >
-           
-//            <div className="h-[88vh]  w-full  bg-[#5b3525] relative overflow-hidden">
-//               {!section2Loaded && (
-//                 <div className="absolute inset-0 flex items-center justify-center text-white">
-//                   Loading...
-//                 </div>
-//               )}
-
-//              <img
-//   src="/slidesecond.svg"
-//   loading="lazy"
-//   data-aos="fade-up"
-//     data-aos-duration="900"
-//   onLoad={() => setSection2Loaded(true)}
-//   className={`w-full h-screen  absolute 
-//    top-[-36px] xs:top-[-36px] sm:top-[-27px] 
-//     transition-opacity duration-500 
-//     ${section2Loaded ? "opacity-100" : "opacity-0"}
-//   `}
-// />
-//               <div className=" flex items-center justify-center bg-[#5b3525] px-6">
-//                 <div className="max-w-[380px] text-center text-[#f2c46d] mt-[84px] ">
-
-//                   {/* Parents */}
-//                   <h2 className="text-l md:text-xl font-semibold leading-tight "  data-aos="fade-up"
-//     data-aos-duration="1200" 
-// >
-//                     Sandhya & <br /> Anil Bahadure
-//                   </h2>
-
-//                   {/* Sub text */}
-//                   <p className="mt-[3px] text-sm leading-relaxed text-[#f6d38b]" data-aos="fade-up"
-//     data-aos-duration="1230">
-//                     Await your presence for <br />
-//                     the wedding celebrations <br />
-//                     of their daughter
-//                   </p>
-
-//                   {/* Bride Name */}
-//                   <h1 className="mt-[14px] text-4xl font-bold tracking-wide" data-aos="fade-up"
-//     data-aos-duration="1260">
-//                     Shreya
-//                   </h1>
-
-//                   {/* With */}
-//                   <p className="mt-[4px] text-xl text-[#f6d38b]" data-aos="fade-up"
-//     data-aos-duration="1280">
-//                     with
-//                   </p>
-
-//                   {/* Groom Name */}
-//                   <h1 className="text-4xl font-bold tracking-wide" data-aos="fade-up"
-//     data-aos-duration="1290">
-//                     Naivedya
-//                   </h1>
-
-//                   {/* Son of */}
-//                   <p className="mt-6 text-sm text-[#f6d38b]" data-aos="fade-up"
-//     data-aos-duration="1300">
-//                     Son of
-//                   </p>
-
-//                   {/* Father */}
-//                   <h2 className="text-l md:text-xl font-semibold" data-aos="fade-up"
-//     data-aos-duration="1300">
-//                     Kamlesh Joshi
-//                   </h2>
-
-//                 </div>
-//               </div>
-//             </div>
-//           </div>
-
-//           {/* SECTION 3 */}
-//           <div
-//             ref={section3Ref}
-//             className="h-[88vh] w-full relative overflow-hidden"
-//           >
-//             <img
-//               src="/3rd slide bg.svg"
-//               loading="lazy"
-//               className="w-full h-full object-contain"
-//               data-aos="fade-up"
-//             />
-
-//             <img
-//               src="/3rd slide top.svg"
-
-//               className={`absolute w-full h-[88vh] object-contain top-[-279px] fade-up ${visible ? "show" : ""}`}
-//               style={{ transitionDelay: "0.1s" }}
-//             />
-
-//             <img
-//               src="/3rd slide second.svg"
-//               className="absolute w-full h-[88vh] object-contain top-[108px]"
-//               style={getSection3Style(0)}
-//             />
-
-//             <img
-//               src="/3rd slide4.svg"
-
-//               className={`absolute w-full h-[88vh] object-contain top-[100px] fade-up ${visible ? "show" : ""}`}
-//               style={{ transitionDelay: "0.3s" }}
-//             />
-//             <img
-//               src="/3rd slide3.svg"
-
-//               className={`absolute w-full h-[88vh] object-contain top-[100px] fade-up ${visible ? "show" : ""}`}
-//               style={{ transitionDelay: "0.4s" }}
-//             />
-
-//             <img
-//               src="/3rd slide bottom.svg"
-//               className="absolute w-full h-[88vh] object-contain top-[276px]"
-//               style={{
-//                 transform: scrollY < section3Start
-//                   ? "translateY(0px)"
-//                   : `translateY(${-section3Progress * windowHeight}px)`,
-//                 opacity: scrollY < section3Start
-//                   ? 1
-//                   : 1 - section3Progress, // fade out as scroll progresses
-//                 transition: "transform 0.1s linear, opacity 0.1s linear"
-//               }}
-//             />
-
-//           </div>
-
-//           {/* SECTION 4 */}
-//           <div className="relative h-[400vh] w-full">
-//             <div className="sticky top-0 h-[88vh] w-full">
-//               <h2 className="absolute top-[7%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[#f3c53c] text-4xl font-bold z-10">Events</h2>
-//               <img
-//                 src="bg 4 section.svg"
-//                 loading="lazy"
-//                 style={{ maxBlockSize:"fit-content", }}
-//                 className="absolute w-full h-full object-contain"
-//               />
-
-
-
-//               <>
-//                 <div
-//   className={`absolute inset-0 flex items-center justify-center 
-//   transition-all duration-700 ease-out
-//   ${activeIndex === 0 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}
-//   `}
-//   style={getStyle(0)}
-// >
-//                   <img
-//                     src="/section 4 1.svg"
-//                     className="absolute w-full h-[100vh] object-contain"
-//                      data-aos="fade-up"
-//     data-aos-duration="1200"
-
-//                   />
-//                   <div className=" flex items-center justify-center  px-6"  data-aos="fade-up"
-//     data-aos-duration="1200">
-//                     <div className="max-w-[380px] text-center  mt-[52px] z-10">
-//                       <p className="text-lg text-brown-700">Day 1</p>
-//                       <p className="text-lg text-brown-700">03/05/26</p>
-
-//                       <h2 className="text-2xl font-semibold text-orange-700 mt-[-4px]">
-//                         Paritran
-//                       </h2>
-//                       <p className="text-md text-orange-700">11 am</p>
-
-//                       <h2 className="text-2xl font-semibold text-green-700 mt-[-6px]">
-//                         Mehendi
-//                       </h2>
-//                       <p className="text-md text-green-700">1 pm onwards</p>
-
-//                       <p className="text-md text-brown-700 mt-4">@Home</p>
-//                     </div>
-//                   </div>
-//                 </div>
-
-//                 <div className="absolute inset-0 flex items-center justify-center" style={getStyle(1)} >
-//                   <img
-//                     src="/section 4 2.svg"
-//                     className="absolute w-full h-[100vh] object-contain"
-//                      data-aos="fade-up"
-//     data-aos-duration="1200"
-
-//                   />
-//                   <div className=" flex items-center justify-center  px-6"  data-aos="fade-up"
-//     data-aos-duration="1200">
-//                     <div className="max-w-[380px] text-center  mt-[20px] z-10">
-//                       <p className="text-md text-brown-700">Day 2</p>
-//                       <p className="text-md text-brown-700">04/05/26</p>
-
-//                       <h2 className="text-lg font-semibold text-[#c200b9] mt-[-2px]">
-//                         Carnival Haldi<br /> Lunch
-//                       </h2>
-//                       <p className="text-md mt-[-10px] text-[#c200b9]">12 pm</p>
-
-//                       <h2 className="text-lg font-semibold text-green-700 mt-[6px]">
-//                         High Tea
-//                       </h2>
-//                       <p className="text-md text-green-700">5 pm </p>
-
-//                       <p className="text-md text-brown-700 mt-2">@Mangli Lake <br /> Farm</p>
-//                     </div>
-//                   </div>
-//                 </div>
-
-//                 <div className="absolute inset-0 flex items-center justify-center" style={getStyle(2)}>
-//                   <img
-//                     src="/section 4 3.svg"
-//                     className="absolute w-full h-[100vh] object-contain"
-//                      data-aos="fade-up"
-//     data-aos-duration="1200"
-
-//                   />
-//                   <div className=" flex items-center justify-center  px-6"  data-aos="fade-up"
-//     data-aos-duration="1200">
-//                     <div className="max-w-[380px] text-center  mt-[20px] z-10">
-//                       <p className="text-lg text-brown-700">Day 2</p>
-//                       <p className="text-lg text-brown-700">04/05/26</p>
-
-//                       <h2 className="text-2xl font-bold text-[#2b2b9a] mt-[-4px]">
-//                         Sangeet
-//                       </h2>
-//                       <p className="text-lg text-[#2b2b9a]">7 pm onwards</p>
-
-                      
-
-//                       <p className="text-lg text-brown-700 mt-2">@Mangli Lake <br /> Farm</p>
-//                     </div>
-//                   </div>
-//                 </div>
-
-//                 <div className="absolute inset-0 flex items-center justify-center" style={getStyle(3)}>
-//                   <img
-//                     src="/section 4 3.svg"
-//                     className="absolute w-full h-[100vh] object-contain"
-//                      data-aos="fade-up"
-//     data-aos-duration="1200"
-
-//                   />
-//                   <div className=" flex items-center justify-center  px-6"  data-aos="fade-up"
-//     data-aos-duration="1200">
-//                     <div className="max-w-[380px] text-center  mt-[20px] z-10">
-//                       <p className="text-lg text-brown-700">Day 3</p>
-//                       <p className="text-lg text-brown-700">05/05/26</p>
-
-//                       <h2 className="text-2xl font-bold text-[#cc4949] mt-[-4px]">
-//                        Buddhist <br/> Wedding
-//                       </h2>
-//                       <p className="text-lg text-orange-700">12 pm onward</p>
-
-                      
-
-//                       <p className="text-lg text-brown-700 mt-2">@Mangli Lake <br /> Farm</p>
-//                     </div>
-//                   </div>
-//                 </div>
-//               </>
-             
-//             </div>
-//           </div>
-
-//           {/* SECTION 5 */}
-//         <div className="h-[88vh] w-full relative flex flex-col items-center justify-center text-center" data-aos="fade-up"
-//     data-aos-duration="1200">
-
-//   {/* Background SVG */}
-//   <img
-//     src="/section 5 final screen.svg"
-//     loading="lazy"
-//     className="absolute w-full h-full object-contain"
-//     alt="Venue Background"
-//   />
-
-//   {/* Content */}
-//   <div className="relative top-[-93px] z-10 flex flex-col items-center w-full">
-
-//     {/* Venue Title */}
-//     <h2 className="text-4xl font-serif text-[#1f2a5a] mb-2" data-aos="fade-up"
-//     data-aos-duration="1200">
-//       Venue
-//     </h2>
-
-//     {/* Address */}
-//     <p className="text-lg text-[#1f2a5a] leading-relaxed mb-8" data-aos="fade-up"
-//     data-aos-duration="1200">
-//       Mangli Lake Farm,<br />
-//       Near Champa (2km), Umred Road,<br />
-//       Nagpur, Maharashtra 441204
-//     </p>
-
-//     {/* Responsive Clickable Map */}
-//     <div className="w-[50%] max-w-[400px] h-[120px] rounded-lg overflow-hidden shadow-xl mb-8" data-aos="fade-up"
-//     data-aos-duration="1200">
-//       <iframe
-//         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3725.1813833139236!2d79.21359369999999!3d20.985365100000003!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bd4b06250837d09%3A0x1e737c4de53c6add!2sMangli%20Lake%20Farm!5e0!3m2!1sen!2sin!4v1772619329004!5m2!1sen!2sin"
-//         className="w-full h-full"
-//         style={{ border: 0 }}
-//         allowFullScreen=""
-//         loading="lazy"
-//         referrerPolicy="no-referrer-when-downgrade"
-//         title="Mangli Lake Farm Location"
-//       ></iframe>
-//     </div>
-
-//     {/* Get Directions (Design Only - NOT Clickable) */}
-//     <div className="bg-[#c94c4c] text-white px-7 py-3 rounded-full text-xl font-semibold shadow-lg" data-aos="fade-up"
-//     data-aos-duration="1200">
-//       Get Directions
-//     </div>
-
-//   </div>
-// </div>
-
-//           {/* FINAL */}
-//  <div
-//       className="h-[88vh] w-full relative flex items-center justify-center text-center"
-//       data-aos="fade-up"
-//       data-aos-duration="1200"
-//     >
-//       {/* Background SVG */}
-//       <img
-//         src="/final.svg"
-//         loading="lazy"
-//         className="absolute w-full h-full object-contain"
-//         alt="Countdown Background"
-        
-//       />
-
-//       {/* Content */}
-//       <div className="relative z-10 flex flex-col items-center top-[-67px">
-
-//         {/* Title */}
-//         <h2 className="text-4xl font-bold text-[#f3c178] mb-8"  data-aos="fade-up"
-//       data-aos-duration="1200">
-//           The Countdown Begins
-//         </h2>
-
-//         {/* Timer Box */}
-//         <div className="bg-[#1e2250] text-white px-8 py-2 rounded-full text-xl font-semibold shadow-lg mb-8 tracking-widest"  data-aos="fade-up"
-//       data-aos-duration="1200">
-//           {timeLeft.days} D&nbsp;&nbsp;
-//           {timeLeft.hours} H&nbsp;&nbsp;
-//           {timeLeft.minutes} M
-//         </div>
-
-//         {/* Subtitle */}
-//         <p className="text-white text-md max-w-md leading-relaxed"  data-aos="fade-up"
-//       data-aos-duration="1200">
-//           One love, one promise,<br />
-//           one celebration — with you.
-//         </p>
-
-//       </div>
-//     </div>
-//         </>
-//       )}
-//     </div>
-//   );
-// }
-
-// export default Open;
 
 "use client";
 import { useEffect, useRef, useState, useCallback } from "react";
@@ -1648,151 +136,239 @@ function ConfettiBurst({ active }) {
 // ─────────────────────────────────────────────────────────────────────────────
 function ScratchCard({ weddingDate = "05/05/26", onFullReveal }) {
   const canvasRef      = useRef(null);
+  const overlayRef     = useRef(null);
   const isDrawing      = useRef(false);
   const revealed       = useRef(false);
-  const lastPos        = useRef(null);
-  const lastCheckTime  = useRef(0);
   const hasTriggered   = useRef(false);
+  const lastCheckTime  = useRef(0);
+  const pointsQueue    = useRef([]);
+  const rafPending     = useRef(false);
+  const lastPoint      = useRef(null);
   const [showDate, setShowDate] = useState(false);
 
-  const initCanvas = useCallback(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
+  const CW = 640;
+  const CH = 220;
+
+  const buildOverlay = useCallback(() => {
+    const oc  = document.createElement("canvas");
+    oc.width  = CW;
+    oc.height = CH;
+    const ctx = oc.getContext("2d");
 
     const img = new Image();
     img.src = "/3rd slide3.svg";
     img.onload = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, CW, CH);
+      overlayRef.current = oc;
+      const vc = canvasRef.current;
+      if (vc) vc.getContext("2d").drawImage(oc, 0, 0);
     };
     img.onerror = () => {
-      const grad = ctx.createLinearGradient(0, 0, canvas.width, 0);
-      grad.addColorStop(0,    "#8B6914");
-      grad.addColorStop(0.15, "#F5D060");
-      grad.addColorStop(0.3,  "#C9940A");
-      grad.addColorStop(0.5,  "#FFF0A0");
-      grad.addColorStop(0.7,  "#B8860B");
-      grad.addColorStop(0.85, "#E8C84A");
-      grad.addColorStop(1,    "#8B6914");
+      const grad = ctx.createLinearGradient(0, 0, CW, CH);
+      grad.addColorStop(0,    "#7a5400");
+      grad.addColorStop(0.12, "#e8c84a");
+      grad.addColorStop(0.28, "#c9940a");
+      grad.addColorStop(0.45, "#fff0a0");
+      grad.addColorStop(0.6,  "#b8860b");
+      grad.addColorStop(0.78, "#f5d060");
+      grad.addColorStop(1,    "#7a5400");
       ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillRect(0, 0, CW, CH);
 
       ctx.save();
-      ctx.globalAlpha = 0.18;
-      for (let i = 0; i < 40; i++) {
+      for (let y = 0; y < CH; y += 3) {
         ctx.beginPath();
-        ctx.strokeStyle = i % 2 === 0 ? "#fff" : "#7A5C00";
-        ctx.lineWidth   = Math.random() * 8 + 1;
-        const y = Math.random() * canvas.height;
-        ctx.moveTo(Math.random() * 20, y);
-        ctx.bezierCurveTo(
-          canvas.width * 0.25, y - 15 + Math.random() * 30,
-          canvas.width * 0.75, y - 15 + Math.random() * 30,
-          canvas.width - Math.random() * 20, y + (Math.random() - 0.5) * 20
-        );
+        ctx.strokeStyle = "rgba(255,255,255," + (Math.random() * 0.07) + ")";
+        ctx.lineWidth = 1;
+        ctx.moveTo(0, y);
+        ctx.lineTo(CW, y);
         ctx.stroke();
       }
+      const glare = ctx.createLinearGradient(0, 0, CW * 0.6, CH);
+      glare.addColorStop(0,   "rgba(255,255,255,0)");
+      glare.addColorStop(0.4, "rgba(255,255,255,0.18)");
+      glare.addColorStop(0.5, "rgba(255,255,255,0.32)");
+      glare.addColorStop(0.6, "rgba(255,255,255,0.18)");
+      glare.addColorStop(1,   "rgba(255,255,255,0)");
+      ctx.fillStyle = glare;
+      ctx.fillRect(0, 0, CW, CH);
       ctx.restore();
+
+      ctx.save();
+      ctx.strokeStyle = "rgba(255,220,80,0.6)";
+      ctx.lineWidth = 3;
+      ctx.strokeRect(8, 8, CW - 16, CH - 16);
+      ctx.strokeStyle = "rgba(100,60,0,0.3)";
+      ctx.lineWidth = 1;
+      ctx.strokeRect(12, 12, CW - 24, CH - 24);
+      ctx.restore();
+
+      ctx.save();
+      ctx.font = "bold 22px Georgia, serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillStyle = "rgba(80,40,0,0.4)";
+      ctx.fillText("\u2726  Scratch to Reveal  \u2726", CW / 2 + 1, CH / 2 + 1);
+      ctx.fillStyle = "rgba(90,50,0,0.75)";
+      ctx.fillText("\u2726  Scratch to Reveal  \u2726", CW / 2, CH / 2);
+      ctx.restore();
+
+      overlayRef.current = oc;
+      const vc = canvasRef.current;
+      if (vc) vc.getContext("2d").drawImage(oc, 0, 0);
     };
   }, []);
 
-  useEffect(() => { initCanvas(); }, [initCanvas]);
+  useEffect(() => { buildOverlay(); }, [buildOverlay]);
 
-  const getPos = (e, canvas) => {
+  const getPoint = useCallback((e) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return null;
     const rect = canvas.getBoundingClientRect();
-    const sx = canvas.width  / rect.width;
-    const sy = canvas.height / rect.height;
-    if (e.touches) {
-      return {
-        x: (e.touches[0].clientX - rect.left) * sx,
-        y: (e.touches[0].clientY - rect.top)  * sy,
-      };
-    }
+    const sx = CW / rect.width;
+    const sy = CH / rect.height;
+    const src = e.touches ? e.touches[0] : e;
     return {
-      x: (e.clientX - rect.left) * sx,
-      y: (e.clientY - rect.top)  * sy,
+      x: (src.clientX - rect.left) * sx,
+      y: (src.clientY - rect.top)  * sy,
     };
+  }, []);
+
+  const interpolate = (a, b) => {
+    const dist  = Math.hypot(b.x - a.x, b.y - a.y);
+    const steps = Math.max(1, Math.ceil(dist / 4));
+    const pts   = [];
+    for (let i = 1; i <= steps; i++) {
+      pts.push({
+        x: a.x + (b.x - a.x) * (i / steps),
+        y: a.y + (b.y - a.y) * (i / steps),
+      });
+    }
+    return pts;
   };
 
-  // Throttled reveal check — only runs at most once every 400ms
-  const checkReveal = useCallback((ctx, canvas) => {
-    if (hasTriggered.current) return;
-    const now = performance.now();
-    if (now - lastCheckTime.current < 400) return;
-    lastCheckTime.current = now;
+  const flushPoints = useCallback(() => {
+    rafPending.current = false;
+    const canvas = canvasRef.current;
+    if (!canvas || revealed.current) return;
+    const ctx = canvas.getContext("2d");
+    const pts = pointsQueue.current.splice(0);
+    if (pts.length === 0) return;
 
-    const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-    let transparent = 0;
-    // Sample every 4th pixel (16× faster than checking all)
-    for (let i = 3; i < data.length; i += 16) {
-      if (data[i] < 128) transparent++;
+    ctx.globalCompositeOperation = "destination-out";
+    ctx.beginPath();
+    ctx.lineWidth = 80;
+    ctx.lineCap   = "round";
+    ctx.lineJoin  = "round";
+    ctx.moveTo(pts[0].x, pts[0].y);
+    for (let i = 1; i < pts.length; i++) {
+      if (i < pts.length - 1) {
+        const mx = (pts[i].x + pts[i + 1].x) / 2;
+        const my = (pts[i].y + pts[i + 1].y) / 2;
+        ctx.quadraticCurveTo(pts[i].x, pts[i].y, mx, my);
+      } else {
+        ctx.lineTo(pts[i].x, pts[i].y);
+      }
     }
-    const pct = (transparent / (canvas.width * canvas.height / 4)) * 100;
-    if (pct > 45) {
-      hasTriggered.current = true;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      revealed.current = true;
-      setShowDate(true);
-      onFullReveal?.();
+    ctx.stroke();
+    const last = pts[pts.length - 1];
+    ctx.beginPath();
+    ctx.arc(last.x, last.y, 40, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalCompositeOperation = "source-over";
+
+    const now = performance.now();
+    if (!hasTriggered.current && now - lastCheckTime.current > 400) {
+      lastCheckTime.current = now;
+      const data = ctx.getImageData(0, 0, CW, CH).data;
+      let transparent = 0, total = 0;
+      for (let i = 3; i < data.length; i += 32) { total++; if (data[i] < 128) transparent++; }
+      if (total > 0 && (transparent / total) * 100 > 55) {
+        hasTriggered.current = true;
+        revealed.current = true;
+        let alpha = 1;
+        const wipe = () => {
+          alpha -= 0.06;
+          if (alpha <= 0) { ctx.clearRect(0, 0, CW, CH); setShowDate(true); onFullReveal?.(); return; }
+          ctx.clearRect(0, 0, CW, CH);
+          if (overlayRef.current) {
+            ctx.globalAlpha = alpha;
+            ctx.drawImage(overlayRef.current, 0, 0);
+            ctx.globalAlpha = 1;
+          }
+          requestAnimationFrame(wipe);
+        };
+        requestAnimationFrame(wipe);
+      }
     }
   }, [onFullReveal]);
 
-  const doScratch = useCallback((e) => {
+  const onStart = useCallback((e) => {
+    e.preventDefault();
+    isDrawing.current = true;
+    const pt = getPoint(e);
+    if (pt) lastPoint.current = pt;
+  }, [getPoint]);
+
+  const onMove = useCallback((e) => {
     if (!isDrawing.current || revealed.current) return;
     e.preventDefault();
-    const canvas = canvasRef.current;
-    const ctx    = canvas.getContext("2d");
-    const pos    = getPos(e, canvas);
-
-    ctx.globalCompositeOperation = "destination-out";
-    if (lastPos.current) {
-      ctx.beginPath();
-      ctx.lineWidth  = 56;
-      ctx.lineCap    = "round";
-      ctx.lineJoin   = "round";
-      ctx.moveTo(lastPos.current.x, lastPos.current.y);
-      ctx.lineTo(pos.x, pos.y);
-      ctx.stroke();
+    const pt = getPoint(e);
+    if (!pt) return;
+    if (lastPoint.current) {
+      pointsQueue.current.push(...interpolate(lastPoint.current, pt));
+    } else {
+      pointsQueue.current.push(pt);
     }
-    ctx.beginPath();
-    ctx.arc(pos.x, pos.y, 28, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.globalCompositeOperation = "source-over";
-    lastPos.current = pos;
+    lastPoint.current = pt;
+    if (!rafPending.current) {
+      rafPending.current = true;
+      requestAnimationFrame(flushPoints);
+    }
+  }, [getPoint, flushPoints]);
 
-    checkReveal(ctx, canvas);
-  }, [checkReveal]);
+  const onEnd = useCallback(() => {
+    isDrawing.current = false;
+    lastPoint.current = null;
+  }, []);
 
   return (
     <div
       style={{
         position: "relative",
-        width: "75%",
-        maxWidth: 340,
+        width: "92%",
+        maxWidth: 380,
         margin: "0 auto",
-        height: "304px",
         userSelect: "none",
         WebkitUserSelect: "none",
-        willChange: "transform",
       }}
     >
-      {/* Behind layer */}
-      <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1 }}>
-        <img src="/wedding-11.svg" className="absolute h-[502px] top-[-192px]" alt="" />
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1,
+          pointerEvents: "none",
+          
+        }}
+      >
+        <img src="/wedding-11.svg" className="absolute h-[526px] w-full object-contain top-[-221px]" />
         <span
           style={{
             fontFamily: "'Georgia', 'Times New Roman', serif",
-            fontSize: "clamp(1.4rem, 4.5vw, 1.9rem)",
+            fontSize: "clamp(1.4rem, 5.5vw, 2.4rem)",
             fontWeight: 700,
+          position:"absolute",
+          top:"24px",
             color: "#ffc55a",
-            letterSpacing: "0.1em",
-            padding: "10px 28px",
-            borderRadius: 8,
-            marginTop: "-192px",
+            letterSpacing: "0.15em",
+            textShadow: "0 2px 16px rgba(0,0,0,0.6)",
             opacity: showDate ? 1 : 0,
-            transform: showDate ? "scale(1) translateY(0)" : "scale(0.8) translateY(6px)",
-            transition: "opacity 0.5s ease, transform 0.5s cubic-bezier(0.34,1.56,0.64,1)",
+            transform: showDate ? "scale(1) translateY(0)" : "scale(0.75) translateY(10px)",
+            transition: "opacity 0.7s ease, transform 0.7s cubic-bezier(0.34,1.56,0.64,1)",
           }}
         >
           {weddingDate}
@@ -1801,33 +377,53 @@ function ScratchCard({ weddingDate = "05/05/26", onFullReveal }) {
 
       <canvas
         ref={canvasRef}
-        width={520}
-        height={186}
+        width={CW}
+        height={CH}
         style={{
-          position: "absolute",
-          inset: 0,
+          display: "block",
           width: "100%",
-          height: "100%",
+          height: "257px",
+          position: "relative",
+          top:"-87px",
           zIndex: 2,
-          cursor: showDate ? "default" : "crosshair",
-          borderRadius: 6,
+          borderRadius: 12,
           touchAction: "none",
+          cursor: showDate ? "default" : "crosshair",
           opacity: showDate ? 0 : 1,
-          transition: "opacity 0.6s ease",
-          marginTop: "-100px",
+          transition: "opacity 0.3s ease",
+          // boxShadow: "0 6px 32px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.2)",
           willChange: "opacity",
         }}
-        onMouseDown={(e) => { isDrawing.current = true;  lastPos.current = getPos(e, canvasRef.current); }}
-        onMouseUp={()    => { isDrawing.current = false; lastPos.current = null; }}
-        onMouseLeave={()  => { isDrawing.current = false; lastPos.current = null; }}
-        onMouseMove={doScratch}
-        onTouchStart={(e) => { isDrawing.current = true;  lastPos.current = getPos(e, canvasRef.current); doScratch(e); }}
-        onTouchEnd={()    => { isDrawing.current = false; lastPos.current = null; }}
-        onTouchMove={doScratch}
+        onMouseDown={onStart}
+        onMouseMove={onMove}
+        onMouseUp={onEnd}
+        onMouseLeave={onEnd}
+        onTouchStart={onStart}
+        onTouchMove={onMove}
+        onTouchEnd={onEnd}
+        onTouchCancel={onEnd}
       />
+
+      {/* {!showDate && (
+        <p
+          style={{
+            textAlign: "center",
+            marginTop: "10px",
+            color: "#c9a06e",
+            fontSize: "0.72rem",
+            letterSpacing: "0.15em",
+            fontFamily: "Georgia, serif",
+            opacity: 0.85,
+            animation: "scratchPulse 2s ease-in-out infinite",
+          }}
+        >
+          \u2726 scratch to reveal \u2726
+        </p>
+      )} */}
     </div>
   );
 }
+
 
 // ─────────────────────────────────────────────────────────────────────────────
 // MAIN COMPONENT
@@ -2095,46 +691,39 @@ function Open() {
           0%,100% { background-position: 220% center; }
         }
         .tap-hint {
-          position: absolute; top: 65%; left: 40%;
-          z-index: 40; pointer-events: none; text-align: center;
+          position: absolute;
+          top: 65%;
+          left: 50%;
+          transform: translateX(-50%);
+          z-index: 40;
+          pointer-events: none;
+          text-align: center;
+          width: max-content;
         }
-           /* 320px */
+
+        /* 320px */
         @media (max-width: 320px) {
-          .tap-hint {
-           top: 61%;
-           left:33%; 
-           }
+          .tap-hint { top: 62%; }
         }
- 
+
         /* 375px */
         @media (min-width: 321px) and (max-width: 375px) {
-          .tap-hint {
-           top: 62%; 
-           left:35%;
-          }
+          .tap-hint { top: 63%; }
         }
- 
+
         /* 425px */
-        @media (min-width: 375px) and (max-width: 425px) {
-          .tap-hint {
-           top: 63%;
-           left:37%; 
-           }
+        @media (min-width: 376px) and (max-width: 425px) {
+          .tap-hint { top: 64%; }
         }
- 
+
         /* 768px (tablet) */
-        @media (min-width: 425px) and (max-width: 768px) {
-          .tap-hint { top: 64%;
-            left: 39%; 
-          
-          }
+        @media (min-width: 426px) and (max-width: 768px) {
+          .tap-hint { top: 66%; }
         }
- 
+
         /* 769px+ (desktop) */
         @media (min-width: 769px) {
-          .tap-hint { 
-          top: 67%; 
-          left: 40%;}
+          .tap-hint { top: 65%; }
         }
         .tap-hint-label {
           display: block; color: #b68d33; font-size: 10px;
@@ -2146,11 +735,17 @@ function Open() {
           50%      { opacity:0.4; transform:translateX(-50%) scale(0.97); }
         }
         .scratch-overlay {
-          position: absolute; top: 70%; left: 50%;
+          position: absolute;
+          top: 65%;
+          left: 50%;
           transform: translate(-50%, -50%);
-          width: 100%; z-index: 20;
-          display: flex; flex-direction: column;
-          align-items: center; gap: 6px; padding-bottom: 40px;
+          width: 100%;
+          z-index: 20;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 8px;
+          padding: 0 16px;
         }
         .scratch-title {
           font-family: 'Georgia', serif;
@@ -2168,6 +763,20 @@ function Open() {
         }
         /* GPU compositing hints for all scroll-driven images */
         .scroll-layer { will-change: transform; transform: translateZ(0); }
+
+        @keyframes scrollFadeIn {
+          from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+          to   { opacity: 1; transform: translateX(-50%) translateY(0px); }
+        }
+        @keyframes scrollDot {
+          0%   { transform: translateY(0px); opacity: 1; }
+          50%  { transform: translateY(10px); opacity: 0.3; }
+          100% { transform: translateY(0px); opacity: 1; }
+        }
+        @keyframes chevronFade {
+          0%,100% { opacity: 0.2; }
+          50%     { opacity: 1; }
+        }
       `}</style>
 
       <ConfettiBurst active={confettiActive} />
@@ -2190,7 +799,7 @@ function Open() {
             alt=""
           />
 
-           <div
+          <div
             className="absolute inset-0 w-full h-full scroll-layer"
             style={{
               opacity: open ? 1 : 0,
@@ -2198,21 +807,19 @@ function Open() {
                 ? `translateY(-${firstSectionScroll}px)`
                 : "translateY(100%)",
               transition: open
-                ? "opacity 1.5s cubic-bezier(0.22,1,0.36,1), transform 1.8s cubic-bezier(0.22,1,0.36,1)"
+                ? "opacity 0.9s cubic-bezier(0.22,1,0.36,1), transform 1.4s cubic-bezier(0.22,1,0.36,1)"
                 : "none",
-              transitionDelay: open ? "1.5s" : "0s",
+              transitionDelay: open ? "0.9s" : "0s",
               willChange: "transform, opacity",
             }}
           >
-            <img src="/1st front.svg" className="w-full h-full object-cover" alt="" />
+            <img src="/1st front.svg" className="w-full h-full object-cover" alt="" style={{ transform: open ? `translateY(-${firstSectionScroll}px)` : "translateY(100%)",}} />
           </div>
- 
 
           <div
             className="absolute inset-0 w-full h-full scroll-layer"
             style={{
               transform: open ? `translateY(-${firstSectionScroll}px)` : "translateY(0)",
-              
               opacity: open ? 1 : 0,
             }}
           >
@@ -2226,8 +833,8 @@ function Open() {
                   ? "translate(-50%, -50%) translateY(0)"
                   : "translate(-50%, -50%) translateY(40px)",
                 opacity: open ? 1 : 0,
-                transition: "opacity 1.4s ease, transform 2.5s ease",
-                transitionDelay: "2.5s",
+                transition: "opacity 1.4s ease, transform 1.5s ease",
+                transitionDelay: "1.5s",
                 willChange: "opacity, transform",
               }}
               alt="Logo"
@@ -2240,7 +847,7 @@ function Open() {
             style={{
               bottom: "-11px",
               opacity: open ? 1 : 0,
-              transition: "opacity 2s ease 2.5s",
+              transition: "opacity 1.5s ease 1.5s",
               transform: open ? `translateY(-${firstSectionScroll}px)` : "translateY(0px)",
             }}
             alt=""
@@ -2268,6 +875,74 @@ function Open() {
           {!open && (
             <div className="tap-hint">
               <span className="tap-hint-label">Tap to Open</span>
+            </div>
+          )}
+
+          {/* Scroll indicator — visible after envelope opens */}
+          {open && envelopeAnimDone && (
+            <div
+              style={{
+                position: "absolute",
+                bottom: "28px",
+                left: "50%",
+                transform: "translateX(-50%)",
+                zIndex: 50,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: "6px",
+                animation: "scrollFadeIn 1s ease 3.5s both",
+                pointerEvents: "none",
+              }}
+            >
+              {/* Mouse / scroll wheel icon */}
+              <div
+                style={{
+                  width: "22px",
+                  height: "36px",
+                  border: "2px solid #231701",
+                  borderRadius: "11px",
+                  position: "relative",
+                  display: "flex",
+                  justifyContent: "center",
+                  paddingTop: "5px",
+                }}
+              >
+                <div
+                  style={{
+                    width: "3px",
+                    height: "7px",
+                    background: "#231701",
+                    borderRadius: "2px",
+                    animation: "scrollDot 1.6s ease-in-out infinite",
+                  }}
+                />
+              </div>
+              {/* Chevron arrows */}
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "2px" }}>
+                {[0, 1, 2].map((i) => (
+                  <svg
+                    key={i}
+                    width="14" height="8" viewBox="0 0 14 8" fill="none"
+                    style={{ animation: `chevronFade 1.6s ease-in-out ${i * 0.18}s infinite` }}
+                  >
+                    <path d="M1 1L7 7L13 1" stroke="#231701" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                ))}
+              </div>
+              <span
+                style={{
+                  color: "#231701",
+                  fontSize: "9px",
+                  letterSpacing: "3px",
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  fontFamily: "Georgia, serif",
+                  opacity: 0.8,
+                }}
+              >
+                Scroll
+              </span>
             </div>
           )}
         </div>
@@ -2365,54 +1040,32 @@ function Open() {
             </div>
 
             {/* ── SECTION 4 — Events ── */}
-            <div className="relative h-[500vh] w-full">
+            <div className="relative h-[300vh] w-full">
               <div className="sticky top-0 h-screen w-full overflow-hidden" style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}>
                 <img src="/bg 4 section.svg" className="absolute inset-0 w-full h-full object-cover" alt="" />
-                <h2 className="absolute top-[8%] left-1/2 -translate-x-1/2 text-[#f3c53c] text-3xl font-bold z-10">Events</h2>
+                <h2 className="absolute top-[71px] left-1/2 -translate-x-1/2 text-[#f3c53c] text-3xl font-bold z-10">Events</h2>
                 {[
-                  {
-                    img: "/section 4 1.svg",
-                    node: (
-                      <div className="max-w-[300px] w-full text-center mt-10 z-10">
-                        <p className="text-base font-medium text-[#5c3a1e]">Day 1 <br /> 03/05/26</p>
-                        <h2 className="text-2xl font-semibold text-orange-700 mt-1">Paritran</h2>
-                        <p className="text-sm text-orange-700">11 am</p>
-                        <h2 className="text-2xl font-semibold text-green-700 mt-1">Mehendi</h2>
-                        <p className="text-sm text-green-700">1 pm onwards</p>
-                        <p className="text-sm text-[#5c3a1e] mt-3">@Home</p>
-                      </div>
-                    ),
-                  },
+                 
                   {
                     img: "/section 4 2.svg",
                     node: (
                       <div className="max-w-[300px] w-full text-center z-10">
-                        <p className="text-base font-medium text-[#5c3a1e]">Day 2 <br /> 04/05/26</p>
-                        <h2 className="text-xl font-semibold text-[#c200b9] mt-1">Carnival Haldi<br />Lunch</h2>
+                        <p className="text-base font-medium text-[#5c3a1e]">Day 1 <br /> 04/05/26</p>
+                        <h2 className="text-xl font-semibold text-[#c200b9] mt-1">Carnival <br /> Haldi<br />Lunch</h2>
                         <p className="text-sm text-[#c200b9]">12 pm</p>
                         <h2 className="text-xl font-semibold text-green-700 mt-2">High Tea</h2>
-                        <p className="text-sm text-green-700">5 pm</p>
+                        <p className="text-sm text-green-700">4.30 pm</p>
                         <p className="text-sm text-[#5c3a1e] mt-2">@Mangli Lake Farm</p>
                       </div>
                     ),
                   },
-                  {
-                    img: "/section 4 3.svg",
-                    node: (
-                      <div className="max-w-[300px] w-full text-center z-10">
-                        <p className="text-base font-medium text-[#5c3a1e]">Day 2 <br /> 04/05/26</p>
-                        <h2 className="text-2xl font-bold text-[#2b2b9a] mt-1">Sangeet</h2>
-                        <p className="text-base text-[#2b2b9a]">7 pm onwards</p>
-                        <p className="text-sm text-[#5c3a1e] mt-2">@Mangli Lake Farm</p>
-                      </div>
-                    ),
-                  },
+                 
                   {
                     img: "/section 4 2.svg",
                     node: (
                       <div className="max-w-[300px] w-full text-center z-10">
-                        <p className="text-base font-medium text-[#5c3a1e]">Day 3 <br /> 05/05/26</p>
-                        <h2 className="text-2xl font-bold text-[#cc4949] mt-1">Buddhist<br />Wedding</h2>
+                        <p className="text-base font-medium text-[#5c3a1e]">Day 2 <br /> 05/05/26</p>
+                        <h2 className="text-xl font-bold text-[#cc4949] mt-1">Maharashtrian <br />Lagna</h2>
                         <p className="text-base text-orange-700">12 pm</p>
                         <h2 className="text-xl font-semibold text-green-700 mt-2">High Tea</h2>
                         <p className="text-sm text-green-700">5 pm</p>
@@ -2424,18 +1077,18 @@ function Open() {
                     img: "/section 4 1.svg",
                     node: (
                       <div className="max-w-[300px] w-full text-center mt-10 z-10">
-                        <p className="text-base font-medium text-[#5c3a1e]">Day 3 <br /> 05/05/26</p>
-                        <h2 className="text-2xl font-semibold text-orange-700 mt-1">Barat</h2>
+                        <p className="text-base font-medium text-[#5c3a1e]">Day 2 <br /> 05/05/26</p>
+                        <h2 className="text-xl font-semibold text-orange-700 mt-1">Barat</h2>
                         <p className="text-sm text-orange-700">6pm</p>
-                        <h2 className="text-xl font-semibold text-green-700 mt-1">Warmala &<br />Reception</h2>
+                        <h2 className="text-xl font-semibold text-green-700 mt-1">Varmala &<br />Reception</h2>
                         <p className="text-sm text-green-700">7pm onwards</p>
-                        <h2 className="text-xl font-semibold text-[#c200b9] mt-1">Hindu<br />Wedding</h2>
+                        <h2 className="text-xl font-semibold text-[#c200b9] mt-1">Pahadi<br />Shadi</h2>
                         <p className="text-sm text-[#5c3a1e] mt-1">@Mangli Lake Farm</p>
                       </div>
                     ),
                   },
                 ].map((slide, i) => (
-                  <div key={i} className="absolute inset-0 flex items-center justify-center scroll-layer" style={getStyle(i)}>
+                  <div key={i} className="absolute inset-0 flex items-center justify-center scroll-layer top-[133px]" style={getStyle(i)}>
                     <img src={slide.img} className="absolute inset-0 w-full h-full object-cover" alt="" />
                     <div className="relative flex items-center justify-center w-full h-full px-6">
                       {slide.node}
@@ -2448,43 +1101,59 @@ function Open() {
             {/* ── SECTION 5 — Venue ── */}
             <div
               ref={venueRef}
-              className="h-screen w-full relative flex flex-col items-center justify-center text-center overflow-hidden"
-              style={{ fontFamily: "Georgia, 'Times New Roman', Times, serif" }}
+              className="h-screen w-full relative flex flex-col items-center justify-center text-center"
+              style={{ fontFamily: "Georgia, 'Times New Roman', Times, serif", overflow: "clip" }}
             >
-              <img src="/Yellow BG.svg" className="absolute inset-0 w-full h-full object-cover" style={{ opacity: 0.7 }} alt="" />
-              <img src="/Car BG.svg"    className="absolute inset-0 w-full h-full object-cover" alt="" />
-
+              {/* BG layers — pointer-events-none so they never intercept clicks */}
+              <img src="/Yellow BG.svg" className="absolute inset-0 w-full h-full object-cover pointer-events-none" style={{ opacity: 0.7, zIndex: 0 }} alt="" />
+              <img src="/Car BG.svg"    className="absolute inset-0 w-full h-full object-cover pointer-events-none" style={{ zIndex: 1 }} alt="" />
+ 
+              {/* Car — decorative only, never blocks clicks */}
               <img
                 src="/Car.svg"
-                className="absolute bottom-[6%] w-79 h-122 md:w-48 md:h-48 object-contain z-20 scroll-layer"
-                style={{ transform: `translateX(${carX}vw)`, transition: "transform 0.05s linear" }}
+                className="absolute bottom-[6%] w-79 h-122 md:w-48 md:h-48 object-contain pointer-events-none scroll-layer"
+                style={{ transform: `translateX(${carX}vw)`, transition: "transform 0.05s linear", zIndex: 2 }}
                 alt="Car"
               />
-
-              <div className="relative z-10 flex flex-col items-center w-full px-4" style={{ marginTop: "-242px" }}>
+ 
+              {/* Decorative wedding SVG — behind all interactive elements */}
+              <img
+                src="/wedding-11.svg"
+                className="absolute pointer-events-none"
+                style={{ height: "502px", top: "77px", left: "50%", transform: "translateX(-50%)", zIndex: 3 }}
+                alt=""
+              />
+ 
+              {/* Interactive content block — z-index 10, no overflow-hidden cutting it */}
+              <div className="relative flex flex-col items-center w-full px-4" style={{ marginTop: "-242px", zIndex: 10 }}>
                 <h2 className="text-4xl font-bold text-[#1f2a5a] mb-2" data-aos="fade-up">Venue</h2>
                 <p className="text-base text-[#1f2a5a] leading-relaxed mb-6" data-aos="fade-up">
                   Mangli Lake Farm,<br />
                   Near Champa (2km), Umred Road,<br />
                   Nagpur, Maharashtra 441204
                 </p>
-                <div className="w-full max-w-[320px] h-[130px] rounded-xl overflow-hidden shadow-xl mb-6" data-aos="fade-up">
+                <div
+                  className="w-full max-w-[320px] rounded-xl shadow-xl mb-6"
+                  style={{ height: "130px", overflow: "hidden", position: "relative", zIndex: 10 }}
+                  data-aos="fade-up"
+                >
                   <iframe
                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3725.1813833139236!2d79.21359369999999!3d20.985365100000003!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bd4b06250837d09%3A0x1e737c4de53c6add!2sMangli%20Lake%20Farm!5e0!3m2!1sen!2sin!4v1772619329004!5m2!1sen!2sin"
-                    className="w-full h-full"
-                    style={{ border: 0 }}
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0, display: "block" }}
                     allowFullScreen=""
                     loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
                     title="Mangli Lake Farm Location"
                   />
                 </div>
-                <img src="/wedding-11.svg" className="absolute h-[502px] top-[77px]" alt="" />
                 <a
                   href="https://maps.google.com/?q=Mangli+Lake+Farm+Nagpur"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-[#7b1d3b00] text-white px-8 py-3 rounded-full text-base font-semibold active:scale-95 transition-transform"
+                  style={{ position: "relative", zIndex: 10 ,top:"-24px"}}
                   data-aos="fade-up"
                 >
                   Get Directions
@@ -2523,973 +1192,3 @@ function Open() {
 export default Open;
 
 
-
-
-// "use client";
-// import { useEffect, useRef, useState, useCallback } from "react";
-// import AOS from "aos";
-// import "aos/dist/aos.css";
-
-// // ─────────────────────────────────────────────────────────────────────────────
-// // CONFETTI BURST
-// // ─────────────────────────────────────────────────────────────────────────────
-// function ConfettiBurst({ active }) {
-//   const [particles, setParticles] = useState([]);
-//   const particlesRef = useRef([]);
-
-//   const COLORS = [
-//     "#FFD700", "#FF6B6B", "#4ECDC4", "#A78BFA",
-//     "#F97316", "#22D3EE", "#EC4899", "#84CC16",
-//     "#FFF", "#C9A96E",
-//   ];
-
-//   useEffect(() => {
-//     if (!active) return;
-//     const cx = typeof window !== "undefined" ? window.innerWidth / 2 : 200;
-//     const cy = typeof window !== "undefined" ? window.innerHeight * 0.52 : 300;
-//     const count = 140;
-
-//     particlesRef.current = Array.from({ length: count }, (_, i) => ({
-//       id: i,
-//       x: cx + (Math.random() - 0.5) * 60,
-//       y: cy,
-//       vx: (Math.random() - 0.5) * 20,
-//       vy: -(Math.random() * 16 + 5),
-//       color: COLORS[Math.floor(Math.random() * COLORS.length)],
-//       size: Math.random() * 16 + 6,
-//       rotation: Math.random() * 360,
-//       rotSpeed: (Math.random() - 0.5) * 14,
-//       gravity: 0.5,
-//       life: 1,
-//       decay: Math.random() * 0.013 + 0.007,
-//       isCircle: Math.random() > 0.7,
-//     }));
-
-//     let frame;
-//     const tick = () => {
-//       particlesRef.current = particlesRef.current
-//         .map((p) => ({
-//           ...p,
-//           x: p.x + p.vx,
-//           y: p.y + p.vy,
-//           vy: p.vy + p.gravity,
-//           vx: p.vx * 0.985,
-//           rotation: p.rotation + p.rotSpeed,
-//           life: p.life - p.decay,
-//         }))
-//         .filter((p) => p.life > 0);
-//       setParticles([...particlesRef.current]);
-//       if (particlesRef.current.length > 0) frame = requestAnimationFrame(tick);
-//     };
-//     frame = requestAnimationFrame(tick);
-//     return () => cancelAnimationFrame(frame);
-//   }, [active]);
-
-//   if (!active && particles.length === 0) return null;
-
-//   return (
-//     <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 9999, overflow: "hidden" }}>
-//       {particles.map((p) => (
-//         <div
-//           key={p.id}
-//           style={{
-//             position: "absolute",
-//             left: p.x,
-//             top: p.y,
-//             width: p.size,
-//             height: p.isCircle ? p.size : p.size * 0.4,
-//             backgroundColor: p.color,
-//             borderRadius: p.isCircle ? "50%" : 2,
-//             transform: `rotate(${p.rotation}deg)`,
-//             opacity: p.life,
-//           }}
-//         />
-//       ))}
-//     </div>
-//   );
-// }
-
-// // ─────────────────────────────────────────────────────────────────────────────
-// // SCRATCH CARD
-// // ─────────────────────────────────────────────────────────────────────────────
-// function ScratchCard({ weddingDate = "05/05/26", onFullReveal }) {
-//   const canvasRef = useRef(null);
-//   const [isDrawing, setIsDrawing] = useState(false);
-//   const [revealed, setRevealed] = useState(false);
-//   const [hintVisible, setHintVisible] = useState(true);
-//   const hasTriggered = useRef(false);
-//   const lastPos = useRef(null);
-
-//   const initCanvas = useCallback(() => {
-//     const canvas = canvasRef.current;
-//     if (!canvas) return;
-//     const ctx = canvas.getContext("2d");
-
-//     const img = new Image();
-//     img.src = "/3rd slide3.svg";
-//     img.onload = () => {
-//       ctx.clearRect(0, 0, canvas.width, canvas.height);
-//       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-//     };
-//     img.onerror = () => {
-//       const grad = ctx.createLinearGradient(0, 0, canvas.width, 0);
-//       grad.addColorStop(0,    "#8B6914");
-//       grad.addColorStop(0.15, "#F5D060");
-//       grad.addColorStop(0.3,  "#C9940A");
-//       grad.addColorStop(0.5,  "#FFF0A0");
-//       grad.addColorStop(0.7,  "#B8860B");
-//       grad.addColorStop(0.85, "#E8C84A");
-//       grad.addColorStop(1,    "#8B6914");
-//       ctx.fillStyle = grad;
-//       ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-//       ctx.save();
-//       ctx.globalAlpha = 0.18;
-//       for (let i = 0; i < 40; i++) {
-//         ctx.beginPath();
-//         ctx.strokeStyle = i % 2 === 0 ? "#fff" : "#7A5C00";
-//         ctx.lineWidth = Math.random() * 8 + 1;
-//         const y = Math.random() * canvas.height;
-//         ctx.moveTo(Math.random() * 20, y);
-//         ctx.bezierCurveTo(
-//           canvas.width * 0.25, y - 15 + Math.random() * 30,
-//           canvas.width * 0.75, y - 15 + Math.random() * 30,
-//           canvas.width - Math.random() * 20, y + (Math.random() - 0.5) * 20
-//         );
-//         ctx.stroke();
-//       }
-//       ctx.restore();
-//     };
-//   }, []);
-
-//   useEffect(() => { initCanvas(); }, [initCanvas]);
-
-//   const getPos = (e, canvas) => {
-//     const rect = canvas.getBoundingClientRect();
-//     const sx = canvas.width / rect.width;
-//     const sy = canvas.height / rect.height;
-//     if (e.touches) {
-//       return {
-//         x: (e.touches[0].clientX - rect.left) * sx,
-//         y: (e.touches[0].clientY - rect.top) * sy,
-//       };
-//     }
-//     return {
-//       x: (e.clientX - rect.left) * sx,
-//       y: (e.clientY - rect.top) * sy,
-//     };
-//   };
-
-//   const doScratch = useCallback((e) => {
-//     if (!isDrawing || revealed) return;
-//     e.preventDefault();
-//     const canvas = canvasRef.current;
-//     const ctx = canvas.getContext("2d");
-//     const pos = getPos(e, canvas);
-
-//     ctx.globalCompositeOperation = "destination-out";
-
-//     if (lastPos.current) {
-//       ctx.beginPath();
-//       ctx.lineWidth = 56;
-//       ctx.lineCap = "round";
-//       ctx.lineJoin = "round";
-//       ctx.moveTo(lastPos.current.x, lastPos.current.y);
-//       ctx.lineTo(pos.x, pos.y);
-//       ctx.stroke();
-//     }
-//     ctx.beginPath();
-//     ctx.arc(pos.x, pos.y, 28, 0, Math.PI * 2);
-//     ctx.fill();
-
-//     ctx.globalCompositeOperation = "source-over";
-//     lastPos.current = pos;
-//     setHintVisible(false);
-//     checkReveal(ctx, canvas);
-//   }, [isDrawing, revealed]);
-
-//   const checkReveal = (ctx, canvas) => {
-//     if (hasTriggered.current) return;
-//     const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-//     let transparent = 0;
-//     for (let i = 3; i < data.length; i += 4) {
-//       if (data[i] < 128) transparent++;
-//     }
-//     const pct = (transparent / (canvas.width * canvas.height)) * 100;
-//     if (pct > 45) {
-//       hasTriggered.current = true;
-//       ctx.clearRect(0, 0, canvas.width, canvas.height);
-//       setRevealed(true);
-//       onFullReveal?.();
-//     }
-//   };
-
-//   return (
-//     <div
-//       style={{
-//         position: "relative",
-//         width: "75%",
-//         maxWidth: 340,
-//         margin: "0 auto",
-//         height: "304px",
-//         aspectRatio: "2.8 / 1",
-//         userSelect: "none",
-//         WebkitUserSelect: "none",
-//       }}
-//     >
-//       <div
-//         style={{
-//           position: "absolute",
-//           inset: 0,
-//           display: "flex",
-//           alignItems: "center",
-//           justifyContent: "center",
-//           zIndex: 1,
-//         }}
-//       >
-//         <span
-//           style={{
-//             fontFamily: "'Georgia', 'Times New Roman', serif",
-//             fontSize: "clamp(1.5rem, 4.5vw, 1.9rem)",
-//             fontWeight: 700,
-//             color: "#ffc55a",
-//             letterSpacing: "0.1em",
-//             background: "#7B1D3A",
-//             padding: "10px 28px",
-//             borderRadius: 8,
-//             marginTop: "-120px",
-//             opacity: revealed ? 1 : 0,
-//             transform: revealed
-//               ? "scale(1) translateY(0)"
-//               : "scale(0.8) translateY(6px)",
-//             transition:
-//               "opacity 0.5s ease, transform 0.5s cubic-bezier(0.34,1.56,0.64,1)",
-//           }}
-//         >
-//           {weddingDate}
-//         </span>
-//       </div>
-
-//       <canvas
-//         ref={canvasRef}
-//         width={520}
-//         height={186}
-//         style={{
-//           position: "absolute",
-//           inset: 0,
-//           width: "100%",
-//           height: "100%",
-//           zIndex: 2,
-//           cursor: revealed ? "default" : "crosshair",
-//           borderRadius: 6,
-//           touchAction: "none",
-//           opacity: revealed ? 0 : 1,
-//           transition: "opacity 0.6s ease",
-//           marginTop: "-100px",
-//         }}
-//         onMouseDown={(e) => { setIsDrawing(true); lastPos.current = getPos(e, canvasRef.current); }}
-//         onMouseUp={() => { setIsDrawing(false); lastPos.current = null; }}
-//         onMouseLeave={() => { setIsDrawing(false); lastPos.current = null; }}
-//         onMouseMove={doScratch}
-//         onTouchStart={(e) => {
-//           setIsDrawing(true);
-//           lastPos.current = getPos(e, canvasRef.current);
-//           doScratch(e);
-//         }}
-//         onTouchEnd={() => { setIsDrawing(false); lastPos.current = null; }}
-//         onTouchMove={doScratch}
-//       />
-
-//       {hintVisible && !revealed && (
-//         <div
-//           style={{
-//             position: "absolute",
-//             bottom: -30,
-//             left: "50%",
-//             transform: "translateX(-50%)",
-//             color: "#C9A96E",
-//             fontSize: "0.75rem",
-//             fontFamily: "Georgia, serif",
-//             letterSpacing: "0.07em",
-//             whiteSpace: "nowrap",
-//             textShadow: "0 1px 4px rgba(0,0,0,0.5)",
-//             animation: "scratchPulse 1.8s ease-in-out infinite",
-//           }}
-//         />
-//       )}
-//     </div>
-//   );
-// }
-
-// // ─────────────────────────────────────────────────────────────────────────────
-// // MAIN COMPONENT
-// // ─────────────────────────────────────────────────────────────────────────────
-// function Open() {
-//   const sectionRef          = useRef(null);
-//   const section3Ref         = useRef(null);
-//   const imageRef            = useRef(null);
-//   const section1SentinelRef = useRef(null);
-
-//   const [open, setOpen]                         = useState(false);
-//   const [envelopeAnimDone, setEnvelopeAnimDone] = useState(false);
-//   const [section2Loaded, setSection2Loaded]     = useState(false);
-//   const [scrollY, setScrollY]                   = useState(0);
-//   const [windowHeight, setWindowHeight]         = useState(0);
-//   const [assetsLoaded, setAssetsLoaded]         = useState(false);
-//   const [progress, setProgress]                 = useState(0);
-
-//   const [confettiActive, setConfettiActive] = useState(false);
-
-//   const handleScratchReveal = useCallback(() => {
-//     setConfettiActive(true);
-//     setTimeout(() => setConfettiActive(false), 3500);
-//   }, []);
-
-//   // Countdown
-//   const targetDate = new Date("2026-05-05T00:00:00").getTime();
-//   const [timeLeft, setTimeLeft] = useState(getTimeRemaining());
-
-//   function getTimeRemaining() {
-//     const now      = new Date().getTime();
-//     const distance = targetDate - now;
-//     const days    = Math.floor(distance / (1000 * 60 * 60 * 24));
-//     const hours   = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-//     const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-//     return { days, hours, minutes };
-//   }
-
-//   useEffect(() => {
-//     const timer = setInterval(() => setTimeLeft(getTimeRemaining()), 1000);
-//     return () => clearInterval(timer);
-//   }, []);
-
-//   const criticalImages = ["/openup.svg", "/openbottom.svg"];
-//   const lazyImages = [
-//     "/1st bg imjage.svg", "/1st front.svg", "/logo 1.svg", "/1stbottom.svg",
-//     "/slidesecond.svg", "/3rd slide bg.svg", "/3rd slide top.svg",
-//     "/3rd slide second.svg", "/3rd slide4.svg", "/3rd slide3.svg",
-//     "/3rd slide bottom.svg", "/bg 4 section.svg", "/section 4 1.svg",
-//     "/section 4 2.svg", "/section 4 3.svg", "/section 5 final screen.svg", "/final.svg",
-//   ];
-
-//   // ── Scroll-driven section calculations ──
-//   const section3Start    = section3Ref.current?.offsetTop || 0;
-//   const section3Height   = windowHeight * 2;
-//   const section3Raw      = scrollY - section3Start;
-//   const section3Scroll   = Math.max(0, Math.min(section3Raw, section3Height));
-//   const section3Progress = section3Scroll / windowHeight;
-
-//   const getSection3Style = (index) => {
-//     if (scrollY < section3Start) return { transform: "translateY(0px)" };
-//     if (index === 0) return { transform: `translateY(${-section3Progress * windowHeight}px)` };
-//     if (index === 1) return { transform: `translateY(${windowHeight - section3Progress * windowHeight}px)` };
-//     return { transform: "translateY(0px)" };
-//   };
-
-//   const sectionStart  = windowHeight * 3;
-//   const raw           = scrollY - sectionStart;
-//   const step          = windowHeight;
-//   const scrollClamped = Math.max(0, Math.min(raw, step * 4));
-//   const activeIndex   = Math.floor(scrollClamped / step);
-//   const progressVal   = (scrollClamped % step) / step;
-
-//   const getStyle = (index) => {
-//     if (index === activeIndex)     return { transform: `translateY(${-progressVal * windowHeight}px)` };
-//     if (index === activeIndex + 1) return { transform: `translateY(${windowHeight - progressVal * windowHeight}px)` };
-//     if (index < activeIndex)       return { transform: `translateY(${-windowHeight}px)` };
-//     return { transform: `translateY(${windowHeight}px)` };
-//   };
-
-//   // Parallax for sectionRef
-//   useEffect(() => {
-//     let current = 0, target = 0, isVis = false;
-//     const observer = new IntersectionObserver(
-//       ([entry]) => { isVis = entry.isIntersecting; },
-//       { threshold: 0.3 }
-//     );
-//     if (sectionRef.current) observer.observe(sectionRef.current);
-
-//     const handleScroll = () => {
-//       if (!sectionRef.current || !isVis) return;
-//       const rect = sectionRef.current.getBoundingClientRect();
-//       const prog = Math.max(0, Math.min((window.innerHeight - rect.top) / window.innerHeight, 1));
-//       target = prog * 40;
-//     };
-//     const animate = () => {
-//       if (isVis) {
-//         current += (target - current) * 0.08;
-//         if (imageRef.current) imageRef.current.style.transform = `translateY(${current}px)`;
-//       }
-//       requestAnimationFrame(animate);
-//     };
-//     window.addEventListener("scroll", handleScroll, { passive: true });
-//     animate();
-//     return () => { window.removeEventListener("scroll", handleScroll); observer.disconnect(); };
-//   }, []);
-
-//   useEffect(() => { AOS.init({ duration: 800, once: false }); }, []);
-
-//   // Preload assets
-//   useEffect(() => {
-//     setWindowHeight(window.innerHeight);
-//     document.body.style.overflow = "hidden";
-//     let loadedCount = 0;
-//     const total = criticalImages.length;
-
-//     const preloadPromises = criticalImages.map((src) =>
-//       new Promise((resolve) => {
-//         const img = new Image();
-//         img.src = src;
-//         const done = () => {
-//           loadedCount++;
-//           setProgress(Math.round((loadedCount / total) * 100));
-//           resolve();
-//         };
-//         img.onload = done;
-//         img.onerror = done;
-//         setTimeout(resolve, 3000);
-//       })
-//     );
-//     lazyImages.forEach((src) => { const img = new Image(); img.src = src; });
-//     Promise.all(preloadPromises).then(() => {
-//       setProgress(100);
-//       setTimeout(() => setAssetsLoaded(true), 200);
-//     });
-//     return () => { document.body.style.overflow = "auto"; };
-//   }, []);
-
-//   // Scroll + resize listeners
-//   useEffect(() => {
-//     let ticking = false;
-//     const handleScroll = () => {
-//       if (!ticking) {
-//         requestAnimationFrame(() => { setScrollY(window.scrollY); ticking = false; });
-//         ticking = true;
-//       }
-//     };
-//     const handleResize = () => setWindowHeight(window.innerHeight);
-//     window.addEventListener("scroll", handleScroll, { passive: true });
-//     window.addEventListener("resize", handleResize, { passive: true });
-//     return () => {
-//       window.removeEventListener("scroll", handleScroll);
-//       window.removeEventListener("resize", handleResize);
-//     };
-//   }, []);
-
-//   // Sentinel observer
-//   useEffect(() => {
-//     if (!section1SentinelRef.current) return;
-//     const observer = new IntersectionObserver(
-//       ([entry]) => { /* reserved */ },
-//       { threshold: 1.0 }
-//     );
-//     observer.observe(section1SentinelRef.current);
-//     return () => observer.disconnect();
-//   }, [envelopeAnimDone]);
-
-//   // Envelope open handler
-//   const handleOpen = () => {
-//     if (open) return;
-//     setOpen(true);
-//     setTimeout(() => {
-//       setEnvelopeAnimDone(true);
-//       document.body.style.overflow = "auto";
-//     }, 1700);
-//   };
-
-//   const fadeUp = (delay) => ({
-//     opacity: open ? 1 : 0,
-//     transform: open ? "translateY(0px)" : "translateY(40px)",
-//     transition: "opacity 1s ease, transform 1s ease",
-//     transitionDelay: `${delay}s`,
-//   });
-
-//   // ── Bridge parallax math ──
-//   // Bridge rises from below as user scrolls from section2 → section3
-//   const bridgeStart = windowHeight * 1.6;   // scroll position where rise begins
-//   const bridgeFull  = windowHeight * 2.1;   // scroll position where it's fully up
-//   const bridgeRange = bridgeFull - bridgeStart;
-
-//   const rawBridgeProg = scrollY < bridgeStart
-//     ? 0
-//     : Math.min((scrollY - bridgeStart) / bridgeRange, 1);
-
-//   // Ease-out cubic: fast start, smooth deceleration
-//   const bridgeEased = 1 - Math.pow(1 - rawBridgeProg, 3);
-
-//   // 150px below natural → rises to 0
-//   const bridgeRiseY = (1 - bridgeEased) * 150;
-
-//   // Once section3 starts, bridge continues scrolling upward with it
-//   const bridgeScrollAway = section3Progress * windowHeight * 0.8;
-
-//   const bridgeFinalY = bridgeRiseY - bridgeScrollAway;
-
-//   // ────────────────────────────────────────────────────────────────────────────
-
-//   if (!assetsLoaded) {
-//     return (
-//       <div
-//         className="fixed inset-0 flex flex-col items-center justify-center z-[9999]"
-//         style={{ background: "linear-gradient(160deg,#fff8f0,#fdecd8,#f9dfc8)" }}
-//       >
-//         <p className="text-[#b68d33] font-bold text-2xl mb-8 tracking-[4px] uppercase">Wedding Loading</p>
-//         <div className="w-64 h-1.5 bg-[#f8e4d0] rounded-full overflow-hidden">
-//           <div
-//             className="h-full rounded-full transition-all duration-300 ease-out"
-//             style={{ width: `${progress}%`, background: "linear-gradient(90deg,#b68d33,#e8b56d)" }}
-//           />
-//         </div>
-//         <p className="mt-3 text-[#b68d33] font-medium text-lg">{progress}%</p>
-//         <p className="absolute bottom-10 text-[#c4a06a] text-xs tracking-widest uppercase">Please Wait…</p>
-//       </div>
-//     );
-//   }
-
-//   const firstSectionScroll = Math.min(scrollY, windowHeight);
-
-//   return (
-//     <>
-//       {/* ── Global styles ── */}
-//       <style>{`
-//         .env-stage {
-//           perspective: 1000px;
-//           perspective-origin: 50% 0%;
-//           transform-style: preserve-3d;
-//         }
-//         .env-flap {
-//           position: absolute; inset: 0; width: 100%; height: 100%;
-//           transform-origin: top center;
-//           transform: rotateX(0deg);
-//           transition: transform 2000ms cubic-bezier(0.4,0,0.2,1);
-//           backface-visibility: hidden; -webkit-backface-visibility: hidden;
-//           will-change: transform; cursor: pointer; z-index: 30;
-//         }
-//         .env-flap.opened { transform: rotateX(175deg); }
-//         .env-body {
-//           position: absolute; inset: 0; width: 100%; height: 100%;
-//           transform-origin: bottom center;
-//           transform: rotateX(0deg);
-//           transition: transform 3000ms cubic-bezier(0.4,0,0.2,1);
-//           backface-visibility: hidden; -webkit-backface-visibility: hidden;
-//           will-change: transform; z-index: 20; pointer-events: none;
-//         }
-//         .env-body.opened { transform: rotateX(-175deg); }
-//         .env-flap::after {
-//           content: ""; position: absolute; inset: 0; pointer-events: none;
-//           background: linear-gradient(105deg,transparent 38%,rgba(255,255,255,0.22) 50%,transparent 62%);
-//           background-size: 220% 100%;
-//           animation: shimmer-move 3.2s linear infinite;
-//         }
-//         @keyframes shimmer-move {
-//           0%,100% { background-position: 220% center; }
-//         }
-//         .tap-hint {
-//           position: absolute; top: 65%; left: 40%;
-//           z-index: 40; pointer-events: none; text-align: center;
-//         }
-//         .tap-hint-label {
-//           display: block; color: #b68d33; font-size: 10px;
-//           letter-spacing: 3.5px; font-weight: 900;
-//           text-transform: uppercase; white-space: nowrap;
-//         }
-//         .tap-hint-bar {
-//           margin: 7px auto 0; width: 1px; height: 20px;
-//           background: linear-gradient(to bottom, #b68d33, transparent);
-//         }
-//         @keyframes scratchPulse {
-//           0%,100% { opacity:1; transform:translateX(-50%) scale(1); }
-//           50%      { opacity:0.4; transform:translateX(-50%) scale(0.97); }
-//         }
-//         .scratch-overlay {
-//           position: absolute;
-//           top: 70%;
-//           left: 50%;
-//           transform: translate(-50%, -50%);
-//           width: 100%;
-//           z-index: 20;
-//           display: flex;
-//           flex-direction: column;
-//           align-items: center;
-//           gap: 6px;
-//           padding-bottom: 40px;
-//         }
-//         .scratch-title {
-//           font-family: 'Georgia', serif;
-//           font-size: clamp(2rem, 5vw, 2.2rem);
-//           color: #ffc55a;
-//           font-weight: 700;
-//           letter-spacing: 0.04em;
-//           text-shadow: 0 2px 8px rgba(0,0,0,0.4);
-//           text-align: center;
-//           margin-bottom: 2px;
-//         }
-//         .scratch-subtitle {
-//           font-family: 'Georgia', serif;
-//           font-size: clamp(1rem, 2.4vw, 0.98rem);
-//           color: #671d02;
-//           text-align: center;
-//           letter-spacing: 0.03em;
-//           margin-bottom: 14px;
-//           line-height: 1.5;
-//         }
-
-//         /* ── Bridge rise animation ── */
-//         @keyframes bridgeRise {
-//           from { transform: translateY(160px); opacity: 0; }
-//           to   { transform: translateY(0px);   opacity: 1; }
-//         }
-//       `}</style>
-
-//       {/* ── Confetti ── */}
-//       <ConfettiBurst active={confettiActive} />
-
-//       <div className={`relative ${open && envelopeAnimDone ? "min-h-[700vh]" : "h-screen overflow-hidden"}`}>
-
-//         {/* ══ STICKY FIRST SECTION + ENVELOPE ══ */}
-//         <div
-//           className="sticky top-0 h-screen w-full overflow-hidden"
-//           style={{ background: "linear-gradient(160deg,#fff8f0 0%,#fdecd8 55%,#f5d5b8 100%)" }}
-//         >
-//           <img
-//             src="/1st bg imjage.svg"
-//             className="absolute inset-0 w-full h-full object-cover"
-//             style={{ ...getSection3Style(0), ...fadeUp(0), opacity: open ? 1 : 0 }}
-//             alt=""
-//           />
-//           <img
-//             src="/1st front.svg"
-//             className="absolute inset-0 w-full h-full object-cover"
-//             style={{ ...getSection3Style(0), ...fadeUp(1), opacity: open ? 1 : 0 }}
-//             alt=""
-//           />
-//           <img
-//             src="/logo 1.svg"
-//             className="absolute object-contain"
-//             style={{
-//               width: "clamp(80px, 22vw, 122px)", height: "auto",
-//               top: "50%", left: "50%",
-//               transform: open
-//                 ? "translate(-50%, -50%) translateY(0)"
-//                 : "translate(-50%, -50%) translateY(40px)",
-//               opacity: open ? 1 : 0,
-//               transition: "opacity 1.4s ease, transform 1.5s ease",
-//               transitionDelay: "1.5s",
-//             }}
-//             alt="Logo"
-//           />
-//           <img
-//             src="/1stbottom.svg"
-//             className="absolute w-full object-cover"
-//             style={{
-//               bottom: "-11px",
-//               opacity: open ? 1 : 0,
-//               transition: "opacity 1.4s ease 1.5s",
-//               transform: open ? `translateY(-${firstSectionScroll}px)` : "translateY(0px)",
-//             }}
-//             alt=""
-//           />
-
-//           {/* ENVELOPE */}
-//           <div
-//             className="env-stage absolute inset-0 w-full h-full"
-//             style={{ pointerEvents: open ? "none" : "auto" }}
-//           >
-//             <div className={`env-body${open ? " opened" : ""}`}>
-//               <img src="/openbottom.svg" className="w-full h-full object-cover" fetchpriority="high" alt="" draggable={false} />
-//             </div>
-//             <div
-//               className={`env-flap${open ? " opened" : ""}`}
-//               onClick={handleOpen}
-//               role="button"
-//               aria-label="Open invitation"
-//               tabIndex={0}
-//               onKeyDown={(e) => e.key === "Enter" && handleOpen()}
-//             >
-//               <img src="/openup.svg" className="w-full h-full object-cover" fetchpriority="high" alt="" draggable={false} />
-//             </div>
-//           </div>
-
-//           {!open && (
-//             <div className="tap-hint">
-//               <span className="tap-hint-label">Tap to Open</span>
-//               <div className="tap-hint-bar" />
-//             </div>
-//           )}
-//         </div>
-
-//         {/* ══ REST OF SECTIONS ══ */}
-//         {open && envelopeAnimDone && (
-//           <>
-//             {/* SECTION 2 */}
-//             <div className="w-full">
-//               <div className="h-screen w-full bg-[#5b3525] relative overflow-hidden">
-//                 {!section2Loaded && (
-//                   <div className="absolute inset-0 flex items-center justify-center text-white text-sm">Loading…</div>
-//                 )}
-//                 <img
-//                   src="/slidesecond.svg"
-//                   loading="lazy"
-//                   onLoad={() => setSection2Loaded(true)}
-//                   className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${section2Loaded ? "opacity-100" : "opacity-0"}`}
-//                   alt=""
-//                 />
-//                 <div
-//                   className="relative flex items-center justify-center h-full px-6"
-//                   style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}
-//                 >
-//                   <div
-//                     className="max-w-[340px] w-full text-center text-[#f5cb7d] absolute top-[40%] left-[50%] -translate-x-1/2 -translate-y-1/2"
-//                     data-aos="fade-up"
-//                     data-aos-duration="1200"
-//                   >
-//                     <h2 className="text-lg md:text-xl font-semibold leading-tight" data-aos="fade-up" data-aos-duration="1200">
-//                       Mrs. Sandhya &amp; <br /> Mr.Anil Bahadure
-//                     </h2>
-//                     <p className="mt-1 text-sm leading-relaxed text-[#f6d38b]" data-aos="fade-up" data-aos-duration="1230">
-//                       Await your presence for <br />the wedding celebrations <br />of their daughter
-//                     </p>
-//                     <h1 className="mt-3 text-4xl font-bold tracking-wide" data-aos="fade-up" data-aos-duration="1260">Shreya</h1>
-//                     <p className="mt-1 text-xl text-[#f6d38b]" data-aos="fade-up" data-aos-duration="1280">with</p>
-//                     <h1 className="text-4xl font-bold tracking-wide" data-aos="fade-up" data-aos-duration="1290">Naivedya</h1>
-//                     <p className="mt-5 text-sm text-[#f6d38b]" data-aos="fade-up" data-aos-duration="1300">Son of</p>
-//                     <h2 className="text-lg md:text-xl font-semibold" data-aos="fade-up" data-aos-duration="1300">
-//                       Mrs. Kamlesh Joshi & <br /> Late Mr. Mukul Joshi
-//                     </h2>
-//                   </div>
-//                 </div>
-//               </div>
-//             </div>
-
-//             <div ref={section1SentinelRef} style={{ height: "1px" }} />
-
-//             {/* ══ BRIDGE IMAGE — parallax rise from bottom ══ */}
-//             <div
-//               style={{
-//                 position: "relative",
-//                 top: "-183px",
-//                 zIndex: 20,
-//                 pointerEvents: "none",
-//                 marginBottom: "-267px",
-//                 height: "320px",
-//                 willChange: "transform",
-//                 // Scroll-driven: no CSS transition so it stays perfectly in sync
-//                 transform: `translateY(${bridgeFinalY}px)`,
-//               }}
-//             >
-//               <img
-//                 src="/3rd slide top.svg"
-//                 loading="lazy"
-//                 className="w-full object-cover"
-//                 style={{
-//                   height: "300px",
-//                   display: "block",
-//                   position: "relative",
-//                   zIndex: 20,
-//                   pointerEvents: "none",
-//                   // Fade in as it rises; once fully up stay opaque
-//                   opacity: bridgeEased,
-//                   // Slight CSS transition on opacity only for smoothness
-//                   transition: "opacity 0.08s linear",
-//                 }}
-//                 alt=""
-//               />
-//             </div>
-
-//             {/* ══ SECTION 3 — SCRATCH CARD ══ */}
-//             <div
-//               ref={section3Ref}
-//               className="h-screen w-full relative overflow-hidden"
-//               style={{ zIndex: 10 }}
-//             >
-//               <div className="sticky top-0 h-screen w-full overflow-hidden">
-//                 <img
-//                   src="/3rd slide bg.svg"
-//                   loading="lazy"
-//                   className="absolute inset-0 w-full h-full object-cover"
-//                   alt=""
-//                 />
-//                 <img
-//                   src="/3rd slide second.svg"
-//                   loading="lazy"
-//                   className="absolute w-full h-full object-cover top-[40px]"
-//                   style={getSection3Style(0)}
-//                   alt=""
-//                 />
-
-//                 <div className="scratch-overlay">
-//                   <p className="scratch-title">Reveal</p>
-//                   <p className="scratch-subtitle">
-//                     Scratch to discover<br />the wedding date
-//                   </p>
-//                   <ScratchCard
-//                     weddingDate="05/05/26"
-//                     onFullReveal={handleScratchReveal}
-//                   />
-//                 </div>
-
-//                 <img
-//                   src="/3rd slide bottom.svg"
-//                   loading="lazy"
-//                   className="absolute w-full h-full object-cover top-[276px] z-10"
-//                   style={{
-//                     transform: scrollY < section3Start
-//                       ? "translateY(0px)"
-//                       : `translateY(${-section3Progress * windowHeight}px)`,
-//                     opacity: scrollY < section3Start ? 1 : 1 - section3Progress,
-//                     transition: "transform 0.1s linear, opacity 0.1s linear",
-//                   }}
-//                   alt=""
-//                 />
-//               </div>
-//             </div>
-
-//             {/* ══ SECTION 4 — Events ══ */}
-//             <div className="relative h-[500vh] w-full">
-//               <div
-//                 className="sticky top-0 h-screen w-full overflow-hidden"
-//                 style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}
-//               >
-//                 <img src="/bg 4 section.svg" loading="lazy" className="absolute inset-0 w-full h-full object-cover" alt="" />
-//                 <h2 className="absolute top-[6%] left-1/2 -translate-x-1/2 text-[#f3c53c] text-3xl font-bold">Events</h2>
-//                 {[
-//                   {
-//                     img: "/section 4 1.svg",
-//                     node: (
-//                       <div className="max-w-[300px] w-full text-center mt-10 z-10">
-//                         <p className="text-base font-medium text-[#5c3a1e]">Day 1 <br /> 03/05/26</p>
-//                         <h2 className="text-2xl font-semibold text-orange-700 mt-1">Paritran</h2>
-//                         <p className="text-sm text-orange-700">11 am</p>
-//                         <h2 className="text-2xl font-semibold text-green-700 mt-1">Mehendi</h2>
-//                         <p className="text-sm text-green-700">1 pm onwards</p>
-//                         <p className="text-sm text-[#5c3a1e] mt-3">@Home</p>
-//                       </div>
-//                     ),
-//                   },
-//                   {
-//                     img: "/section 4 2.svg",
-//                     node: (
-//                       <div className="max-w-[300px] w-full text-center z-10">
-//                         <p className="text-base font-medium text-[#5c3a1e]">Day 2 <br /> 04/05/26</p>
-//                         <h2 className="text-xl font-semibold text-[#c200b9] mt-1">Carnival Haldi<br />Lunch</h2>
-//                         <p className="text-sm text-[#c200b9]">12 pm</p>
-//                         <h2 className="text-xl font-semibold text-green-700 mt-2">High Tea</h2>
-//                         <p className="text-sm text-green-700">5 pm</p>
-//                         <p className="text-sm text-[#5c3a1e] mt-2">@Mangli Lake Farm</p>
-//                       </div>
-//                     ),
-//                   },
-//                   {
-//                     img: "/section 4 3.svg",
-//                     node: (
-//                       <div className="max-w-[300px] w-full text-center z-10">
-//                         <p className="text-base font-medium text-[#5c3a1e]">Day 2 <br /> 04/05/26</p>
-//                         <h2 className="text-2xl font-bold text-[#2b2b9a] mt-1">Sangeet</h2>
-//                         <p className="text-base text-[#2b2b9a]">7 pm onwards</p>
-//                         <p className="text-sm text-[#5c3a1e] mt-2">@Mangli Lake Farm</p>
-//                       </div>
-//                     ),
-//                   },
-//                   {
-//                     img: "/section 4 3.svg",
-//                     node: (
-//                       <div className="max-w-[300px] w-full text-center z-10">
-//                         <p className="text-base font-medium text-[#5c3a1e]">Day 3 <br /> 05/05/26</p>
-//                         <h2 className="text-2xl font-bold text-[#cc4949] mt-1">Buddhist<br />Wedding</h2>
-//                         <p className="text-base text-orange-700">12 pm</p>
-//                         <h2 className="text-xl font-semibold text-green-700 mt-2">High Tea</h2>
-//                         <p className="text-sm text-green-700">5 pm</p>
-//                         <p className="text-sm text-[#5c3a1e] mt-2">@Mangli Lake Farm</p>
-//                       </div>
-//                     ),
-//                   },
-//                   {
-//                     img: "/section 4 1.svg",
-//                     node: (
-//                       <div className="max-w-[300px] w-full text-center mt-10 z-10">
-//                         <p className="text-base font-medium text-[#5c3a1e]">Day 3 <br /> 05/05/26</p>
-//                         <h2 className="text-2xl font-semibold text-orange-700 mt-1">Barat</h2>
-//                         <p className="text-sm text-orange-700">6pm</p>
-//                         <h2 className="text-xl font-semibold text-green-700 mt-1">Warmala &<br />Reception</h2>
-//                         <p className="text-sm text-green-700">7pm onwards</p>
-//                         <h2 className="text-xl font-semibold text-[#c200b9] mt-1">Hindu<br />Wedding</h2>
-//                         <p className="text-sm text-[#5c3a1e] mt-1">@Mangli Lake Farm</p>
-//                       </div>
-//                     ),
-//                   },
-//                 ].map((slide, i) => (
-//                   <div key={i} className="absolute inset-0 flex items-center justify-center" style={getStyle(i)}>
-//                     <img src={slide.img} loading="lazy" className="absolute inset-0 w-full h-full object-cover" alt="" />
-//                     <div className="relative flex items-center justify-center w-full h-full px-6">
-//                       {slide.node}
-//                     </div>
-//                   </div>
-//                 ))}
-//               </div>
-//             </div>
-
-//             {/* ══ SECTION 5 — Venue ══ */}
-//             <div
-//               className="h-screen w-full relative flex flex-col items-center justify-center text-center overflow-hidden"
-//               style={{ fontFamily: "Georgia, 'Times New Roman', Times, serif" }}
-//             >
-//               <img src="/section 5 final screen.svg" loading="lazy" className="absolute inset-0 w-full h-full object-cover" alt="" />
-//               <div className="relative z-10 flex flex-col items-center w-full px-4" style={{ marginTop: "-242px" }}>
-//                 <h2 className="text-4xl font-bold text-[#1f2a5a] mb-2" data-aos="fade-up">Venue</h2>
-//                 <p className="text-base text-[#1f2a5a] leading-relaxed mb-6" data-aos="fade-up">
-//                   Mangli Lake Farm,<br />
-//                   Near Champa (2km), Umred Road,<br />
-//                   Nagpur, Maharashtra 441204
-//                 </p>
-//                 <div className="w-full max-w-[320px] h-[130px] rounded-xl overflow-hidden shadow-xl mb-6" data-aos="fade-up">
-//                   <iframe
-//                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3725.1813833139236!2d79.21359369999999!3d20.985365100000003!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bd4b06250837d09%3A0x1e737c4de53c6add!2sMangli%20Lake%20Farm!5e0!3m2!1sen!2sin!4v1772619329004!5m2!1sen!2sin"
-//                     className="w-full h-full"
-//                     style={{ border: 0 }}
-//                     allowFullScreen=""
-//                     loading="lazy"
-//                     referrerPolicy="no-referrer-when-downgrade"
-//                     title="Mangli Lake Farm Location"
-//                   />
-//                 </div>
-                
-//                   <a href="https://maps.google.com/?q=Mangli+Lake+Farm+Nagpur"
-//                   target="_blank"
-//                   rel="noopener noreferrer"
-//                   className="bg-[#c94c4c] text-white px-8 py-3 rounded-full text-base font-semibold shadow-lg active:scale-95 transition-transform"
-//                   data-aos="fade-up"
-//                 >
-//                   Get Directions
-//                 </a>
-//               </div>
-//             </div>
-
-//             {/* ══ FINAL — Countdown ══ */}
-//             <div
-//               className="h-screen w-full relative flex items-center justify-center text-center overflow-hidden"
-//               style={{ fontFamily: "Georgia, 'Times New Roman', Times, serif" }}
-//             >
-//               <img src="/final.svg" loading="lazy" className="absolute inset-0 w-full h-full object-cover" alt="" />
-//               <div className="relative z-10 flex flex-col items-center px-4" style={{ marginTop: "-60px" }}>
-//                 <h2 className="text-3xl md:text-4xl font-bold text-[#f3c178] mb-6" data-aos="fade-up">
-//                   The Countdown <br />Begins
-//                 </h2>
-//                 <div
-//                   className="bg-[#1e2250] text-white px-6 py-2 rounded-full text-lg font-semibold shadow-lg mb-6 tracking-widest"
-//                   data-aos="fade-up"
-//                 >
-//                   {timeLeft.days}D &nbsp; {timeLeft.hours}H &nbsp; {timeLeft.minutes}M
-//                 </div>
-//                 <p className="text-white text-sm max-w-xs leading-relaxed" data-aos="fade-up">
-//                   One love, one promise,<br />one celebration — with you.
-//                 </p>
-//               </div>
-//             </div>
-//           </>
-//         )}
-//       </div>
-//     </>
-//   );
-// }
-
-// export default Open;
