@@ -1,4 +1,3 @@
-
 "use client";
 import { useEffect, useRef, useState, useCallback } from "react";
 import AOS from "aos";
@@ -601,27 +600,170 @@ function Open() {
     return { transform: `translateY(${windowHeight}px)` };
   };
 
-  // ── LOADER ───────────────────────────────────────────────────────────────
+  // ── LOADER — only this block was changed ─────────────────────────────────
   if (!assetsLoaded) {
+    // Fixed petal positions — no Math.random() here so they don't re-randomize on every progress tick
+    const petals = [
+      { left: "12%", top: "18%", rotate: "20deg",  size: 18, delay: "0s",   dur: "3.2s" },
+      { left: "80%", top: "10%", rotate: "-15deg", size: 14, delay: "0.4s", dur: "2.8s" },
+      { left: "65%", top: "75%", rotate: "35deg",  size: 20, delay: "0.8s", dur: "3.5s" },
+      { left: "25%", top: "80%", rotate: "-30deg", size: 16, delay: "0.2s", dur: "3.0s" },
+      { left: "90%", top: "55%", rotate: "10deg",  size: 12, delay: "1.0s", dur: "2.6s" },
+      { left: "5%",  top: "55%", rotate: "-20deg", size: 22, delay: "0.6s", dur: "3.8s" },
+      { left: "50%", top: "5%",  rotate: "45deg",  size: 15, delay: "1.2s", dur: "2.9s" },
+      { left: "40%", top: "90%", rotate: "-10deg", size: 17, delay: "0.3s", dur: "3.3s" },
+    ];
+
     return (
-      <div
-        className="fixed inset-0 flex flex-col items-center justify-center z-[9999]"
-        style={{ background: "linear-gradient(160deg,#fff8f0,#fdecd8,#f9dfc8)" }}
-      >
-        <p className="text-[#b68d33] font-bold text-2xl mb-8 tracking-[4px] uppercase">Wedding Loading</p>
-        <div className="w-64 h-1.5 bg-[#f8e4d0] rounded-full overflow-hidden">
-          <div
-            className="h-full rounded-full"
-            style={{
-              width: `${progress}%`,
-              background: "linear-gradient(90deg,#b68d33,#e8b56d)",
-              transition: "width 0.3s ease-out",
-            }}
-          />
+      <>
+        <style>{`
+          @keyframes petalFloat {
+            0%   { transform: translateY(0px)   rotate(var(--r)); opacity: 0.6; }
+            50%  { transform: translateY(-14px) rotate(calc(var(--r) + 15deg)); opacity: 1; }
+            100% { transform: translateY(0px)   rotate(var(--r)); opacity: 0.6; }
+          }
+          @keyframes loaderPulse {
+            0%,100% { opacity: 1; }
+            50%     { opacity: 0.5; }
+          }
+          @keyframes shimmerBar {
+            0%   { background-position: -200% center; }
+            100% { background-position:  200% center; }
+          }
+          @keyframes spinRing {
+            to { transform: rotate(360deg); }
+          }
+        `}</style>
+
+        <div
+          className="fixed inset-0 flex flex-col items-center justify-center z-[9999] overflow-hidden"
+          style={{ background: "linear-gradient(160deg,#fff8f0,#fdecd8,#f9dfc8)" }}
+        >
+          {/* Floating petals */}
+          {petals.map((p, i) => (
+            <div
+              key={i}
+              style={{
+                position: "absolute",
+                left: p.left,
+                top: p.top,
+                width: p.size,
+                height: p.size * 1.4,
+                borderRadius: "50% 50% 50% 0",
+                background: "linear-gradient(135deg,#f9c97c,#e8956d)",
+                opacity: 0.55,
+                transform: `rotate(${p.rotate})`,
+                animation: `petalFloat ${p.dur} ease-in-out ${p.delay} infinite`,
+                pointerEvents: "none",
+              }}
+            />
+          ))}
+
+          {/* Ring with initials */}
+          <div style={{ position: "relative", width: 80, height: 80, marginBottom: 28 }}>
+            {/* Static inner circle */}
+            <div style={{
+              position: "absolute", inset: 0,
+              borderRadius: "50%",
+              border: "2px solid #d4a44c",
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}>
+              <span style={{
+                fontFamily: "Georgia, serif",
+                fontSize: "1.4rem",
+                color: "#b68d33",
+                fontWeight: 700,
+                letterSpacing: "0.04em",
+              }}>S&N</span>
+            </div>
+            {/* Spinning arc overlay */}
+            <svg
+              width="92" height="92"
+              viewBox="0 0 92 92"
+              style={{
+                position: "absolute",
+                top: -6, left: -6,
+                animation: "spinRing 2s linear infinite",
+              }}
+            >
+              <circle
+                cx="46" cy="46" r="43"
+                fill="none"
+                stroke="#b68d33"
+                strokeWidth="2.5"
+                strokeDasharray="55 215"
+                strokeLinecap="round"
+              />
+            </svg>
+          </div>
+
+          {/* Label */}
+          <p style={{
+            color: "#b68d33",
+            fontFamily: "Georgia, serif",
+            fontWeight: 700,
+            fontSize: "0.95rem",
+            letterSpacing: "5px",
+            textTransform: "uppercase",
+            marginBottom: 4,
+            animation: "loaderPulse 2s ease-in-out infinite",
+          }}>
+            Wedding
+          </p>
+          <p style={{
+            color: "#c4a06a",
+            fontFamily: "Georgia, serif",
+            fontSize: "0.68rem",
+            letterSpacing: "3px",
+            textTransform: "uppercase",
+            marginBottom: 30,
+            opacity: 0.8,
+          }}>
+            Loading your invitation
+          </p>
+
+          {/* Shimmer progress bar */}
+          <div style={{ width: 200, marginBottom: 10 }}>
+            <div style={{
+              width: "100%", height: 3,
+              background: "#f0dcc8",
+              borderRadius: 99, overflow: "hidden",
+            }}>
+              <div style={{
+                height: "100%",
+                width: `${progress}%`,
+                borderRadius: 99,
+                background: "linear-gradient(90deg,#b68d33 0%,#f5d060 50%,#b68d33 100%)",
+                backgroundSize: "200% 100%",
+                animation: "shimmerBar 1.5s linear infinite",
+                transition: "width 0.3s ease-out",
+              }} />
+            </div>
+          </div>
+
+          <p style={{
+            color: "#b68d33",
+            fontFamily: "Georgia, serif",
+            fontSize: "0.72rem",
+            letterSpacing: "2px",
+            opacity: 0.9,
+          }}>
+            {progress}%
+          </p>
+
+          <p style={{
+            position: "absolute", bottom: 32,
+            color: "#c4a06a",
+            fontSize: "0.62rem",
+            letterSpacing: "3px",
+            textTransform: "uppercase",
+            fontFamily: "Georgia, serif",
+            opacity: 0.7,
+          }}>
+            Please Wait…
+          </p>
         </div>
-        <p className="mt-3 text-[#b68d33] font-medium text-lg">{progress}%</p>
-        <p className="absolute bottom-10 text-[#c4a06a] text-xs tracking-widest uppercase">Please Wait…</p>
-      </div>
+      </>
     );
   }
 
@@ -801,27 +943,38 @@ function Open() {
             style={{
               ...fadeUp(0),
               opacity: open ? 1 : 0,
-              transform: open ? `translateY(-${firstSectionScroll}px)` : "translateY(0px)",
+              transform: open ? `translateY(0px)` : "translateY(0px)",
             }}
             alt=""
           />
 
           <div
-            className="absolute inset-0 w-full h-full scroll-layer"
-            style={{
-              opacity: open ? 1 : 0,
-              transform: open
-                ? `translateY(-${firstSectionScroll}px)`
-                : "translateY(100%)",
-              transition: open
-                ? "opacity 0.9s cubic-bezier(0.22,1,0.36,1), transform 1.4s cubic-bezier(0.22,1,0.36,1)"
-                : "none",
-              transitionDelay: open ? "0.9s" : "0s",
-              willChange: "transform, opacity",
-            }}
-          >
-            <img src="/1st front.svg" className="w-full h-full object-cover" alt="" style={{ transform: open ? `translateY(-${firstSectionScroll}px)` : "translateY(100%)",}} />
-          </div>
+  className="absolute inset-0 w-full h-full scroll-layer"
+  style={{
+    opacity: open ? 1 : 0,
+    transform: open
+      ? `translateY(-7px)`
+      : "translateY(100%)",
+    transition: open
+      ? "opacity 0.9s cubic-bezier(0.22,1,0.36,1), transform 1.4s cubic-bezier(0.22,1,0.36,1)"
+      : "transform 0.5s cubic-bezier(0.22,1,0.36,1), opacity 0.3s ease", // ← was "none"
+    transitionDelay: open ? "0.9s" : "0s",
+    willChange: "transform, opacity",
+  }}
+>
+  <img
+    src="/1st front.svg"
+    className="w-full h-full object-cover"
+    alt=""
+    style={{
+      transform: open ? `translateY(-${firstSectionScroll}px)` : "translateY(100%)",
+      opacity: open ? 1 : 0,
+      transition: open
+        ? "none"
+        : "transform 0.5s cubic-bezier(0.22,1,0.36,1), opacity 0.3s ease", // ← same here
+    }}
+  />
+</div>
 
           <div
             className="absolute inset-0 w-full h-full scroll-layer"
@@ -903,6 +1056,7 @@ function Open() {
               }}
             >
               {/* Mouse / scroll wheel icon */}
+              
               <div
                 style={{
                   width: "22px",
@@ -1203,5 +1357,3 @@ function Open() {
 }
 
 export default Open;
-
-
