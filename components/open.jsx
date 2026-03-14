@@ -1040,7 +1040,7 @@ function Open() {
             </div>
 
             {/* ── SECTION 4 — Events ── */}
-            <div className="relative h-[300vh] w-full">
+            <div className="relative h-[290vh] w-full">
               <div className="sticky top-0 h-screen w-full overflow-hidden" style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}>
                 <img src="/bg 4 section.svg" className="absolute inset-0 w-full h-full object-cover" alt="" />
                 <h2 className="absolute top-[71px] left-1/2 -translate-x-1/2 text-[#f3c53c] text-3xl font-bold z-10">Events</h2>
@@ -1049,11 +1049,11 @@ function Open() {
                   {
                     img: "/section 4 2.svg",
                     node: (
-                      <div className="max-w-[300px] w-full text-center z-10">
+                      <div className="max-w-[300px] w-full text-center z-10 mt-[18px]">
                         <p className="text-base font-medium text-[#5c3a1e]">Day 1 <br /> 04/05/26</p>
-                        <h2 className="text-xl font-semibold text-[#c200b9] mt-1">Carnival <br /> Haldi<br />Lunch</h2>
+                        <h2 className="text-l font-semibold text-[#c200b9] mt-1">Carnival <br /> Haldi<br />Lunch</h2>
                         <p className="text-sm text-[#c200b9]">12 pm</p>
-                        <h2 className="text-xl font-semibold text-green-700 mt-2">High Tea</h2>
+                        <h2 className="text-l font-semibold text-green-700 mt-2">High Tea</h2>
                         <p className="text-sm text-green-700">4.30 pm</p>
                         <p className="text-sm text-[#5c3a1e] mt-2">@Mangli Lake Farm</p>
                       </div>
@@ -1063,27 +1063,27 @@ function Open() {
                   {
                     img: "/section 4 2.svg",
                     node: (
-                      <div className="max-w-[300px] w-full text-center z-10">
+                      <div className="max-w-[300px] w-full text-center z-10 mt-[18px]">
                         <p className="text-base font-medium text-[#5c3a1e]">Day 2 <br /> 05/05/26</p>
-                        <h2 className="text-xl font-bold text-[#cc4949] mt-1">Maharashtrian <br />Lagna</h2>
+                        <h2 className="text-l font-bold text-[#cc4949] ">Maharashtrian <br />Lagna</h2>
                         <p className="text-base text-orange-700">12 pm</p>
-                        <h2 className="text-xl font-semibold text-green-700 mt-2">High Tea</h2>
+                        <h2 className="text-l font-semibold text-green-700 ">High Tea</h2>
                         <p className="text-sm text-green-700">5 pm</p>
-                        <p className="text-sm text-[#5c3a1e] mt-2">@Mangli Lake Farm</p>
+                        <p className="text-sm text-[#5c3a1e] ">@Mangli Lake <br/> Farm</p>
                       </div>
                     ),
                   },
                   {
                     img: "/section 4 1.svg",
                     node: (
-                      <div className="max-w-[300px] w-full text-center mt-10 z-10">
+                      <div className="max-w-[300px] w-full text-center mt-6 z-10">
                         <p className="text-base font-medium text-[#5c3a1e]">Day 2 <br /> 05/05/26</p>
-                        <h2 className="text-xl font-semibold text-orange-700 mt-1">Barat</h2>
+                        <h2 className="text-l font-semibold text-orange-700 ">Barat</h2>
                         <p className="text-sm text-orange-700">6pm</p>
-                        <h2 className="text-xl font-semibold text-green-700 mt-1">Varmala &<br />Reception</h2>
+                        <h2 className="text-l font-semibold text-green-700 ">Varmala &<br />Reception</h2>
                         <p className="text-sm text-green-700">7pm onwards</p>
-                        <h2 className="text-xl font-semibold text-[#c200b9] mt-1">Pahadi<br />Shadi</h2>
-                        <p className="text-sm text-[#5c3a1e] mt-1">@Mangli Lake Farm</p>
+                        <h2 className="text-l font-semibold text-[#c200b9] ">Pahadi Shadi</h2>
+                        <p className="text-sm text-[#5c3a1e]">@Mangli Lake Farm</p>
                       </div>
                     ),
                   },
