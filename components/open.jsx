@@ -1511,40 +1511,84 @@
 
 // export default Open;
 
-
 "use client";
 import { useEffect, useRef, useState, useCallback } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
 // ─────────────────────────────────────────────────────────────────────────────
-// CONFETTI BURST
+// ASSET MANIFEST — every asset that must be cached before unlock
+// ─────────────────────────────────────────────────────────────────────────────
+const ALL_ASSETS = [
+  "/openup.svg",
+  "/openbottom.svg",
+  "/1st bg imjage.svg",
+  "/1st front.svg",
+  "/Monogram.svg",
+  "/1stbottom.svg",
+  "/slidesecond.svg",
+  "/3rd slide bg.svg",
+  "/3rd slide top.svg",
+  "/3rd slide second.svg",
+  "/3rd slide4.svg",
+  "/3rd slide3.svg",
+  "/3rd slide bottom.svg",
+  "/bg 4 section.svg",
+  "/section 4 1.svg",
+  "/section 4 2.svg",
+  "/section 4 3.svg",
+  "/Yellow BG.svg",
+  "/Car BG.svg",
+  "/Car.svg",
+  "/wedding-11.svg",
+  "/final.svg",
+];
+
+// Preload a single image, returns a Promise
+function preloadImage(src) {
+  return new Promise((resolve) => {
+    const img = new window.Image();
+    img.src = src;
+    img.onload  = resolve;
+    img.onerror = resolve; // never reject — just skip missing assets
+    // Hard timeout so a single bad asset can't stall the loader forever
+    setTimeout(resolve, 5000);
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CONFETTI — canvas-based (zero React re-renders during animation)
 // ─────────────────────────────────────────────────────────────────────────────
 function ConfettiBurst({ active }) {
-  const [particles, setParticles] = useState([]);
-  const particlesRef = useRef([]);
+  const canvasRef = useRef(null);
+  const rafRef    = useRef(null);
 
   const COLORS = [
-    "#FFD700", "#FF6B6B", "#4ECDC4", "#A78BFA",
-    "#F97316", "#22D3EE", "#EC4899", "#84CC16",
-    "#FFF", "#C9A96E",
+    "#FFD700","#FF6B6B","#4ECDC4","#A78BFA",
+    "#F97316","#22D3EE","#EC4899","#84CC16",
+    "#FFF","#C9A96E",
   ];
 
   useEffect(() => {
     if (!active) return;
-    const cx = typeof window !== "undefined" ? window.innerWidth / 2 : 200;
-    const cy = typeof window !== "undefined" ? window.innerHeight * 0.52 : 300;
-    const count = 140;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx  = canvas.getContext("2d");
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-    particlesRef.current = Array.from({ length: count }, (_, i) => ({
-      id: i,
+    const cx = canvas.width  / 2;
+    const cy = canvas.height * 0.52;
+
+    const particles = Array.from({ length: 140 }, (_, i) => ({
       x: cx + (Math.random() - 0.5) * 60,
       y: cy,
       vx: (Math.random() - 0.5) * 20,
       vy: -(Math.random() * 16 + 5),
       color: COLORS[Math.floor(Math.random() * COLORS.length)],
-      size: Math.random() * 16 + 6,
-      rotation: Math.random() * 360,
+      w: Math.random() * 16 + 6,
+      h: Math.random() > 0.7 ? Math.random() * 16 + 6 : (Math.random() * 8 + 3),
+      rot: Math.random() * 360,
       rotSpeed: (Math.random() - 0.5) * 14,
       gravity: 0.5,
       life: 1,
@@ -1552,60 +1596,64 @@ function ConfettiBurst({ active }) {
       isCircle: Math.random() > 0.7,
     }));
 
-    let frame;
     const tick = () => {
-      particlesRef.current = particlesRef.current
-        .map((p) => ({
-          ...p,
-          x: p.x + p.vx,
-          y: p.y + p.vy,
-          vy: p.vy + p.gravity,
-          vx: p.vx * 0.985,
-          rotation: p.rotation + p.rotSpeed,
-          life: p.life - p.decay,
-        }))
-        .filter((p) => p.life > 0);
-      setParticles([...particlesRef.current]);
-      if (particlesRef.current.length > 0) frame = requestAnimationFrame(tick);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      let alive = false;
+      for (const p of particles) {
+        if (p.life <= 0) continue;
+        alive = true;
+        p.x  += p.vx;
+        p.y  += p.vy;
+        p.vy += p.gravity;
+        p.vx *= 0.985;
+        p.rot += p.rotSpeed;
+        p.life -= p.decay;
+
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, p.life);
+        ctx.fillStyle   = p.color;
+        ctx.translate(p.x, p.y);
+        ctx.rotate((p.rot * Math.PI) / 180);
+        if (p.isCircle) {
+          ctx.beginPath();
+          ctx.arc(0, 0, p.w / 2, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        }
+        ctx.restore();
+      }
+      if (alive) rafRef.current = requestAnimationFrame(tick);
     };
-    frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
+    rafRef.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafRef.current);
   }, [active]);
 
-  if (!active && particles.length === 0) return null;
-
   return (
-    <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 9999, overflow: "hidden" }}>
-      {particles.map((p) => (
-        <div
-          key={p.id}
-          style={{
-            position: "absolute",
-            left: p.x,
-            top: p.y,
-            width: p.size,
-            height: p.isCircle ? p.size : p.size * 0.4,
-            backgroundColor: p.color,
-            borderRadius: p.isCircle ? "50%" : 2,
-            transform: `rotate(${p.rotation}deg)`,
-            opacity: p.life,
-          }}
-        />
-      ))}
-    </div>
+    <canvas
+      ref={canvasRef}
+      style={{
+        position: "fixed",
+        inset: 0,
+        pointerEvents: "none",
+        zIndex: 9999,
+        display: active ? "block" : "none",
+      }}
+    />
   );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// SCRATCH CARD
+// SCRATCH CARD — throttled pixel check (every 400ms, not every mousemove)
 // ─────────────────────────────────────────────────────────────────────────────
 function ScratchCard({ weddingDate = "05/05/26", onFullReveal }) {
-  const canvasRef = useRef(null);
-  const [isDrawing, setIsDrawing] = useState(false);
-  const [revealed, setRevealed] = useState(false);
-  const [hintVisible, setHintVisible] = useState(true);
-  const hasTriggered = useRef(false);
-  const lastPos = useRef(null);
+  const canvasRef      = useRef(null);
+  const isDrawing      = useRef(false);
+  const revealed       = useRef(false);
+  const lastPos        = useRef(null);
+  const lastCheckTime  = useRef(0);
+  const hasTriggered   = useRef(false);
+  const [showDate, setShowDate] = useState(false);
 
   const initCanvas = useCallback(() => {
     const canvas = canvasRef.current;
@@ -1635,7 +1683,7 @@ function ScratchCard({ weddingDate = "05/05/26", onFullReveal }) {
       for (let i = 0; i < 40; i++) {
         ctx.beginPath();
         ctx.strokeStyle = i % 2 === 0 ? "#fff" : "#7A5C00";
-        ctx.lineWidth = Math.random() * 8 + 1;
+        ctx.lineWidth   = Math.random() * 8 + 1;
         const y = Math.random() * canvas.height;
         ctx.moveTo(Math.random() * 20, y);
         ctx.bezierCurveTo(
@@ -1653,34 +1701,56 @@ function ScratchCard({ weddingDate = "05/05/26", onFullReveal }) {
 
   const getPos = (e, canvas) => {
     const rect = canvas.getBoundingClientRect();
-    const sx = canvas.width / rect.width;
+    const sx = canvas.width  / rect.width;
     const sy = canvas.height / rect.height;
     if (e.touches) {
       return {
         x: (e.touches[0].clientX - rect.left) * sx,
-        y: (e.touches[0].clientY - rect.top) * sy,
+        y: (e.touches[0].clientY - rect.top)  * sy,
       };
     }
     return {
       x: (e.clientX - rect.left) * sx,
-      y: (e.clientY - rect.top) * sy,
+      y: (e.clientY - rect.top)  * sy,
     };
   };
 
+  // Throttled reveal check — only runs at most once every 400ms
+  const checkReveal = useCallback((ctx, canvas) => {
+    if (hasTriggered.current) return;
+    const now = performance.now();
+    if (now - lastCheckTime.current < 400) return;
+    lastCheckTime.current = now;
+
+    const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+    let transparent = 0;
+    // Sample every 4th pixel (16× faster than checking all)
+    for (let i = 3; i < data.length; i += 16) {
+      if (data[i] < 128) transparent++;
+    }
+    const pct = (transparent / (canvas.width * canvas.height / 4)) * 100;
+    if (pct > 45) {
+      hasTriggered.current = true;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      revealed.current = true;
+      setShowDate(true);
+      onFullReveal?.();
+    }
+  }, [onFullReveal]);
+
   const doScratch = useCallback((e) => {
-    if (!isDrawing || revealed) return;
+    if (!isDrawing.current || revealed.current) return;
     e.preventDefault();
     const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-    const pos = getPos(e, canvas);
+    const ctx    = canvas.getContext("2d");
+    const pos    = getPos(e, canvas);
 
     ctx.globalCompositeOperation = "destination-out";
-
     if (lastPos.current) {
       ctx.beginPath();
-      ctx.lineWidth = 56;
-      ctx.lineCap = "round";
-      ctx.lineJoin = "round";
+      ctx.lineWidth  = 56;
+      ctx.lineCap    = "round";
+      ctx.lineJoin   = "round";
       ctx.moveTo(lastPos.current.x, lastPos.current.y);
       ctx.lineTo(pos.x, pos.y);
       ctx.stroke();
@@ -1688,28 +1758,11 @@ function ScratchCard({ weddingDate = "05/05/26", onFullReveal }) {
     ctx.beginPath();
     ctx.arc(pos.x, pos.y, 28, 0, Math.PI * 2);
     ctx.fill();
-
     ctx.globalCompositeOperation = "source-over";
     lastPos.current = pos;
-    setHintVisible(false);
-    checkReveal(ctx, canvas);
-  }, [isDrawing, revealed]);
 
-  const checkReveal = (ctx, canvas) => {
-    if (hasTriggered.current) return;
-    const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-    let transparent = 0;
-    for (let i = 3; i < data.length; i += 4) {
-      if (data[i] < 128) transparent++;
-    }
-    const pct = (transparent / (canvas.width * canvas.height)) * 100;
-    if (pct > 45) {
-      hasTriggered.current = true;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      setRevealed(true);
-      onFullReveal?.();
-    }
-  };
+    checkReveal(ctx, canvas);
+  }, [checkReveal]);
 
   return (
     <div
@@ -1718,23 +1771,15 @@ function ScratchCard({ weddingDate = "05/05/26", onFullReveal }) {
         width: "75%",
         maxWidth: 340,
         margin: "0 auto",
-        height:"304px",
-        aspectRatio: "2.8 / 1",
+        height: "304px",
         userSelect: "none",
         WebkitUserSelect: "none",
+        willChange: "transform",
       }}
     >
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          zIndex: 1,
-        }}
-      >
-        <img src="/wedding-11.svg" className="absolute h-[502px] top-[-192px]"  />
+      {/* Behind layer */}
+      <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1 }}>
+        <img src="/wedding-11.svg" className="absolute h-[502px] top-[-192px]" alt="" />
         <span
           style={{
             fontFamily: "'Georgia', 'Times New Roman', serif",
@@ -1742,16 +1787,12 @@ function ScratchCard({ weddingDate = "05/05/26", onFullReveal }) {
             fontWeight: 700,
             color: "#ffc55a",
             letterSpacing: "0.1em",
-            background: "#7b1d3b00",
             padding: "10px 28px",
             borderRadius: 8,
-             marginTop:"-192px",
-            opacity: revealed ? 1 : 0,
-            transform: revealed
-              ? "scale(1) translateY(0)"
-              : "scale(0.8) translateY(6px)",
-            transition:
-              "opacity 0.5s ease, transform 0.5s cubic-bezier(0.34,1.56,0.64,1)",
+            marginTop: "-192px",
+            opacity: showDate ? 1 : 0,
+            transform: showDate ? "scale(1) translateY(0)" : "scale(0.8) translateY(6px)",
+            transition: "opacity 0.5s ease, transform 0.5s cubic-bezier(0.34,1.56,0.64,1)",
           }}
         >
           {weddingDate}
@@ -1768,45 +1809,22 @@ function ScratchCard({ weddingDate = "05/05/26", onFullReveal }) {
           width: "100%",
           height: "100%",
           zIndex: 2,
-          cursor: revealed ? "default" : "crosshair",
+          cursor: showDate ? "default" : "crosshair",
           borderRadius: 6,
           touchAction: "none",
-          opacity: revealed ? 0 : 1,
+          opacity: showDate ? 0 : 1,
           transition: "opacity 0.6s ease",
-          marginTop:"-100px"
+          marginTop: "-100px",
+          willChange: "opacity",
         }}
-        onMouseDown={(e) => { setIsDrawing(true); lastPos.current = getPos(e, canvasRef.current); }}
-        onMouseUp={() => { setIsDrawing(false); lastPos.current = null; }}
-        onMouseLeave={() => { setIsDrawing(false); lastPos.current = null; }}
+        onMouseDown={(e) => { isDrawing.current = true;  lastPos.current = getPos(e, canvasRef.current); }}
+        onMouseUp={()    => { isDrawing.current = false; lastPos.current = null; }}
+        onMouseLeave={()  => { isDrawing.current = false; lastPos.current = null; }}
         onMouseMove={doScratch}
-        onTouchStart={(e) => {
-          setIsDrawing(true);
-          lastPos.current = getPos(e, canvasRef.current);
-          doScratch(e);
-        }}
-        onTouchEnd={() => { setIsDrawing(false); lastPos.current = null; }}
+        onTouchStart={(e) => { isDrawing.current = true;  lastPos.current = getPos(e, canvasRef.current); doScratch(e); }}
+        onTouchEnd={()    => { isDrawing.current = false; lastPos.current = null; }}
         onTouchMove={doScratch}
       />
-
-      {hintVisible && !revealed && (
-        <div
-          style={{
-            position: "absolute",
-            bottom: -30,
-            left: "50%",
-            transform: "translateX(-50%)",
-            color: "#C9A96E",
-            fontSize: "0.75rem",
-            fontFamily: "Georgia, serif",
-            letterSpacing: "0.07em",
-            whiteSpace: "nowrap",
-            textShadow: "0 1px 4px rgba(0,0,0,0.5)",
-            animation: "scratchPulse 1.8s ease-in-out infinite",
-          }}
-        >
-         
-        </div>
-      )}
     </div>
   );
 }
@@ -1815,80 +1833,91 @@ function ScratchCard({ weddingDate = "05/05/26", onFullReveal }) {
 // MAIN COMPONENT
 // ─────────────────────────────────────────────────────────────────────────────
 function Open() {
-  const sectionRef      = useRef(null);
-  const section3Ref     = useRef(null);
-  const imageRef        = useRef(null);
+  const sectionRef          = useRef(null);
+  const section3Ref         = useRef(null);
+  const imageRef            = useRef(null);
   const section1SentinelRef = useRef(null);
+  const venueRef            = useRef(null);
+
   const [open, setOpen]                       = useState(false);
   const [envelopeAnimDone, setEnvelopeAnimDone] = useState(false);
-  const venueRef = useRef(null);
   const [section2Loaded, setSection2Loaded]   = useState(false);
-  const [scrollY, setScrollY]                 = useState(0);
-  const [windowHeight, setWindowHeight]       = useState(0);
-  const [visible, setVisible]                 = useState(false);
+  const [confettiActive, setConfettiActive]   = useState(false);
   const [assetsLoaded, setAssetsLoaded]       = useState(false);
   const [progress, setProgress]               = useState(0);
 
-  const [confettiActive, setConfettiActive]   = useState(false);
+  // Use refs for scroll state to avoid re-renders on every frame
+  const scrollYRef      = useRef(0);
+  const windowHeightRef = useRef(0);
+  const [, forceScrollUpdate] = useState(0);  // only triggers on open/section changes
 
-  const handleScratchReveal = useCallback(() => {
-    setConfettiActive(true);
-    setTimeout(() => setConfettiActive(false), 3500);
-  }, []);
+  // Stable scroll value used for render — updated via rAF
+  const [scrollY,      setScrollY]      = useState(0);
+  const [windowHeight, setWindowHeight] = useState(0);
 
+  // Countdown
   const targetDate = new Date("2026-05-05T00:00:00").getTime();
-  const [timeLeft, setTimeLeft] = useState(getTimeRemaining());
-
-  function getTimeRemaining() {
-    const now      = new Date().getTime();
-    const distance = targetDate - now;
-    const days    = Math.floor(distance / (1000 * 60 * 60 * 24));
-    const hours   = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    return { days, hours, minutes };
-  }
-
+  const getTimeRemaining = useCallback(() => {
+    const distance = targetDate - Date.now();
+    return {
+      days:    Math.floor(distance / 86400000),
+      hours:   Math.floor((distance % 86400000) / 3600000),
+      minutes: Math.floor((distance % 3600000)  / 60000),
+    };
+  }, [targetDate]);
+  const [timeLeft, setTimeLeft] = useState(getTimeRemaining);
   useEffect(() => {
     const timer = setInterval(() => setTimeLeft(getTimeRemaining()), 1000);
     return () => clearInterval(timer);
+  }, [getTimeRemaining]);
+
+  // ── ASSET PRELOADING — ALL assets before unlock ──────────────────────────
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    let loaded = 0;
+    const total = ALL_ASSETS.length;
+
+    const promises = ALL_ASSETS.map((src) =>
+      preloadImage(src).then(() => {
+        loaded++;
+        setProgress(Math.round((loaded / total) * 100));
+      })
+    );
+
+    Promise.all(promises).then(() => {
+      setProgress(100);
+      // Small buffer so the "100%" flash looks intentional
+      setTimeout(() => {
+        setAssetsLoaded(true);
+        setWindowHeight(window.innerHeight);
+      }, 300);
+    });
+
+    return () => { document.body.style.overflow = "auto"; };
   }, []);
 
-  const criticalImages = ["/openup.svg", "/openbottom.svg"];
-  const lazyImages = [
-    "/1st bg imjage.svg", "/1st front.svg", "/logo 1.svg", "/1stbottom.svg",
-    "/slidesecond.svg", "/3rd slide bg.svg", "/3rd slide top.svg",
-    "/3rd slide second.svg", "/3rd slide4.svg", "/3rd slide3.svg",
-    "/3rd slide bottom.svg", "/bg 4 section.svg", "/section 4 1.svg",
-    "/section 4 2.svg", "/section 4 3.svg", "/section 5 final screen.svg", "/final.svg",
-  ];
+  // ── SCROLL LISTENER — single rAF-throttled handler ──────────────────────
+  useEffect(() => {
+    let ticking = false;
+    const onScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          setScrollY(window.scrollY);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+    const onResize = () => setWindowHeight(window.innerHeight);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onResize, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onResize);
+    };
+  }, []);
 
-  const section3Start    = section3Ref.current?.offsetTop || 0;
-  const section3Height   = windowHeight * 2;
-  const section3Raw      = scrollY - section3Start;
-  const section3Scroll   = Math.max(0, Math.min(section3Raw, section3Height));
-  const section3Progress = section3Scroll / windowHeight;
-
-  const getSection3Style = (index) => {
-    if (scrollY < section3Start) return { transform: "translateY(0px)" };
-    if (index === 0) return { transform: `translateY(${-section3Progress * windowHeight}px)` };
-    if (index === 1) return { transform: `translateY(${windowHeight - section3Progress * windowHeight}px)` };
-    return { transform: "translateY(0px)" };
-  };
-
-  const sectionStart   = windowHeight * 3;
-  const raw            = scrollY - sectionStart;
-  const step           = windowHeight;
-  const scrollClamped  = Math.max(0, Math.min(raw, step * 4));
-  const activeIndex    = Math.floor(scrollClamped / step);
-  const progressVal    = (scrollClamped % step) / step;
-
-  const getStyle = (index) => {
-    if (index === activeIndex)     return { transform: `translateY(${-progressVal * windowHeight}px)` };
-    if (index === activeIndex + 1) return { transform: `translateY(${windowHeight - progressVal * windowHeight}px)` };
-    if (index < activeIndex)       return { transform: `translateY(${-windowHeight}px)` };
-    return { transform: `translateY(${windowHeight}px)` };
-  };
-
+  // ── PARALLAX on section 1 image (imperative, no state) ──────────────────
   useEffect(() => {
     let current = 0, target = 0, isVis = false;
     const observer = new IntersectionObserver(
@@ -1903,87 +1932,80 @@ function Open() {
       const prog = Math.max(0, Math.min((window.innerHeight - rect.top) / window.innerHeight, 1));
       target = prog * 40;
     };
+    let raf;
     const animate = () => {
       if (isVis) {
         current += (target - current) * 0.08;
         if (imageRef.current) imageRef.current.style.transform = `translateY(${current}px)`;
       }
-      requestAnimationFrame(animate);
+      raf = requestAnimationFrame(animate);
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
     animate();
-    return () => { window.removeEventListener("scroll", handleScroll); observer.disconnect(); };
-  }, []);
-
-  useEffect(() => { AOS.init({ duration: 800, once: false }); }, []);
-
-  useEffect(() => {
-    setWindowHeight(window.innerHeight);
-    document.body.style.overflow = "hidden";
-    let loadedCount = 0;
-    const total = criticalImages.length;
-
-    const preloadPromises = criticalImages.map((src) =>
-      new Promise((resolve) => {
-        const img = new Image();
-        img.src = src;
-        const done = () => { loadedCount++; setProgress(Math.round((loadedCount / total) * 100)); resolve(); };
-        img.onload = done;
-        img.onerror = done;
-        setTimeout(resolve, 3000);
-      })
-    );
-    lazyImages.forEach((src) => { const img = new Image(); img.src = src; });
-    Promise.all(preloadPromises).then(() => {
-      setProgress(100);
-      setTimeout(() => setAssetsLoaded(true), 200);
-    });
-    return () => { document.body.style.overflow = "auto"; };
-  }, []);
-
-  useEffect(() => {
-    let ticking = false;
-    const handleScroll = () => {
-      if (!ticking) {
-        requestAnimationFrame(() => { setScrollY(window.scrollY); ticking = false; });
-        ticking = true;
-      }
-    };
-    const handleResize = () => setWindowHeight(window.innerHeight);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("resize", handleResize, { passive: true });
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("resize", handleResize);
+      cancelAnimationFrame(raf);
+      observer.disconnect();
     };
   }, []);
 
-  useEffect(() => {
-    if (!section1SentinelRef.current) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => { },
-      { threshold: 1.0 }
-    );
-    observer.observe(section1SentinelRef.current);
-    return () => observer.disconnect();
-  }, [envelopeAnimDone]);
+  // ── AOS (once) ───────────────────────────────────────────────────────────
+  useEffect(() => { AOS.init({ duration: 800, once: true }); }, []);
 
-  const handleOpen = () => {
+  // ── ENVELOPE open logic ──────────────────────────────────────────────────
+  const handleOpen = useCallback(() => {
     if (open) return;
     setOpen(true);
     setTimeout(() => {
       setEnvelopeAnimDone(true);
       document.body.style.overflow = "auto";
     }, 1700);
-  };
+  }, [open]);
 
+  const handleScratchReveal = useCallback(() => {
+    setConfettiActive(true);
+    setTimeout(() => setConfettiActive(false), 3500);
+  }, []);
+
+  // ── FADE-UP helper ───────────────────────────────────────────────────────
   const fadeUp = (delay) => ({
-    opacity: open ? 1 : 0,
+    opacity:   open ? 1 : 0,
     transform: open ? "translateY(0px)" : "translateY(40px)",
     transition: "opacity 1s ease, transform 1s ease",
     transitionDelay: `${delay}s`,
+    willChange: "opacity, transform",
   });
 
+  // ── SECTION 3 (scratch card) scroll effects ──────────────────────────────
+  const section3Start    = section3Ref.current?.offsetTop || 0;
+  const section3Height   = windowHeight * 2;
+  const section3Raw      = scrollY - section3Start;
+  const section3Scroll   = Math.max(0, Math.min(section3Raw, section3Height));
+  const section3Progress = section3Scroll / windowHeight;
+
+  const getSection3Style = (index) => {
+    if (scrollY < section3Start) return { transform: "translateY(0px)" };
+    if (index === 0) return { transform: `translateY(${-section3Progress * windowHeight}px)`, willChange: "transform" };
+    if (index === 1) return { transform: `translateY(${windowHeight - section3Progress * windowHeight}px)`, willChange: "transform" };
+    return { transform: "translateY(0px)" };
+  };
+
+  // ── SECTION 4 (events) scroll effects ────────────────────────────────────
+  const sectionStart  = windowHeight * 3;
+  const raw           = scrollY - sectionStart;
+  const step          = windowHeight;
+  const scrollClamped = Math.max(0, Math.min(raw, step * 4));
+  const activeIndex   = Math.floor(scrollClamped / step);
+  const progressVal   = (scrollClamped % step) / step;
+
+  const getStyle = (index) => {
+    if (index === activeIndex)     return { transform: `translateY(${-progressVal * windowHeight}px)`,       willChange: "transform" };
+    if (index === activeIndex + 1) return { transform: `translateY(${windowHeight - progressVal * windowHeight}px)`, willChange: "transform" };
+    if (index < activeIndex)       return { transform: `translateY(${-windowHeight}px)` };
+    return { transform: `translateY(${windowHeight}px)` };
+  };
+
+  // ── LOADER ───────────────────────────────────────────────────────────────
   if (!assetsLoaded) {
     return (
       <div
@@ -1993,8 +2015,12 @@ function Open() {
         <p className="text-[#b68d33] font-bold text-2xl mb-8 tracking-[4px] uppercase">Wedding Loading</p>
         <div className="w-64 h-1.5 bg-[#f8e4d0] rounded-full overflow-hidden">
           <div
-            className="h-full rounded-full transition-all duration-300 ease-out"
-            style={{ width: `${progress}%`, background: "linear-gradient(90deg,#b68d33,#e8b56d)" }}
+            className="h-full rounded-full"
+            style={{
+              width: `${progress}%`,
+              background: "linear-gradient(90deg,#b68d33,#e8b56d)",
+              transition: "width 0.3s ease-out",
+            }}
           />
         </div>
         <p className="mt-3 text-[#b68d33] font-medium text-lg">{progress}%</p>
@@ -2003,7 +2029,35 @@ function Open() {
     );
   }
 
+  // ── Pre-compute derived scroll values ────────────────────────────────────
   const firstSectionScroll = Math.min(scrollY, windowHeight);
+
+  // Section-top overlay animation
+  const sec2Start    = windowHeight;
+  const sec3TopEnd   = sec2Start + windowHeight * 0.9;
+  const topProgress  = Math.max(0, Math.min((scrollY - sec2Start) / (sec3TopEnd - sec2Start), 1));
+  const topTransform = -(topProgress * topProgress) * 200;
+
+  // Section-bottom overlay animation
+  const sec3BotStart = sec2Start;
+  const sec3BotEnd   = (section3Ref.current?.offsetTop || windowHeight * 2.2) + windowHeight * 0.4;
+  const botProgress  = Math.max(0, Math.min((scrollY - sec3BotStart) / (sec3BotEnd - sec3BotStart), 1));
+  const botTransform = -(botProgress * botProgress) * 120;
+
+  // Car animation
+  const venueTop    = venueRef.current?.offsetTop || 0;
+  const phase1Start = venueTop - windowHeight;
+  const phase1End   = venueTop - windowHeight * 0.5;
+  const phase2Start = venueTop;
+  const phase2End   = venueTop + windowHeight * 0.6;
+  let carX = 110;
+  if (scrollY >= phase2Start) {
+    const p = Math.min((scrollY - phase2Start) / (phase2End - phase2Start), 1);
+    carX = 10 - (p * p) * 130;
+  } else if (scrollY >= phase1Start) {
+    const p = Math.min((scrollY - phase1Start) / (phase1End - phase1Start), 1);
+    carX = 110 - (1 - Math.pow(1 - p, 3)) * 100;
+  }
 
   return (
     <>
@@ -2044,118 +2098,145 @@ function Open() {
           position: absolute; top: 65%; left: 40%;
           z-index: 40; pointer-events: none; text-align: center;
         }
+           /* 320px */
+        @media (max-width: 320px) {
+          .tap-hint {
+           top: 61%;
+           left:33%; 
+           }
+        }
+ 
+        /* 375px */
+        @media (min-width: 321px) and (max-width: 375px) {
+          .tap-hint {
+           top: 62%; 
+           left:35%;
+          }
+        }
+ 
+        /* 425px */
+        @media (min-width: 375px) and (max-width: 425px) {
+          .tap-hint {
+           top: 63%;
+           left:37%; 
+           }
+        }
+ 
+        /* 768px (tablet) */
+        @media (min-width: 425px) and (max-width: 768px) {
+          .tap-hint { top: 64%;
+            left: 39%; 
+          
+          }
+        }
+ 
+        /* 769px+ (desktop) */
+        @media (min-width: 769px) {
+          .tap-hint { 
+          top: 67%; 
+          left: 40%;}
+        }
         .tap-hint-label {
           display: block; color: #b68d33; font-size: 10px;
           letter-spacing: 3.5px; font-weight: 900;
           text-transform: uppercase; white-space: nowrap;
         }
-        .tap-hint-bar {
-          margin: 7px auto 0; width: 1px; height: 20px;
-          background: linear-gradient(to bottom, #b68d33, transparent);
-        }
-
         @keyframes scratchPulse {
           0%,100% { opacity:1; transform:translateX(-50%) scale(1); }
           50%      { opacity:0.4; transform:translateX(-50%) scale(0.97); }
         }
-
         .scratch-overlay {
-          position: absolute;
-          top: 70%;
-          left: 50%;
+          position: absolute; top: 70%; left: 50%;
           transform: translate(-50%, -50%);
-          width: 100%;
-          z-index: 20;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 6px;
-          padding-bottom: 40px;
+          width: 100%; z-index: 20;
+          display: flex; flex-direction: column;
+          align-items: center; gap: 6px; padding-bottom: 40px;
         }
         .scratch-title {
           font-family: 'Georgia', serif;
           font-size: clamp(2rem, 5vw, 2.2rem);
-          color: #ffc55a;
-          font-weight: 700;
+          color: #ffc55a; font-weight: 700;
           letter-spacing: 0.04em;
           text-shadow: 0 2px 8px rgba(0,0,0,0.4);
-          text-align: center;
-          margin-bottom: 2px;
+          text-align: center; margin-bottom: 2px;
         }
         .scratch-subtitle {
           font-family: 'Georgia', serif;
           font-size: clamp(1rem, 2.4vw, 0.98rem);
-          color: #671d02;
-          text-align: center;
-          letter-spacing: 0.03em;
-          margin-bottom: 14px;
-          line-height: 1.5;
+          color: #671d02; text-align: center;
+          letter-spacing: 0.03em; margin-bottom: 14px; line-height: 1.5;
         }
-
-        /* ── Car: drives from right to left across screen ── */
-
+        /* GPU compositing hints for all scroll-driven images */
+        .scroll-layer { will-change: transform; transform: translateZ(0); }
       `}</style>
 
       <ConfettiBurst active={confettiActive} />
 
       <div className={`relative ${open && envelopeAnimDone ? "min-h-[700vh]" : "h-screen overflow-hidden"}`}>
 
+        {/* ── SECTION 1 — Envelope ── */}
         <div
           className="sticky top-0 h-screen w-full overflow-hidden"
-          style={{ background: "linear-gradient(160deg,#fff8f0 0%,#fdecd8 55%,#f5d5b8 100%)"}}
+          style={{ background: "linear-gradient(160deg,#fff8f0 0%,#fdecd8 55%,#f5d5b8 100%)" }}
         >
           <img
             src="/1st bg imjage.svg"
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full object-cover scroll-layer"
             style={{
-               ...getSection3Style(0),
-                ...fadeUp(0),
-                 opacity: open ? 1 : 0,
+              ...fadeUp(0),
+              opacity: open ? 1 : 0,
               transform: open ? `translateY(-${firstSectionScroll}px)` : "translateY(0px)",
-                 }}
+            }}
             alt=""
           />
-          
-         <div
-  className="absolute inset-0 w-full h-full"
-  style={{
-    ...fadeUp(2),
-    opacity: open ? 1 : 0,
-  }}
->
-  <img
-    src="/1st front.svg"
-    className="w-full h-full object-cover"
-    style={{
-      transform: open ? `translateY(-${firstSectionScroll}px)` : "translateY(0)",
-      transition: "transform 0.1s linear",
-    }}
-    alt=""
-  />
-</div>
-          <div className="absolute inset-0 w-full h-full"
-  style={{ transform: open ? `translateY(-${firstSectionScroll}px)` : "translateY(0)",
-    opacity: open ? 1 : 0,
-  }}>
-          <img
-            src="/Monogram.svg"
-            className="absolute object-contain"
+
+           <div
+            className="absolute inset-0 w-full h-full scroll-layer"
             style={{
-              width: "clamp(210px, 22vw, 122px)", height: "auto",
-              top: "50%", left: "50%",
-              transform: open
-                ? "translate(-50%, -50%) translateY(0)"
-                : "translate(-50%, -50%) translateY(40px)",
               opacity: open ? 1 : 0,
-              transition: "opacity 1.4s ease, transform 2.5s ease",
-              transitionDelay: "2.5s",
+              transform: open
+                ? `translateY(-${firstSectionScroll}px)`
+                : "translateY(100%)",
+              transition: open
+                ? "opacity 1.5s cubic-bezier(0.22,1,0.36,1), transform 1.8s cubic-bezier(0.22,1,0.36,1)"
+                : "none",
+              transitionDelay: open ? "1.5s" : "0s",
+              willChange: "transform, opacity",
             }}
-            alt="Logo"
-          />
+          >
+            <img src="/1st front.svg" className="w-full h-full object-cover" alt="" />
           </div>
+ 
+
+          <div
+            className="absolute inset-0 w-full h-full scroll-layer"
+            style={{
+              transform: open ? `translateY(-${firstSectionScroll}px)` : "translateY(0)",
+              
+              opacity: open ? 1 : 0,
+            }}
+          >
+            <img
+              src="/Monogram.svg"
+              className="absolute object-contain"
+              style={{
+                width: "clamp(210px, 22vw, 122px)", height: "auto",
+                top: "50%", left: "50%",
+                transform: open
+                  ? "translate(-50%, -50%) translateY(0)"
+                  : "translate(-50%, -50%) translateY(40px)",
+                opacity: open ? 1 : 0,
+                transition: "opacity 1.4s ease, transform 2.5s ease",
+                transitionDelay: "2.5s",
+                willChange: "opacity, transform",
+              }}
+              alt="Logo"
+            />
+          </div>
+
           <img
             src="/1stbottom.svg"
-            className="absolute w-full object-cover"
+            className="absolute w-full object-cover scroll-layer"
             style={{
               bottom: "-11px",
               opacity: open ? 1 : 0,
@@ -2170,7 +2251,7 @@ function Open() {
             style={{ pointerEvents: open ? "none" : "auto" }}
           >
             <div className={`env-body${open ? " opened" : ""}`}>
-              <img src="/openbottom.svg" className="w-full h-full object-cover" fetchpriority="high" alt="" draggable={false} />
+              <img src="/openbottom.svg" className="w-full h-full object-cover" alt="" draggable={false} />
             </div>
             <div
               className={`env-flap${open ? " opened" : ""}`}
@@ -2180,21 +2261,20 @@ function Open() {
               tabIndex={0}
               onKeyDown={(e) => e.key === "Enter" && handleOpen()}
             >
-              <img src="/openup.svg" className="w-full h-full object-cover" fetchpriority="high" alt="" draggable={false} />
+              <img src="/openup.svg" className="w-full h-full object-cover" alt="" draggable={false} />
             </div>
           </div>
 
           {!open && (
             <div className="tap-hint">
               <span className="tap-hint-label">Tap to Open</span>
-             
             </div>
           )}
         </div>
 
         {open && envelopeAnimDone && (
           <>
-            {/* SECTION 2 */}
+            {/* ── SECTION 2 — Names ── */}
             <div className="w-full">
               <div className="h-screen w-full bg-[#5b3525] relative overflow-hidden">
                 {!section2Loaded && (
@@ -2202,24 +2282,25 @@ function Open() {
                 )}
                 <img
                   src="/slidesecond.svg"
-                  loading="lazy"
                   onLoad={() => setSection2Loaded(true)}
                   className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${section2Loaded ? "opacity-100" : "opacity-0"}`}
                   alt=""
                 />
-                <div className="relative flex items-center justify-center h-full px-6" style={{fontFamily:"'Georgia', 'Times New Roman', serif",}}>
+                <div className="relative flex items-center justify-center h-full px-6" style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}>
                   <div className="max-w-[340px] w-full text-center text-[#f5cb7d] absolute top-[40%] left-[50%] -translate-x-1/2 -translate-y-1/2" data-aos="fade-up" data-aos-duration="1200">
-                    <h2 className="text-lg md:text-xl font-semibold leading-tight" data-aos="fade-up" data-aos-duration="1200">
+                    <h2 className="text-lg md:text-xl font-semibold leading-tight" data-aos="fade-up">
                       Mrs. Sandhya &amp; <br /> Mr.Anil Bahadure
                     </h2>
-                    <p className="mt-1 text-sm leading-relaxed text-[#f6d38b]" data-aos="fade-up" data-aos-duration="1230">
+                    <p className="mt-1 text-sm leading-relaxed text-[#f6d38b]" data-aos="fade-up">
                       Await your presence for <br />the wedding celebrations <br />of their daughter
                     </p>
-                    <h1 className="mt-3 text-4xl font-bold tracking-wide" data-aos="fade-up" data-aos-duration="1260">Shreya</h1>
-                    <p className="mt-1 text-xl text-[#f6d38b]" data-aos="fade-up" data-aos-duration="1280">with</p>
-                    <h1 className="text-4xl font-bold tracking-wide" data-aos="fade-up" data-aos-duration="1290">Naivedya</h1>
-                    <p className="mt-5 text-sm text-[#f6d38b]" data-aos="fade-up" data-aos-duration="1300">Son of</p>
-                    <h2 className="text-lg md:text-xl font-semibold" data-aos="fade-up" data-aos-duration="1300">Mrs. Kamlesh Joshi & <br/> Late Mr. Mukul Joshi</h2>
+                    <h1 className="mt-3 text-4xl font-bold tracking-wide" data-aos="fade-up">Shreya</h1>
+                    <p className="mt-1 text-xl text-[#f6d38b]" data-aos="fade-up">with</p>
+                    <h1 className="text-4xl font-bold tracking-wide" data-aos="fade-up">Naivedya</h1>
+                    <p className="mt-5 text-sm text-[#f6d38b]" data-aos="fade-up">Son of</p>
+                    <h2 className="text-lg md:text-xl font-semibold" data-aos="fade-up">
+                      Mrs. Kamlesh Joshi & <br /> Late Mr. Mukul Joshi
+                    </h2>
                   </div>
                 </div>
               </div>
@@ -2227,71 +2308,31 @@ function Open() {
 
             <div ref={section1SentinelRef} style={{ height: "1px" }} />
 
-{(() => {
-  const section2Start = windowHeight;
-  const animationStart = section2Start;
-  const animationEnd = section2Start + windowHeight * 0.9;
-  
-  let transformValue = 0;
-  
-  if (scrollY <= animationStart) {
-    transformValue = 0;
-  } else if (scrollY >= animationEnd) {
-    transformValue = 200;
-  } else {
-    const progress = (scrollY - animationStart) / (animationEnd - animationStart);
-    const easeInQuad = progress * progress;
-    transformValue = easeInQuad * 200;
-  }
-
-  return (
-    <div
-      style={{
-        position: "relative",
-        top: "-82px",
-        zIndex: 30,
-        pointerEvents: "none",
-        marginBottom: "-332px",
-        height: "320px",
-        transform: `translateY(${-transformValue}px)`,
-        transition: "transform 0.1s linear",
-      }}
-    >
-      <img
-        src="/3rd slide top.svg"
-        loading="lazy"
-        className="w-full object-cover"
-        style={{
-          height: "300px",
-          display: "block",
-          position: "relative",
-          zIndex: 30,
-          pointerEvents: "none",
-        }}
-        alt=""
-      />
-    </div>
-  );
-})()}
-
-
-            {/* ══ SECTION 3 — SCRATCH CARD ══ */}
+            {/* Top overlay between s2 and s3 */}
             <div
-              ref={section3Ref}
-              className="h-screen w-full relative overflow-hidden"
-              style={{ zIndex: 10 }}
+              style={{
+                position: "relative", top: "-82px", zIndex: 30,
+                pointerEvents: "none", marginBottom: "-332px", height: "320px",
+                transform: `translateY(${topTransform}px)`,
+                transition: "transform 0.1s linear",
+                willChange: "transform",
+              }}
             >
+              <img
+                src="/3rd slide top.svg"
+                className="w-full object-cover"
+                style={{ height: "300px", display: "block", position: "relative", zIndex: 30, pointerEvents: "none" }}
+                alt=""
+              />
+            </div>
+
+            {/* ── SECTION 3 — Scratch Card ── */}
+            <div ref={section3Ref} className="h-screen w-full relative overflow-hidden" style={{ zIndex: 10 }}>
               <div className="sticky top-0 h-screen w-full overflow-hidden">
-                <img
-                  src="/3rd slide bg.svg"
-                  loading="lazy"
-                  className="absolute inset-0 w-full h-full object-cover"
-                  alt=""
-                />
+                <img src="/3rd slide bg.svg" className="absolute inset-0 w-full h-full object-cover" alt="" />
                 <img
                   src="/3rd slide second.svg"
-                  loading="lazy"
-                  className="absolute w-full h-full object-cover top-[40px] fade-up"
+                  className="absolute w-full h-full object-cover top-[40px] scroll-layer"
                   style={getSection3Style(0)}
                   alt=""
                 />
@@ -2300,75 +2341,40 @@ function Open() {
                   <p className="scratch-subtitle">
                     Scratch to discover<br />the wedding date
                   </p>
-                  <ScratchCard
-                    weddingDate="05/05/26"
-                    onFullReveal={handleScratchReveal}
-                  />
+                  <ScratchCard weddingDate="05/05/26" onFullReveal={handleScratchReveal} />
                 </div>
               </div>
             </div>
 
-            {(() => {
-  const section2Start = windowHeight;
-  const section3Start = section3Ref.current?.offsetTop || windowHeight * 2.2;
-  
-  const animationStart = section2Start;
-  const animationEnd = section3Start + windowHeight * 0.4;
-  
-  let transformValue = 0;
-  
-  if (scrollY > animationStart) {
-    const progress = Math.min(
-      (scrollY - animationStart) / (animationEnd - animationStart),
-      1
-    );
-    const easeInQuad = progress * progress;
-    transformValue = easeInQuad * 120;
-  }
+            {/* Bottom overlay between s3 and s4 */}
+            <div
+              style={{
+                position: "relative", top: "-82px", zIndex: 30,
+                pointerEvents: "none", marginBottom: "-332px", height: "320px",
+                transform: `translateY(${botTransform}px)`,
+                transition: "transform 1s linear",
+                willChange: "transform",
+              }}
+            >
+              <img
+                src="/3rd slide bottom.svg"
+                className="w-full object-cover"
+                style={{ height: "300px", display: "block", position: "relative", zIndex: 30, pointerEvents: "none" }}
+                alt=""
+              />
+            </div>
 
-  return (
-    <div
-      style={{
-        position: "relative",
-        top: "-82px",
-        zIndex: 30,
-        pointerEvents: "none",
-        marginBottom: "-332px",
-        height: "320px",
-        transform: `translateY(${-transformValue}px)`,
-        transition: "transform 1s linear",
-      }}
-    >
-      <img
-        src="/3rd slide bottom.svg"
-        loading="lazy"
-        className="w-full object-cover"
-        style={{
-          height: "300px",
-          display: "block",
-          position: "relative",
-          zIndex: 30,
-          pointerEvents: "none",
-        }}
-        alt=""
-      />
-    </div>
-  );
-})()}
-
-
-
-            {/* SECTION 4 — Events */}
+            {/* ── SECTION 4 — Events ── */}
             <div className="relative h-[500vh] w-full">
-              <div className="sticky top-0 h-screen w-full overflow-hidden" style={{fontFamily:"'Georgia', 'Times New Roman', serif"}}>
-                <img src="/bg 4 section.svg" loading="lazy" className="absolute inset-0 w-full h-full object-cover" alt="" />
+              <div className="sticky top-0 h-screen w-full overflow-hidden" style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}>
+                <img src="/bg 4 section.svg" className="absolute inset-0 w-full h-full object-cover" alt="" />
                 <h2 className="absolute top-[8%] left-1/2 -translate-x-1/2 text-[#f3c53c] text-3xl font-bold z-10">Events</h2>
                 {[
                   {
                     img: "/section 4 1.svg",
                     node: (
                       <div className="max-w-[300px] w-full text-center mt-10 z-10">
-                        <p className="text-base font-medium text-[#5c3a1e]">Day 1 <br/> 03/05/26</p>
+                        <p className="text-base font-medium text-[#5c3a1e]">Day 1 <br /> 03/05/26</p>
                         <h2 className="text-2xl font-semibold text-orange-700 mt-1">Paritran</h2>
                         <p className="text-sm text-orange-700">11 am</p>
                         <h2 className="text-2xl font-semibold text-green-700 mt-1">Mehendi</h2>
@@ -2381,7 +2387,7 @@ function Open() {
                     img: "/section 4 2.svg",
                     node: (
                       <div className="max-w-[300px] w-full text-center z-10">
-                        <p className="text-base font-medium text-[#5c3a1e]">Day 2 <br/> 04/05/26</p>
+                        <p className="text-base font-medium text-[#5c3a1e]">Day 2 <br /> 04/05/26</p>
                         <h2 className="text-xl font-semibold text-[#c200b9] mt-1">Carnival Haldi<br />Lunch</h2>
                         <p className="text-sm text-[#c200b9]">12 pm</p>
                         <h2 className="text-xl font-semibold text-green-700 mt-2">High Tea</h2>
@@ -2394,7 +2400,7 @@ function Open() {
                     img: "/section 4 3.svg",
                     node: (
                       <div className="max-w-[300px] w-full text-center z-10">
-                        <p className="text-base font-medium text-[#5c3a1e]">Day 2 <br/> 04/05/26</p>
+                        <p className="text-base font-medium text-[#5c3a1e]">Day 2 <br /> 04/05/26</p>
                         <h2 className="text-2xl font-bold text-[#2b2b9a] mt-1">Sangeet</h2>
                         <p className="text-base text-[#2b2b9a]">7 pm onwards</p>
                         <p className="text-sm text-[#5c3a1e] mt-2">@Mangli Lake Farm</p>
@@ -2405,7 +2411,7 @@ function Open() {
                     img: "/section 4 2.svg",
                     node: (
                       <div className="max-w-[300px] w-full text-center z-10">
-                        <p className="text-base font-medium text-[#5c3a1e]">Day 3 <br/> 05/05/26</p>
+                        <p className="text-base font-medium text-[#5c3a1e]">Day 3 <br /> 05/05/26</p>
                         <h2 className="text-2xl font-bold text-[#cc4949] mt-1">Buddhist<br />Wedding</h2>
                         <p className="text-base text-orange-700">12 pm</p>
                         <h2 className="text-xl font-semibold text-green-700 mt-2">High Tea</h2>
@@ -2418,19 +2424,19 @@ function Open() {
                     img: "/section 4 1.svg",
                     node: (
                       <div className="max-w-[300px] w-full text-center mt-10 z-10">
-                        <p className="text-base font-medium text-[#5c3a1e]">Day 3 <br/> 05/05/26</p>
+                        <p className="text-base font-medium text-[#5c3a1e]">Day 3 <br /> 05/05/26</p>
                         <h2 className="text-2xl font-semibold text-orange-700 mt-1">Barat</h2>
                         <p className="text-sm text-orange-700">6pm</p>
-                        <h2 className="text-xl font-semibold text-green-700 mt-1">Warmala & <br/>Reception</h2>
+                        <h2 className="text-xl font-semibold text-green-700 mt-1">Warmala &<br />Reception</h2>
                         <p className="text-sm text-green-700">7pm onwards</p>
-                        <h2 className="text-xl font-semibold text-[#c200b9] mt-1">Hindu<br/> Wedding</h2>
+                        <h2 className="text-xl font-semibold text-[#c200b9] mt-1">Hindu<br />Wedding</h2>
                         <p className="text-sm text-[#5c3a1e] mt-1">@Mangli Lake Farm</p>
                       </div>
                     ),
                   },
                 ].map((slide, i) => (
-                  <div key={i} className="absolute inset-0 flex items-center justify-center" style={getStyle(i)}>
-                    <img src={slide.img} loading="lazy" className="absolute inset-0 w-full h-full object-cover" alt="" />
+                  <div key={i} className="absolute inset-0 flex items-center justify-center scroll-layer" style={getStyle(i)}>
+                    <img src={slide.img} className="absolute inset-0 w-full h-full object-cover" alt="" />
                     <div className="relative flex items-center justify-center w-full h-full px-6">
                       {slide.node}
                     </div>
@@ -2439,115 +2445,62 @@ function Open() {
               </div>
             </div>
 
-            {/* SECTION 5 — Venue */}
-           <div 
-        ref={venueRef}
-        className="h-screen w-full relative flex flex-col items-center justify-center text-center overflow-hidden" 
-        style={{ fontFamily: "Georgia, 'Times New Roman', Times, serif" }}
-      >
-        <img 
-          src="/Yellow BG.svg" 
-          loading="lazy" 
-          className="absolute inset-0 w-full h-full object-cover" 
-          style={{ opacity: "0.7" }} 
-          alt="" 
-        />
-        
-        <img 
-          src="/Car BG.svg" 
-          loading="lazy" 
-          className="absolute inset-0 w-full h-full object-cover" 
-          alt="" 
-        />
+            {/* ── SECTION 5 — Venue ── */}
+            <div
+              ref={venueRef}
+              className="h-screen w-full relative flex flex-col items-center justify-center text-center overflow-hidden"
+              style={{ fontFamily: "Georgia, 'Times New Roman', Times, serif" }}
+            >
+              <img src="/Yellow BG.svg" className="absolute inset-0 w-full h-full object-cover" style={{ opacity: 0.7 }} alt="" />
+              <img src="/Car BG.svg"    className="absolute inset-0 w-full h-full object-cover" alt="" />
 
-        {/* Car: scroll-driven — drives in from right, stops centre, scrolls off left */}
-        {(() => {
-          const venueTop = venueRef.current?.offsetTop || 0;
-          // Phase 1: car enters from right as section scrolls into view
-          // scrollY < venueTop        → car still off-screen right (110vw)
-          // venueTop → venueTop+vh*0.4 → car slides to centre (10vw)
-          const phase1Start = venueTop - windowHeight;
-          const phase1End   = venueTop - windowHeight * 0.5;
-          // Phase 2: once user scrolls inside the section, car exits left
-          // venueTop → venueTop+vh*0.6 → car slides off-screen left (-120vw)
-          const phase2Start = venueTop;
-          const phase2End   = venueTop + windowHeight * 0.6;
+              <img
+                src="/Car.svg"
+                className="absolute bottom-[6%] w-79 h-122 md:w-48 md:h-48 object-contain z-20 scroll-layer"
+                style={{ transform: `translateX(${carX}vw)`, transition: "transform 0.05s linear" }}
+                alt="Car"
+              />
 
-          let carX = 110; // vw — default off-screen right
+              <div className="relative z-10 flex flex-col items-center w-full px-4" style={{ marginTop: "-242px" }}>
+                <h2 className="text-4xl font-bold text-[#1f2a5a] mb-2" data-aos="fade-up">Venue</h2>
+                <p className="text-base text-[#1f2a5a] leading-relaxed mb-6" data-aos="fade-up">
+                  Mangli Lake Farm,<br />
+                  Near Champa (2km), Umred Road,<br />
+                  Nagpur, Maharashtra 441204
+                </p>
+                <div className="w-full max-w-[320px] h-[130px] rounded-xl overflow-hidden shadow-xl mb-6" data-aos="fade-up">
+                  <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3725.1813833139236!2d79.21359369999999!3d20.985365100000003!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bd4b06250837d09%3A0x1e737c4de53c6add!2sMangli%20Lake%20Farm!5e0!3m2!1sen!2sin!4v1772619329004!5m2!1sen!2sin"
+                    className="w-full h-full"
+                    style={{ border: 0 }}
+                    allowFullScreen=""
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title="Mangli Lake Farm Location"
+                  />
+                </div>
+                <img src="/wedding-11.svg" className="absolute h-[502px] top-[77px]" alt="" />
+                <a
+                  href="https://maps.google.com/?q=Mangli+Lake+Farm+Nagpur"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-[#7b1d3b00] text-white px-8 py-3 rounded-full text-base font-semibold active:scale-95 transition-transform"
+                  data-aos="fade-up"
+                >
+                  Get Directions
+                </a>
+              </div>
+            </div>
 
-          if (scrollY >= phase2Start) {
-            // scrolling through the section → drive off left
-            const p = Math.min((scrollY - phase2Start) / (phase2End - phase2Start), 1);
-            const ease = p * p; // ease-in acceleration
-            carX = 10 - ease * 130; // 10vw → -120vw
-          } else if (scrollY >= phase1Start) {
-            // section approaching → drive in from right to centre
-            const p = Math.min((scrollY - phase1Start) / (phase1End - phase1Start), 1);
-            const ease = 1 - Math.pow(1 - p, 3); // ease-out deceleration
-            carX = 110 - ease * 100; // 110vw → 10vw
-          }
-
-          return (
-            <img
-              src="/Car.svg"
-              loading="lazy"
-              className="absolute bottom-[6%] w-79 h-122 md:w-48 md:h-48 object-contain z-20"
-              style={{
-                transform: `translateX(${carX}vw)`,
-                transition: 'transform 0.05s linear',
-              }}
-              alt="Car"
-            />
-          );
-        })()}
-
-        <div 
-          className="relative z-10 flex flex-col items-center w-full px-4" 
-          style={{ marginTop: "-242px" }}
-        >
-          <h2 className="text-4xl font-bold text-[#1f2a5a] mb-2" data-aos="fade-up">
-            Venue
-          </h2>
-          
-          <p className="text-base text-[#1f2a5a] leading-relaxed mb-6" data-aos="fade-up">
-            Mangli Lake Farm,<br />
-            Near Champa (2km), Umred Road,<br/>  
-            Nagpur, Maharashtra 441204
-          </p>
-          
-          <div 
-            className="w-full max-w-[320px] h-[130px] rounded-xl overflow-hidden shadow-xl mb-6" 
-            data-aos="fade-up"
-          >
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3725.1813833139236!2d79.21359369999999!3d20.985365100000003!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bd4b06250837d09%3A0x1e737c4de53c6add!2sMangli%20Lake%20Farm!5e0!3m2!1sen!2sin!4v1772619329004!5m2!1sen!2sin"
-              className="w-full h-full"
-              style={{ border: 0 }}
-              allowFullScreen=""
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              title="Mangli Lake Farm Location"
-            />
-          </div>
-          <img src="/wedding-11.svg" className="absolute h-[502px] top-[77px]"  />
-          <a
-            href="https://maps.google.com/?q=Mangli+Lake+Farm+Nagpur"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-[#7b1d3b00] text-white px-8 py-3 rounded-full text-base font-semibold  active:scale-95 transition-transform"
-            data-aos="fade-up"
-          >
-            Get Directions
-          </a>
-        </div>
-      </div>
-
-            {/* FINAL — Countdown */}
-            <div className="h-screen w-full relative flex items-center justify-center text-center overflow-hidden" style={{fontFamily:"Georgia, 'Times New Roman', Times, serif"}} >
-              <img src="/final.svg" loading="lazy" className="absolute inset-0 w-full h-full object-cover" alt="" />
+            {/* ── SECTION 6 — Countdown ── */}
+            <div
+              className="h-screen w-full relative flex items-center justify-center text-center overflow-hidden"
+              style={{ fontFamily: "Georgia, 'Times New Roman', Times, serif" }}
+            >
+              <img src="/final.svg" className="absolute inset-0 w-full h-full object-cover" alt="" />
               <div className="relative z-10 flex flex-col items-center px-4" style={{ marginTop: "-60px" }}>
                 <h2 className="text-3xl md:text-4xl font-bold text-[#f3c178] mb-6" data-aos="fade-up">
-                  The <br/> Countdown <br/>Begins
+                  The <br /> Countdown <br /> Begins
                 </h2>
                 <div
                   className="bg-[#1e2250] text-white px-6 py-2 rounded-full text-lg font-semibold shadow-lg mb-6 tracking-widest"
