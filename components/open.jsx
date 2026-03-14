@@ -777,6 +777,13 @@ function Open() {
           0%,100% { opacity: 0.2; }
           50%     { opacity: 1; }
         }
+          /* In your CSS file */
+.car-img {
+  width: 294px;
+  height: 531px;
+}
+
+}
       `}</style>
 
       <ConfettiBurst active={confettiActive} />
@@ -1109,20 +1116,20 @@ function Open() {
               <img src="/Car BG.svg"    className="absolute inset-0 w-full h-full object-cover pointer-events-none" style={{ zIndex: 1 }} alt="" />
  
               {/* Car — decorative only, never blocks clicks */}
-              <img
-                src="/Car.svg"
-                className="absolute bottom-[6%] w-79 h-122 md:w-48 md:h-48 object-contain pointer-events-none scroll-layer"
-                style={{ transform: `translateX(${carX}vw)`, transition: "transform 0.05s linear", zIndex: 2 }}
-                alt="Car"
-              />
+           <img
+  src="/Car.svg"
+  className="absolute object-contain pointer-events-none scroll-layer car-img"
+  style={{
+    transform: `translateX(${carX}vw)`,
+    transition: "transform 0.05s linear",
+    zIndex: 2,
+    bottom: "-2%",
+  }}
+  alt="Car"
+/>
  
               {/* Decorative wedding SVG — behind all interactive elements */}
-              <img
-                src="/wedding-11.svg"
-                className="absolute pointer-events-none"
-                style={{ height: "502px", top: "77px", left: "50%", transform: "translateX(-50%)", zIndex: 3 }}
-                alt=""
-              />
+              
  
               {/* Interactive content block — z-index 10, no overflow-hidden cutting it */}
               <div className="relative flex flex-col items-center w-full px-4" style={{ marginTop: "-242px", zIndex: 10 }}>
@@ -1148,12 +1155,18 @@ function Open() {
                     title="Mangli Lake Farm Location"
                   />
                 </div>
+                <img
+                src="/wedding-11.svg"
+                className="absolute pointer-events-none"
+                style={{ height: "502px", top: "77px", left: "50%", transform: "translateX(-50%)", zIndex: 3 }}
+                alt=""
+              />
                 <a
                   href="https://maps.google.com/?q=Mangli+Lake+Farm+Nagpur"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-[#7b1d3b00] text-white px-8 py-3 rounded-full text-base font-semibold active:scale-95 transition-transform"
-                  style={{ position: "relative", zIndex: 10 ,top:"-24px"}}
+                  style={{ position: "relative", zIndex: 10 }}
                   data-aos="fade-up"
                 >
                   Get Directions
