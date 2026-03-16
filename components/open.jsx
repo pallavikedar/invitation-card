@@ -739,8 +739,8 @@ function Open() {
                 className="absolute w-full object-cover scroll-layer"
                 style={{ bottom: "-8px",  opacity: open ? 1 : 0,  transform: open
                   ? "translate(0%,0%) translateY(0)"
-                  : "translate(0%,0%) translateY(40px)", transition: "opacity 2s ease, transform 2s ease",
-                transitionDelay: "2s",
+                  : "translate(0%,0%) translateY(40px)", transition: "opacity 1.8s ease, transform 1.8s ease",
+                transitionDelay: "1.8s",
                 willChange: "opacity, transform", }} alt="" />
             </div>
 
