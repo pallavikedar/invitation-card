@@ -737,7 +737,7 @@ function Open() {
             <div className="relative">
               <img src="/1stbottom.svg"
                 className="absolute w-full object-cover scroll-layer"
-                style={{ bottom: "-8px",  opacity: open ? 1 : 0,  transform: open
+                style={{ bottom: "-14px",  opacity: open ? 1 : 0,  transform: open
                   ? "translate(0%,0%) translateY(0)"
                   : "translate(0%,0%) translateY(40px)", transition: "opacity 1.8s ease, transform 1.8s ease",
                 transitionDelay: "1.8s",
@@ -818,7 +818,7 @@ function Open() {
             </div>
 
             {/* ── SECTION 4 — Events ── */}
-            <div className="relative h-[290vh] w-full">
+            <div className="relative h-[300vh] w-full">
               <div className="sticky top-0 w-full overflow-hidden full-h"
                 style={{ fontFamily: "'Georgia','Times New Roman',serif" }}>
                 <img src="/bg 4 section.svg" className="absolute inset-0 w-full h-full object-cover" alt="" />
