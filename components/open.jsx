@@ -737,7 +737,11 @@ function Open() {
             <div className="relative">
               <img src="/1stbottom.svg"
                 className="absolute w-full object-cover scroll-layer"
-                style={{ bottom: "-8px", opacity: 1 }} alt="" />
+                style={{ bottom: "-8px",  opacity: open ? 1 : 0,  transform: open
+                  ? "translate(0%,0%) translateY(0)"
+                  : "translate(0%,0%) translateY(40px)", transition: "opacity 2s ease, transform 2s ease",
+                transitionDelay: "2s",
+                willChange: "opacity, transform", }} alt="" />
             </div>
 
             {/* ── SECTION 2 — Names ── */}
@@ -789,9 +793,11 @@ function Open() {
             <div ref={section3Ref} className="w-full relative overflow-hidden full-h" style={{ zIndex: 10 }}>
               <div className="sticky top-0 w-full overflow-hidden full-h">
                 <img src="/3rd slide bg.svg" className="absolute inset-0 w-full h-full object-cover" alt="" />
+                
                 <img src="/3rd slide second.svg"
                   className="absolute w-full h-full object-cover top-[40px] scroll-layer"
                   style={getSection3Style(0)} alt="" />
+                  
                 <div className="scratch-overlay">
                   <p className="scratch-title">Reveal</p>
                   <p className="scratch-subtitle">Scratch to discover<br />the wedding date</p>
