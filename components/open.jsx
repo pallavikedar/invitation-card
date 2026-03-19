@@ -829,7 +829,7 @@ function Open() {
 
                 {[
                   {
-                    img: "/section 4 2.svg",
+                    img: "/Day 1.svg",
                     node: (
                       <div className="max-w-[300px] w-full text-center z-10 mt-[18px]">
                         <p className="text-base font-medium text-[#5c3a1e]">Day 1<br />04/05/26</p>
@@ -843,7 +843,7 @@ function Open() {
                     ),
                   },
                   {
-                    img: "/section 4 2.svg",
+                    img: "/Day 2 A.svg",
                     node: (
                       <div className="max-w-[300px] w-full text-center z-10 mt-[18px]">
                         <p className="text-base font-medium text-[#5c3a1e]">Day 2<br />05/05/26</p>
@@ -856,7 +856,7 @@ function Open() {
                     ),
                   },
                   {
-                    img: "/section 4 1.svg",
+                    img: "/Day 2 B.svg",
                     node: (
                       <div className="max-w-[300px] w-full text-center mt-6 z-10">
                         <p className="text-base font-medium text-[#5c3a1e]">Day 2<br />05/05/26</p>
@@ -874,9 +874,9 @@ function Open() {
                     className="absolute inset-0 flex items-center justify-center scroll-layer top-[133px]"
                     style={getStyle(i)}>
                     <img src={slide.img} className="absolute inset-0 w-full h-full object-cover" alt="" />
-                    <div className="relative flex items-center justify-center w-full h-full px-6">
+                    {/* <div className="relative flex items-center justify-center w-full h-full px-6">
                       {slide.node}
-                    </div>
+                    </div> */}
                   </div>
                 ))}
               </div>
@@ -929,8 +929,10 @@ function Open() {
             {/* ── SECTION 6 — Countdown ── */}
             <div className="w-full relative flex items-center justify-center text-center overflow-hidden full-h"
               style={{ fontFamily: "Georgia,'Times New Roman',Times,serif" }}>
-              <img src="/final.svg" className="absolute inset-0 w-full h-full object-cover" alt="" />
-              <div className="relative z-10 flex flex-col items-center px-4" style={{ marginTop: "-60px" }}>
+              <img src="/Blue BG.svg" className="absolute inset-0 w-full h-full object-cover" alt="" />
+              <img src="/blue 2.svg" className="absolute inset-0 w-full h-full object-cover" alt="" />
+              <img src="/blue bottom.svg" className="absolute inset-0 w-full h-full object-cover" alt="" />
+              <div className="relative z-10 flex flex-col items-center px-4" style={{ marginTop: "-113px" }}>
                 <h2 className="text-3xl md:text-4xl font-bold text-[#f3c178] mb-6" data-aos="fade-up">
                   The<br />Countdown<br />Begins
                 </h2>
